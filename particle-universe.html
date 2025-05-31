@@ -6,8 +6,18 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>particle-universe</title>
-    <style>
-        /* 基础样式重置 */
+    <link rel="stylesheet" href="my-cursor.css">
+
+
+
+
+
+
+
+
+
+<style>
+        /*基础样式重置 */
         * {
             margin: 0;
             padding: 0;
@@ -1856,6 +1866,14 @@
 </head>
 
 <body>
+        <!-- 自定义鼠标指针 -->
+        <div class="custom-cursor" id="custom-cursor">
+            <div class="cursor-core"></div>
+            <div class="cursor-ring"></div>
+        </div>
+    
+        <!-- 鼠标尾迹效果 -->
+        <div id="cursor-trails"></div>
     <div class="starfield-bg"></div>
     <div class="cosmic-glow"></div>
     <div class="space-particles"></div>
@@ -6244,6 +6262,97 @@
             }
         });
     </script>
+
+
+        <script>
+        // === 自定义鼠标三层同步与 trail 逻辑 ===
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        function setCursorElementsCenter(x, y) {
+            // custom-cursor
+            const cursor = document.getElementById('custom-cursor');
+            if (cursor) {
+                cursor.style.left = `${x}px`;
+                cursor.style.top = `${y}px`;
+            }
+            // 所有 trail
+            document.querySelectorAll('.cursor-trail').forEach(trail => {
+                trail.style.left = `${x}px`;
+                trail.style.top = `${y}px`;
+                trail.style.transform = 'translate(-50%, -50%)';
+            });
+        }
+        function syncCursorCenters() {
+            setCursorElementsCenter(mouseX, mouseY);
+            requestAnimationFrame(syncCursorCenters);
+        }
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            setCursorElementsCenter(mouseX, mouseY);
+            const cursorTrails = document.getElementById('cursor-trails');
+            if (cursorTrails) {
+                const trail = document.createElement('div');
+                trail.className = 'cursor-trail';
+                trail.style.position = 'fixed';
+                trail.style.left = `${mouseX}px`;
+                trail.style.top = `${mouseY}px`;
+                trail.style.transform = 'translate(-50%, -50%)';
+                cursorTrails.appendChild(trail);
+                setTimeout(() => {
+                    trail.style.opacity = '0';
+                    setTimeout(() => {
+                        if (trail.parentNode) trail.parentNode.removeChild(trail);
+                    }, 300);
+                }, 100);
+            }
+        });
+        document.addEventListener('mousedown', (e) => {
+            if (e.button === 0) {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                setCursorElementsCenter(mouseX, mouseY);
+                const cursor = document.getElementById('custom-cursor');
+                if (cursor) {
+                    cursor.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                }
+            }
+        });
+        document.addEventListener('mouseup', (e) => {
+            if (e.button === 0) {
+                const cursor = document.getElementById('custom-cursor');
+                if (cursor) {
+                    cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                }
+            }
+        });
+        function initCustomCursor() {
+            const cursor = document.getElementById('custom-cursor');
+            document.querySelectorAll('button, a, input, select').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    if (cursor) {
+                        cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                        const core = cursor.querySelector('.cursor-core');
+                        if (core) core.style.backgroundColor = '#ff00aa';
+                    }
+                });
+                el.addEventListener('mouseleave', () => {
+                    if (cursor) {
+                        cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                        const core = cursor.querySelector('.cursor-core');
+                        if (core) core.style.backgroundColor = '#00f7ff';
+                    }
+                });
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            requestAnimationFrame(syncCursorCenters);
+            initCustomCursor();
+        });
+    </script>
+
+
+
 
 </body>
 
