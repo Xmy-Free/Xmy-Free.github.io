@@ -2,10 +2,18 @@
 <html lang="zh-CN">
 
 <head>
-  <title>wandering-earth</title>
+  <title>流浪地球</title>
 </head>
+<link rel="stylesheet" href="my-cursor.css">
 
 <body>
+
+</div>    <div class="custom-cursor" id="custom-cursor">
+  <div class="cursor-core"></div>
+  <div class="cursor-ring"></div>
+</div>
+<div class="cursor-trail"></div>
+
   <video autoplay muted loop
     style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;">
     <source src="wandering-earth.mp4" type="video/mp4">
@@ -261,6 +269,7 @@
 
 
   </script>
+  <script src="my-cursor.js"></script>
 </body>
 
 </html>

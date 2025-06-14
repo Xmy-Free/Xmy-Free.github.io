@@ -4,8 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>transition-animation</title>
+    <title>虫洞跃迁</title>
+    
     <style>
+
+
         * {
             margin: 0;
             padding: 0;
@@ -20,6 +23,7 @@
             height: 100vh;
             width: 100vw;
             overflow: hidden;
+            cursor:none;
         }
 
         #universe {
@@ -776,11 +780,11 @@
         <div id="warp-effect"></div>
         <div id="space-distortion"></div>
         <div id="flash"></div>
-        <div id="travel-text">Traveling through space-time continuum...</div>
+        <div id="travel-text">虫洞跃迁·星际穿越</div>
         <div id="loading-progress">
             <div id="progress-bar"></div>
         </div>
-        <div id="progress-text">Initializing wormhole traversal...</div>
+        <div id="progress-text"></div>
     </div>
 
 
@@ -798,13 +802,42 @@
                 elem.msRequestFullscreen();
             }
         }, { once: true }); // 使用 { once: true } 确保只在第一次点击时触发
+
+        // 添加鼠标右键长按监听
+        let rightClickTimer;
+        const longPressThreshold = 800; // 长按阈值，单位毫秒
+
+        document.addEventListener('mousedown', function(e) {
+            // 检测右键按下（button值为2表示鼠标右键）
+            if (e.button === 2) {
+                // 开始计时
+                rightClickTimer = setTimeout(() => {
+                    // 长按时间达到阈值，直接跳转
+                    window.location.href = 'darkForest-interstellar.html';
+                }, longPressThreshold);
+                
+                // 阻止默认的右键菜单
+                e.preventDefault();
+            }
+        });
+
+        document.addEventListener('mouseup', function(e) {
+            // 如果是右键抬起，清除计时器
+            if (e.button === 2) {
+                clearTimeout(rightClickTimer);
+            }
+        });
+
+        // 禁用右键菜单
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
     </script>
 
     <script>
         // Initialize variables for the destination
         const destinationPage = "2.html"; // Change this to your target page
-        const animationDuration = 6000; // 6 seconds
-
+        const animationDuration = 20000; //过渡动画时长
         // Canvas setup for star field
         const canvas = document.getElementById('starfield');
         const ctx = canvas.getContext('2d');
@@ -1082,17 +1115,17 @@
         function createDOM() {
             // Progress bar animation with color transition
             const progressBar = document.getElementById("progress-bar");
-            const progressText = document.getElementById("progress-text");
+            const progressText = document.getElementById("progress-text");  
             let progress = 0;
             const progressMessages = [
-                "Initializing wormhole traversal...",
-                "Calculating quantum coordinates...",
-                "Stabilizing gravity fluctuations...",
-                "Compressing spacetime fabric...",
-                "Aligning dimensional vectors...",
-                "Engaging hyperspace engines...",
-                "Establishing destination lock...",
-                "Completing transition sequence..."
+                "熵流逆转·超膜贯通···",
+                "量子纠缠·瞬态重构···",
+                "暗质汇聚·能量蓄能!",
+                "超弦共振·时空褶皱！！",
+                "多维锚定·坐标成型！！！",
+                "暗质聚能·光年瞬逝！",
+                "多维宇宙·平行时空！！",
+                "星际穿越·黑暗森林！！！",
             ];
 
             const progressInterval = setInterval(() => {
@@ -1225,142 +1258,6 @@
                 ring.style.animation = `expandGlowRing${i} ${duration}ms ease-out ${delay}ms forwards`;
 
                 document.body.appendChild(ring);
-            }
-        }
-
-        // 音频效果
-        function setupAudio() {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                const audioCtx = new AudioContext();
-
-                // 创建基础音色
-                const oscillator1 = audioCtx.createOscillator();
-                oscillator1.type = 'sine';
-                oscillator1.frequency.setValueAtTime(55, audioCtx.currentTime);
-
-                const oscillator2 = audioCtx.createOscillator();
-                oscillator2.type = 'sine';
-                oscillator2.frequency.setValueAtTime(110, audioCtx.currentTime);
-
-                const oscillator3 = audioCtx.createOscillator();
-                oscillator3.type = 'triangle';
-                oscillator3.frequency.setValueAtTime(220, audioCtx.currentTime);
-
-                // 频率变化
-                oscillator1.frequency.linearRampToValueAtTime(75, audioCtx.currentTime + 3);
-                oscillator1.frequency.linearRampToValueAtTime(65, audioCtx.currentTime + 6);
-
-                oscillator2.frequency.linearRampToValueAtTime(165, audioCtx.currentTime + 2);
-                oscillator2.frequency.linearRampToValueAtTime(196, audioCtx.currentTime + 4);
-                oscillator2.frequency.linearRampToValueAtTime(147, audioCtx.currentTime + 6);
-
-                oscillator3.frequency.linearRampToValueAtTime(330, audioCtx.currentTime + 3);
-                oscillator3.frequency.linearRampToValueAtTime(440, audioCtx.currentTime + 6);
-
-                // 滤波器
-                const filter1 = audioCtx.createBiquadFilter();
-                filter1.type = 'lowpass';
-                filter1.frequency.setValueAtTime(500, audioCtx.currentTime);
-                filter1.frequency.linearRampToValueAtTime(2000, audioCtx.currentTime + 6);
-                filter1.Q.setValueAtTime(1, audioCtx.currentTime);
-                filter1.Q.linearRampToValueAtTime(8, audioCtx.currentTime + 3);
-                filter1.Q.linearRampToValueAtTime(2, audioCtx.currentTime + 6);
-
-                // 音量控制
-                const gainNode1 = audioCtx.createGain();
-                gainNode1.gain.setValueAtTime(0, audioCtx.currentTime);
-                gainNode1.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 1);
-                gainNode1.gain.linearRampToValueAtTime(0.25, audioCtx.currentTime + 3);
-                gainNode1.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 5);
-                gainNode1.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 6);
-
-                const gainNode2 = audioCtx.createGain();
-                gainNode2.gain.setValueAtTime(0, audioCtx.currentTime);
-                gainNode2.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.5);
-                gainNode2.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + 2);
-                gainNode2.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 4);
-                gainNode2.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 6);
-
-                const gainNode3 = audioCtx.createGain();
-                gainNode3.gain.setValueAtTime(0, audioCtx.currentTime);
-                gainNode3.gain.linearRampToValueAtTime(0.02, audioCtx.currentTime + 2);
-                gainNode3.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 5);
-                gainNode3.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 6);
-
-                // 空间音效
-                const panner = audioCtx.createPanner();
-                panner.panningModel = 'HRTF';
-                panner.positionX.setValueAtTime(0, audioCtx.currentTime);
-                panner.positionY.setValueAtTime(0, audioCtx.currentTime);
-                panner.positionZ.setValueAtTime(-10, audioCtx.currentTime);
-                panner.positionZ.linearRampToValueAtTime(5, audioCtx.currentTime + 6);
-
-                // 连接音频节点
-                oscillator1.connect(filter1);
-                filter1.connect(gainNode1);
-                gainNode1.connect(panner);
-
-                oscillator2.connect(gainNode2);
-                gainNode2.connect(panner);
-
-                oscillator3.connect(gainNode3);
-                gainNode3.connect(panner);
-
-                panner.connect(audioCtx.destination);
-
-                // 启动振荡器
-                oscillator1.start();
-                oscillator2.start();
-                oscillator3.start();
-                oscillator1.stop(audioCtx.currentTime + 6);
-                oscillator2.stop(audioCtx.currentTime + 6);
-                oscillator3.stop(audioCtx.currentTime + 6);
-
-                // 添加呼啸音效
-                let lastSweepTime = audioCtx.currentTime;
-
-                const createRandomSweep = () => {
-                    if (audioCtx.currentTime - lastSweepTime < 0.2) return;
-                    lastSweepTime = audioCtx.currentTime;
-
-                    const startFreq = 2000 + Math.random() * 2000;
-                    const endFreq = 300 + Math.random() * 700;
-
-                    const sweepOsc = audioCtx.createOscillator();
-                    sweepOsc.type = Math.random() > 0.5 ? 'sine' : 'sawtooth';
-                    sweepOsc.frequency.setValueAtTime(startFreq, audioCtx.currentTime);
-                    sweepOsc.frequency.exponentialRampToValueAtTime(endFreq, audioCtx.currentTime + 0.3);
-
-                    const sweepGain = audioCtx.createGain();
-                    sweepGain.gain.setValueAtTime(0, audioCtx.currentTime);
-                    sweepGain.gain.linearRampToValueAtTime(0.07, audioCtx.currentTime + 0.05);
-                    sweepGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
-
-                    const sweepPan = audioCtx.createStereoPanner();
-                    sweepPan.pan.setValueAtTime(Math.random() * 2 - 1, audioCtx.currentTime);
-
-                    sweepOsc.connect(sweepGain);
-                    sweepGain.connect(sweepPan);
-                    sweepPan.connect(audioCtx.destination);
-
-                    sweepOsc.start();
-                    sweepOsc.stop(audioCtx.currentTime + 0.3);
-                };
-
-                // 定期添加随机音效
-                const beepScheduler = setInterval(() => {
-                    if (Math.random() > 0.6) {
-                        createRandomSweep();
-                    }
-                }, 300);
-
-                setTimeout(() => {
-                    clearInterval(beepScheduler);
-                }, animationDuration - 100);
-
-            } catch (e) {
-                console.log("Audio context not available");
             }
         }
 
@@ -1539,9 +1436,6 @@
             // 创建DOM元素
             createDOM();
 
-            // 设置音频
-            setupAudio();
-
             // 设置跳转
             setTimeout(() => {
                 window.location.href = 'darkForest-interstellar.html';
@@ -1551,7 +1445,7 @@
         // 调用初始化函数
         init();
     </script>
-
+    <script src="my-function.js"></script>
 </body>
 
 </html>
