@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>particle-universe</title>
+    <title>粒子宇宙</title>
     <link rel="stylesheet" href="my-cursor.css">
 
 
@@ -1862,6 +1862,11 @@
                 font-size: 16px;
             }
         }
+
+        /* 确保星梦游Xmy|粒子宇宙链接没有下划线 */
+        .starflow-effect-text a {
+            text-decoration: none !important;
+        }
     </style>
 </head>
 
@@ -1908,7 +1913,8 @@
     <!-- 页面顶部正中间的标题 -->
     <div class="info-title cosmic-glow-text info-title-center">
         <span class="glow-text">
-            <span class="starflow-effect-text">@星梦游Xmy|粒子宇宙</span>
+            <span class="starflow-effect-text"><a href="mind-universe.html">@星梦游Xmy|粒子宇宙</a></span>
+
             <canvas class="starflow-canvas"></canvas>
         </span>
         <span class="info-flow"></span>
@@ -1998,7 +2004,7 @@
             <button class="settings-button" id="wormholePreset">神秘体内星际穿越-虫洞</button>
             <button class="settings-button" id="blackHolePreset">黑洞</button>
             <button class="settings-button" id="whiteHolePreset">白洞</button>
-            <button class="settings-button" id="galaxyPreset">五彩斑斓-银河系</button><br>
+            <button class="settings-button" id="galaxyPreset">七彩银河系</button><br>
             <button class="settings-button" id="nebulaPreset">螺旋星云</button>
             <button class="settings-button" id="sunPreset">太阳</button>
             <button class="settings-button" id="clourfulPlantPreset">缤纷彩星</button>
@@ -2096,7 +2102,7 @@
             </div>
         </div>
     </div>
-
+    <canvas id="followParticles" style="display:none;position:fixed;top:0;left:0;z-index:101;pointer-events:none;"></canvas>
     <!-- 设置按钮 -->
     <button class="settings-button" id="settingsButton"
         style="position: fixed; top: 20px; left: 20px; z-index: 10; padding: 10px 15px;">
@@ -3597,226 +3603,356 @@
                 clearAndApplyBackground('sunPreset');
             });
 
+
+
+
             document.getElementById('galaxyPreset').addEventListener('click', () => {
-                clearScene();
-                document.getElementById('customSettings').style.display = 'none';
-                // 银河系预设 - 梦幻般的螺旋星系效果
-                config.primaryColor = '#ff00ff';    // 亮粉色
-                config.secondaryColor = '#00ffff';  // 青色
-                config.particleSize = 0.03;         // 更细腻的粒子效果
-                config.planetRadius = 0;            // 无中心星球
-                config.rotationSpeed = 1.8;         // 优雅的旋转速度
-                config.particleCount = 800000;      // 增加粒子数量以获得更丰富细节
-                config.ringParticleCount = 0;       // 不使用环系统
-                config.ringWidth = 0;
-                config.ringRadius = 0;
-                config.ringRotationSpeed = 0;
-                config.ringOpacity = 0;
-                config.ringTilt = 0;
-                config.ringThickness = 0;
-                targetZoom = 50;                   // 更远的视角展示全景
+    clearScene();
+    document.getElementById('customSettings').style.display = 'none';
+    
+    // Cosmic Galaxy Configuration
+    config.primaryColor = '#8a3aff';      // Deep cosmic purple
+    config.secondaryColor = '#00c4e8';    // Nebula teal
+    config.particleSize = 0.015;          // Ultra-fine particles
+    config.planetRadius = 0;              // No central planet
+    config.rotationSpeed = 0.4;           // Majestic cosmic rotation
+    config.particleCount = 2500000;       // Ultra-dense star field
+    config.ringParticleCount = 0;         // No rings
+    targetZoom = 90;                      // Grand cosmic perspective
+    
+    // Deep void-space background with cosmic energy
+    scene.background = new THREE.Color(0x01010a);
+    document.getElementById('bgColorPicker').value = '#01010a';
+    updateUIFromConfig();
 
-                // 深邃星空背景
-                scene.background = new THREE.Color(0x050520);
-                document.getElementById('bgColorPicker').value = '#050520';
+    // Clear existing particles
+    particles.forEach(particle => scene.remove(particle));
+    particles = [];
+    if (ringParticles) {
+        scene.remove(ringParticles);
+        ringParticles = null;
+    }
 
-                // 更新UI并重建粒子系统
-                updateUIFromConfig();
+    // Create cosmic galaxy system with enhanced parameters
+    const galaxyGeometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(config.particleCount * 3);
+    const colors = new Float32Array(config.particleCount * 3);
+    const sizes = new Float32Array(config.particleCount);
 
-                // 清除现有粒子系统
-                particles.forEach(particle => scene.remove(particle));
-                particles = [];
-                if (ringParticles) {
-                    scene.remove(ringParticles);
-                    ringParticles = null;
-                }
+    // Enhanced galactic parameters
+    const arms = 4;                       // Classic spiral structure
+    const armWidth = 0.6;                 // Flowing arms
+    const spiralFactor = 12;              // Elegant spiral
+    const galaxyRadius = 180;             // Expansive galaxy
+    const coreRadius = 35;                // Luminous core
+    const densityFalloff = 2.8;           // Natural distribution
+    const verticalDispersion = 0.7;       // 3D structure
 
-                // 创建星系粒子系统
-                const galaxyGeometry = new THREE.BufferGeometry();
-                const positions = new Float32Array(config.particleCount * 3);
-                const colors = new Float32Array(config.particleCount * 3);
-                const sizes = new Float32Array(config.particleCount);
-                const velocities = new Float32Array(config.particleCount * 3); // 用于动画效果
+    // Cosmic color spectrum with flowing gradients
+    const armPalette = [
+        { r: 0.7, g: 0.2, b: 0.9 },      // Deep cosmic purple
+        { r: 0.1, g: 0.7, b: 0.9 },      // Stellar blue
+        { r: 0.1, g: 0.9, b: 0.7 },     // Nebula teal
+        { r: 0.9, g: 0.5, b: 0.2 }       // Warm stellar glow
+    ];
 
-                // 星系参数
-                const arms = 12;                    // 12条旋臂
-                const armWidth = 0.4;               // 旋臂宽度
-                const spiralFactor = 8;             // 螺旋因子
-                const galaxyRadius = 50;            // 星系半径
-                const coreRadius = 15;              // 增加核心半径
-                const densityFactor = 2.0;          // 增加密度因子
+    // Generate celestial particles with flowing distribution
+    for (let i = 0; i < config.particleCount; i++) {
+        const i3 = i * 3;
+        const isCore = Math.random() < 0.25;
+        let radius, angle, armIndex;
 
-                // 定义每条旋臂的颜色
-                const armColors = [
-                    { r: 1.0, g: 0.2, b: 0.2 },    // 红色
-                    { r: 1.0, g: 0.6, b: 0.0 },    // 橙色
-                    { r: 1.0, g: 1.0, b: 0.0 },    // 黄色
-                    { r: 0.2, g: 1.0, b: 0.2 },    // 绿色
-                    { r: 0.0, g: 0.8, b: 1.0 },    // 青色
-                    { r: 0.2, g: 0.2, b: 1.0 },    // 蓝色
-                    { r: 0.6, g: 0.0, b: 1.0 },    // 紫色
-                    { r: 1.0, g: 0.0, b: 0.8 },    // 粉色
-                    { r: 1.0, g: 0.4, b: 0.4 },    // 珊瑚色
-                    { r: 0.4, g: 1.0, b: 0.4 },    // 薄荷色
-                    { r: 0.4, g: 0.4, b: 1.0 },    // 靛蓝色
-                    { r: 1.0, g: 0.8, b: 0.2 }     // 金色
-                ];
+        if (isCore) {
+            // Radiant core with golden halo
+            radius = Math.pow(Math.random(), 2.2) * coreRadius * 1.5;
+            angle = Math.random() * Math.PI * 2;
+            armIndex = Math.floor(Math.random() * arms);
+        } else {
+            // Flowing spiral arms
+            armIndex = Math.floor(Math.random() * arms);
+            const armAngle = (armIndex / arms) * Math.PI * 2;
+            const armOffset = (Math.random() - 0.5) * armWidth * 2;
+            radius = coreRadius + Math.pow(Math.random(), densityFalloff) * (galaxyRadius - coreRadius);
+            angle = armAngle + Math.log(radius/coreRadius) * spiralFactor + armOffset;
+        }
 
-                // 核心区域颜色定义
-                const coreColors = [
-                    { r: 1.0, g: 0.0, b: 0.0 },    // 鲜红色
-                    { r: 1.0, g: 0.5, b: 0.0 },    // 橙色
-                    { r: 1.0, g: 1.0, b: 0.0 },    // 黄色
-                    { r: 0.0, g: 1.0, b: 0.0 },    // 绿色
-                    { r: 0.0, g: 0.5, b: 1.0 },    // 天蓝色
-                    { r: 0.5, g: 0.0, b: 1.0 },    // 紫色
-                    { r: 1.0, g: 0.0, b: 1.0 },    // 粉色
-                    { r: 1.0, g: 0.8, b: 0.0 },    // 金色
-                    { r: 0.0, g: 1.0, b: 0.5 },    // 薄荷绿
-                    { r: 1.0, g: 0.0, b: 0.5 }     // 玫瑰红
-                ];
+        // 3D positioning with vertical dispersion
+        positions[i3] = Math.cos(angle) * radius;
+        positions[i3 + 1] = (Math.random() - 0.5) * verticalDispersion * Math.pow(radius/galaxyRadius, 0.5);
+        positions[i3 + 2] = Math.sin(angle) * radius;
 
-                // 生成星系粒子
-                for (let i = 0; i < config.particleCount; i++) {
-                    const i3 = i * 3;
+        // Dynamic coloring with cosmic variation
+        const distanceFromCenter = Math.sqrt(positions[i3]**2 + positions[i3 + 1]**2 + positions[i3 + 2]**2);
+        const normalizedDistance = distanceFromCenter / galaxyRadius;
 
-                    // 决定粒子是否在核心区域
-                    const isCore = Math.random() < 0.25; // 增加核心区域比例
-                    let radius, angle, armIndex;
+        if (isCore) {
+            // Core illumination with golden-white gradient
+            const coreIntensity = 0.8 + 0.2 * Math.sin(distanceFromCenter * 0.1);
+            const coreWarmth = 0.6 + 0.4 * (1 - normalizedDistance);
+            
+            colors[i3] = (0.8 + 0.1 * Math.random()) * coreIntensity;
+            colors[i3 + 1] = (0.6 + 0.2 * coreWarmth) * coreIntensity;
+            colors[i3 + 2] = (0.9 - normalizedDistance * 0.2) * coreIntensity;
+        } else {
+            // Arm colors with cosmic dust effect
+            const armColor = armPalette[armIndex];
+            const stellarFade = 0.5 + 0.5 * (1 - Math.pow(normalizedDistance, 0.5));
+            const dustEffect = 0.7 + 0.3 * Math.random();
+            const armVariation = 0.8 + 0.2 * Math.sin(angle * 3);
+            
+            colors[i3] = armColor.r * stellarFade * dustEffect * armVariation;
+            colors[i3 + 1] = armColor.g * stellarFade * dustEffect * armVariation;
+            colors[i3 + 2] = armColor.b * stellarFade * dustEffect * armVariation;
+        }
 
-                    if (isCore) {
-                        // 核心区域粒子 - 使用更复杂的分布
-                        const coreType = Math.random();
-                        if (coreType < 0.4) {
-                            // 密集核心
-                            radius = Math.random() * coreRadius * 0.5;
-                        } else if (coreType < 0.7) {
-                            // 中等密度区域
-                            radius = coreRadius * 0.5 + Math.random() * coreRadius * 0.3;
-                        } else {
-                            // 过渡区域
-                            radius = coreRadius * 0.8 + Math.random() * coreRadius * 0.2;
-                        }
-                        angle = Math.random() * Math.PI * 2;
-                        armIndex = Math.floor(Math.random() * arms);
-                    } else {
-                        // 旋臂区域粒子
-                        armIndex = Math.floor(Math.random() * arms);
-                        const armAngle = (armIndex / arms) * Math.PI * 2;
-                        const spiralOffset = Math.random() * armWidth;
-                        radius = coreRadius + Math.random() * (galaxyRadius - coreRadius);
-                        angle = armAngle + (radius / galaxyRadius) * spiralFactor + spiralOffset;
+        // Organic size variation
+        sizes[i] = isCore 
+            ? 0.12 * (1.2 - normalizedDistance * 0.6) 
+            : 0.04 * (0.6 + 0.4 * Math.random());
+    }
 
-                        // 添加额外的随机粒子以填补旋臂之间的空缺
-                        if (Math.random() < 0.3) {
-                            const randomAngle = Math.random() * Math.PI * 2;
-                            const randomRadius = coreRadius + Math.random() * (galaxyRadius - coreRadius);
-                            const distanceFromNearestArm = Math.min(
-                                ...Array.from({ length: arms }, (_, i) => {
-                                    const armAngle = (i / arms) * Math.PI * 2;
-                                    return Math.abs(randomAngle - armAngle);
-                                })
-                            );
+    galaxyGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    galaxyGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    galaxyGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-                            if (distanceFromNearestArm > 0.2) {
-                                angle = randomAngle;
-                                radius = randomRadius;
-                                armIndex = Math.floor(Math.random() * arms);
-                            }
-                        }
-                    }
+    // Ethereal particle material with subtle glow
+    const galaxyMaterial = new THREE.PointsMaterial({
+        size: 0.03,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.9,
+        blending: THREE.AdditiveBlending,
+        sizeAttenuation: true,
+        alphaTest: 0.001,
+        depthWrite: false
+    });
 
-                    // 添加一些随机性，但减少垂直方向的偏移
-                    radius += (Math.random() - 0.5) * 1.5;
+    const galaxy = new THREE.Points(galaxyGeometry, galaxyMaterial);
+    scene.add(galaxy);
+    particles.push(galaxy);
 
-                    // 计算位置
-                    positions[i * 3] = Math.cos(angle) * radius;
-                    positions[i * 3 + 1] = (Math.random() - 0.5) * 0.5;
-                    positions[i * 3 + 2] = Math.sin(angle) * radius;
+    // Cosmic ambient lighting with nebula hues
+    const ambientLight = new THREE.AmbientLight(0x0a0a2a, 0.25);
+    scene.add(ambientLight);
 
-                    // 根据位置设置颜色
-                    const distanceFromCenter = Math.sqrt(positions[i * 3] * positions[i * 3] + positions[i * 3 + 2] * positions[i * 3 + 2]);
-                    const colorRatio = distanceFromCenter / galaxyRadius;
+    // Create a massive cosmic nebula background
+    const nebulaGeometry = new THREE.SphereGeometry(3000, 64, 64);
+    const nebulaTexture = createNebulaTexture(2048);
+    const nebulaMaterial = new THREE.MeshBasicMaterial({
+        map: nebulaTexture,
+        side: THREE.BackSide,
+        transparent: true,
+        opacity: 0.5,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+    });
+    const nebulaSphere = new THREE.Mesh(nebulaGeometry, nebulaMaterial);
+    scene.add(nebulaSphere);
+    particles.push(nebulaSphere);
 
-                    if (isCore) {
-                        // 核心区域使用更丰富的颜色效果
-                        const coreColorIndex = Math.floor(Math.random() * coreColors.length);
-                        const coreColor = coreColors[coreColorIndex];
+    // Function to create procedural nebula texture
+    function createNebulaTexture(size) {
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        
+        // Create cosmic gradient
+        const gradient1 = ctx.createRadialGradient(
+            size * 0.3, size * 0.3, 0,
+            size * 0.3, size * 0.3, size * 0.5
+        );
+        gradient1.addColorStop(0, 'rgba(138, 58, 255, 0.8)');
+        gradient1.addColorStop(0.7, 'rgba(0, 196, 232, 0.5)');
+        gradient1.addColorStop(1, 'rgba(0, 10, 20, 0)');
+        
+        const gradient2 = ctx.createRadialGradient(
+            size * 0.7, size * 0.7, 0,
+            size * 0.7, size * 0.7, size * 0.5
+        );
+        gradient2.addColorStop(0, 'rgba(255, 90, 0, 0.6)');
+        gradient2.addColorStop(0.7, 'rgba(200, 0, 255, 0.4)');
+        gradient2.addColorStop(1, 'rgba(0, 10, 20, 0)');
+        
+        // Draw cosmic clouds
+        ctx.fillStyle = '#01010a';
+        ctx.fillRect(0, 0, size, size);
+        
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.fillStyle = gradient1;
+        ctx.fillRect(0, 0, size, size);
+        
+        ctx.fillStyle = gradient2;
+        ctx.fillRect(0, 0, size, size);
+        
+        // Add star clusters
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        for (let i = 0; i < 2000; i++) {
+            const x = Math.random() * size;
+            const y = Math.random() * size;
+            const r = Math.random() * 2;
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // Add cosmic dust veins
+        ctx.strokeStyle = 'rgba(100, 150, 255, 0.05)';
+        ctx.lineWidth = 2;
+        for (let i = 0; i < 50; i++) {
+            ctx.beginPath();
+            const x1 = Math.random() * size;
+            const y1 = Math.random() * size;
+            ctx.moveTo(x1, y1);
+            for (let j = 0; j < 5; j++) {
+                ctx.lineTo(
+                    x1 + (Math.random() - 0.5) * size * 0.2,
+                    y1 + (Math.random() - 0.5) * size * 0.2
+                );
+            }
+            ctx.stroke();
+        }
+        
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        return texture;
+    }
 
-                        // 添加发光效果
-                        const glowIntensity = 0.8 + Math.random() * 0.2;
-                        const distanceFromCore = distanceFromCenter / coreRadius;
-                        const brightness = glowIntensity * (1 - distanceFromCore * 0.5);
+    // Create distant galaxy clusters
+    const galaxyClusters = new THREE.Group();
+    for (let i = 0; i < 15; i++) {
+        const galaxy = new THREE.Mesh(
+            new THREE.SphereGeometry(40 + Math.random() * 80, 32, 32),
+            new THREE.MeshBasicMaterial({
+                color: new THREE.Color(
+                    0.2 + Math.random() * 0.3,
+                    0.1 + Math.random() * 0.2,
+                    0.3 + Math.random() * 0.4
+                ),
+                transparent: true,
+                opacity: 0.03,
+                blending: THREE.AdditiveBlending
+            })
+        );
+        
+        // Position in spherical coordinates
+        const distance = 2000 + Math.random() * 3000;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        
+        galaxy.position.set(
+            distance * Math.sin(phi) * Math.cos(theta),
+            distance * Math.sin(phi) * Math.sin(theta),
+            distance * Math.cos(phi)
+        );
+        
+        galaxyClusters.add(galaxy);
+        
+        // Add glow
+        const glow = new THREE.Mesh(
+            new THREE.SphereGeometry(galaxy.geometry.parameters.radius * 1.8, 32, 32),
+            new THREE.MeshBasicMaterial({
+                color: galaxy.material.color,
+                transparent: true,
+                opacity: 0.015,
+                blending: THREE.AdditiveBlending
+            })
+        );
+        galaxy.add(glow);
+    }
+    scene.add(galaxyClusters);
+    particles.push(galaxyClusters);
 
-                        colors[i * 3] = coreColor.r * brightness;
-                        colors[i * 3 + 1] = coreColor.g * brightness;
-                        colors[i * 3 + 2] = coreColor.b * brightness;
+    // Create cosmic web filaments
+    const cosmicWeb = new THREE.Group();
+    for (let i = 0; i < 30; i++) {
+        const filament = new THREE.Line(
+            new THREE.BufferGeometry(),
+            new THREE.LineBasicMaterial({
+                color: 0x4466aa,
+                transparent: true,
+                opacity: 0.02,
+                blending: THREE.AdditiveBlending
+            })
+        );
+        
+        const distance = 1500 + Math.random() * 2000;
+        const points = [];
+        const segments = 10 + Math.floor(Math.random() * 10);
+        
+        for (let j = 0; j <= segments; j++) {
+            points.push(new THREE.Vector3(
+                (Math.random() - 0.5) * distance * 0.3,
+                (Math.random() - 0.5) * distance * 0.3,
+                (Math.random() - 0.5) * distance * 0.3
+            ));
+        }
+        
+        filament.geometry.setFromPoints(points);
+        cosmicWeb.add(filament);
+    }
+    scene.add(cosmicWeb);
+    particles.push(cosmicWeb);
 
-                        // 随机添加一些高亮粒子
-                        if (Math.random() < 0.1) {
-                            colors[i * 3] = Math.min(1, colors[i * 3] * 1.5);
-                            colors[i * 3 + 1] = Math.min(1, colors[i * 3 + 1] * 1.5);
-                            colors[i * 3 + 2] = Math.min(1, colors[i * 3 + 2] * 1.5);
-                        }
-                    } else {
-                        // 旋臂区域使用对应旋臂的颜色，并根据距离调整亮度
-                        const armColor = armColors[armIndex];
-                        const brightness = 0.7 + (1 - colorRatio) * 0.3;
-                        colors[i * 3] = armColor.r * brightness;
-                        colors[i * 3 + 1] = armColor.g * brightness;
-                        colors[i * 3 + 2] = armColor.b * brightness;
-                    }
+    // Create quasar-like energy sources
+    const quasars = new THREE.Group();
+    for (let i = 0; i < 4; i++) {
+        const quasar = new THREE.PointLight(
+            0x4466ff,
+            0.5,
+            5000,
+            2.0
+        );
+        
+        const distance = 2500 + Math.random() * 2000;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        
+        quasar.position.set(
+            distance * Math.sin(phi) * Math.cos(theta),
+            distance * Math.sin(phi) * Math.sin(theta),
+            distance * Math.cos(phi)
+        );
+        
+        quasars.add(quasar);
+        
+        // Add energy beam
+        const beamLength = 1000 + Math.random() * 1500;
+        const beamGeometry = new THREE.CylinderGeometry(
+            5,
+            100,
+            beamLength,
+            32,
+            1,
+            true
+        );
+        beamGeometry.rotateX(Math.PI / 2);
+        
+        const beamMaterial = new THREE.MeshBasicMaterial({
+            color: 0x4466ff,
+            transparent: true,
+            opacity: 0.03,
+            blending: THREE.AdditiveBlending,
+            side: THREE.DoubleSide
+        });
+        
+        const beam = new THREE.Mesh(beamGeometry, beamMaterial);
+        beam.position.copy(quasar.position);
+        beam.lookAt(0, 0, 0);
+        quasars.add(beam);
+    }
+    scene.add(quasars);
+    particles.push(quasars);
 
-                    // 根据位置设置粒子大小
-                    if (isCore) {
-                        // 核心区域粒子大小变化
-                        const coreSize = 0.08 + Math.random() * 0.08;
-                        sizes[i] = coreSize * (1 - distanceFromCenter / coreRadius * 0.5);
-                    } else {
-                        sizes[i] = 0.06 * (1 - colorRatio * 0.4);
-                    }
-                }
+    clearAndApplyBackground('galaxyPreset');
+});
 
-                galaxyGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                galaxyGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-                galaxyGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-                const galaxyMaterial = new THREE.PointsMaterial({
-                    size: 0.05,
-                    vertexColors: true,
-                    transparent: true,
-                    opacity: 0.9,
-                    blending: THREE.AdditiveBlending,
-                    sizeAttenuation: true
-                });
 
-                const galaxy = new THREE.Points(galaxyGeometry, galaxyMaterial);
-                scene.add(galaxy);
-                particles.push(galaxy);
 
-                // 添加多个点光源创造星云效果
-                const lightColors = ['#ff00ff', '#00ffff', '#ff9900', '#9900ff', '#00ff99', '#ff3366', '#33ff99', '#ff33cc'];
-                lightColors.forEach((color, index) => {
-                    const light = new THREE.PointLight(color, 1.5, 200);
-                    const angle = (index / lightColors.length) * Math.PI * 2;
-                    light.position.set(
-                        Math.cos(angle) * 100,
-                        Math.sin(angle) * 100,
-                        Math.sin(index) * 50
-                    );
-                    scene.add(light);
-                });
 
-                // 增加环境光亮度以突出色彩
-                scene.children.forEach(child => {
-                    if (child instanceof THREE.AmbientLight) {
-                        child.intensity = 0.8;
-                    }
-                });
-                clearAndApplyBackground('galaxyPreset');
-            });
 
-            document.getElementById('seaBluePreset').addEventListener('click', () => {
+
+document.getElementById('seaBluePreset').addEventListener('click', () => {
                 clearScene();
                 document.getElementById('customSettings').style.display = 'block';
                 // 更逼真的冰蓝色调
@@ -6349,11 +6485,256 @@
             requestAnimationFrame(syncCursorCenters);
             initCustomCursor();
         });
-    </script>
 
 
 
+
+
+
+
+//鼠标中键彗星粒子跟随特效
+        (function(){
+    // 避免变量冲突，全部加_fp后缀
+    const fp_canvas = document.getElementById('followParticles');
+    const fp_ctx = fp_canvas.getContext('2d', { alpha: false });
+    let fp_particles = [];
+    let fp_particleCount = Math.min(
+        Math.floor((window.innerWidth * window.innerHeight) / 5000),
+        150
+    );
+    let fp_mouseX = window.innerWidth / 2;
+    let fp_mouseY = window.innerHeight / 2;
+    let fp_isEffectActive = false;
+    let fp_animationId = null;
+    const fp_colors = [
+        '#00b4ff', '#0062ff', '#00ffea', '#7700ff',
+        '#ff00aa', '#ff5100', '#a200ff', '#00a2ff'
+    ];
+    const fp_colorRGBA = fp_colors.map(color => {
+        const r = parseInt(color.substr(1, 2), 16);
+        const g = parseInt(color.substr(3, 2), 16);
+        const b = parseInt(color.substr(5, 2), 16);
+        return { r, g, b, str: color };
+    });
+    function fp_resizeCanvas() {
+        const width = window.innerWidth | 0;
+        const height = window.innerHeight | 0;
+        if (fp_canvas.width !== width || fp_canvas.height !== height) {
+            fp_canvas.width = width;
+            fp_canvas.height = height;
+        }
+    }
+    fp_resizeCanvas();
+    window.addEventListener('resize', fp_resizeCanvas);
+    // 粒子类
+    class FP_Particle {
+        constructor() {
+            this.reset(true);
+            this.z = Math.random() * 2 + 1;
+            this.sparkleIntensity = Math.random() * 0.5 + 0.5;
+        }
+        reset(initial = false) {
+            if (initial) {
+                const edge = Math.floor(Math.random() * 4);
+                const offset = Math.random() * 300 + 100;
+                this.x = edge % 2 === 0 
+                    ? Math.random() * fp_canvas.width 
+                    : (edge === 1 ? fp_canvas.width + offset : -offset);
+                this.y = edge % 2 === 1 
+                    ? Math.random() * fp_canvas.height 
+                    : (edge === 2 ? fp_canvas.height + offset : -offset);
+            } else {
+                this.x = fp_mouseX + (Math.random() * 100 - 50);
+                this.y = fp_mouseY + (Math.random() * 100 - 50);
+            }
+            this.size = Math.random() * 3 + 1;
+            this.colorData = fp_colorRGBA[Math.floor(Math.random() * fp_colorRGBA.length)];
+            this.speedX = Math.random() * 4 - 2;
+            this.speedY = Math.random() * 4 - 2;
+            this.z = Math.random() * 2 + 1;
+            this.opacity = initial ? 0 : Math.random() * 0.5;
+            this.targetOpacity = Math.random() * 0.8 + 0.1;
+            this.fadeSpeed = Math.random() * 0.02 + 0.01;
+            this.angle = Math.random() * Math.PI * 2;
+            this.angleSpeed = Math.random() * 0.02 - 0.01;
+            this.orbitRadius = Math.random() * 100 + 30;
+            this.life = 0;
+            this.maxLife = Math.random() * 200 + 100;
+            this.trail = [];
+            this.maxTrailLength = Math.floor(Math.random() * 10) + 8;
+            this.sparkleIntensity = Math.random() * 0.5 + 0.5;
+            this.sparkleSpeed = Math.random() * 0.03 + 0.02;
+            this.sparklePhase = Math.random() * Math.PI * 2;
+            this.trailWidthVariation = Math.random() * 0.7 + 0.3;
+            this.trailColorVariation = Math.random() * 0.2 + 0.8;
+        }
+        update() {
+            this.life++;
+            this.sparklePhase += this.sparkleSpeed;
+            this.angle += this.angleSpeed;
+            const cosAngle = Math.cos(this.angle);
+            const sinAngle = Math.sin(this.angle);
+            const targetX = fp_mouseX + cosAngle * this.orbitRadius;
+            const targetY = fp_mouseY + sinAngle * this.orbitRadius;
+            this.x += (targetX - this.x) * 0.012 * this.z;
+            this.y += (targetY - this.y) * 0.012 * this.z;
+            this.trail.push({
+                x: this.x | 0, 
+                y: this.y | 0,
+                width: this.size * this.z * (0.5 + Math.sin(this.sparklePhase) * 0.5 * this.trailWidthVariation),
+                opacity: this.opacity
+            });
+            if (this.trail.length > this.maxTrailLength) {
+                this.trail = this.trail.slice(-this.maxTrailLength);
+            }
+            if (this.opacity < this.targetOpacity) {
+                this.opacity += this.fadeSpeed;
+            } else {
+                this.opacity = this.targetOpacity;
+            }
+            if (this.life >= this.maxLife) {
+                this.reset();
+            }
+        }
+        draw() {
+            const { r, g, b } = this.colorData;
+            const sparkleFactor = 0.7 + Math.sin(this.sparklePhase) * 0.3 * this.sparkleIntensity;
+            const currentOpacity = this.opacity * sparkleFactor;
+            // 绘制轨迹
+            fp_ctx.save();
+            for (let i = 1; i < this.trail.length; i++) {
+                const point1 = this.trail[i - 1];
+                const point2 = this.trail[i];
+                fp_ctx.strokeStyle = `rgba(${r},${g},${b},${point2.opacity * this.trailColorVariation})`;
+                fp_ctx.lineWidth = point2.width;
+                fp_ctx.beginPath();
+                fp_ctx.moveTo(point1.x, point1.y);
+                fp_ctx.lineTo(point2.x, point2.y);
+                fp_ctx.stroke();
+            }
+            fp_ctx.restore();
+            // 发光光晕
+            const glowSize = this.size * this.z * 2.5 * sparkleFactor;
+            const coreSize = this.size * this.z * 0.8;
+            fp_ctx.save();
+            fp_ctx.globalAlpha = currentOpacity * 0.7;
+            const gradient = fp_ctx.createRadialGradient(
+                this.x, this.y, 0,
+                this.x, this.y, glowSize
+            );
+            gradient.addColorStop(0, this.colorData.str);
+            gradient.addColorStop(1, 'transparent');
+            fp_ctx.fillStyle = gradient;
+            fp_ctx.beginPath();
+            fp_ctx.arc(this.x, this.y, glowSize, 0, Math.PI * 2);
+            fp_ctx.fill();
+            // 粒子核心
+            fp_ctx.globalAlpha = currentOpacity * 0.9;
+            fp_ctx.fillStyle = this.colorData.str;
+            fp_ctx.beginPath();
+            fp_ctx.arc(this.x, this.y, coreSize, 0, Math.PI * 2);
+            fp_ctx.fill();
+            // 高光
+            fp_ctx.globalAlpha = currentOpacity * 0.6;
+            fp_ctx.fillStyle = 'rgba(255,255,255,0.8)';
+            fp_ctx.beginPath();
+            fp_ctx.arc(
+                this.x - coreSize * 0.3,
+                this.y - coreSize * 0.3,
+                coreSize * 0.3,
+                0, Math.PI * 2
+            );
+            fp_ctx.fill();
+            fp_ctx.restore();
+        }
+    }
+    function fp_initParticles() {
+        fp_particles = new Array(fp_particleCount);
+        for (let i = 0; i < fp_particleCount; i++) {
+            fp_particles[i] = new FP_Particle();
+            fp_particles[i].life = Math.random() * 50;
+        }
+    }
+    function fp_animate() {
+        if (!fp_isEffectActive) {
+            fp_animationId = null;
+            return;
+        }
+        fp_ctx.fillStyle = 'rgba(0,0,0,0.08)';
+        fp_ctx.fillRect(0, 0, fp_canvas.width, fp_canvas.height);
+        for (let i = 0; i < fp_particleCount; i++) {
+            fp_particles[i].update();
+            fp_particles[i].draw();
+        }
+        if (Math.random() < 0.2) {
+            const x = Math.random() * fp_canvas.width;
+            const y = Math.random() * fp_canvas.height;
+            const size = Math.random() * 2 + 1;
+            const colorData = fp_colorRGBA[Math.floor(Math.random() * fp_colorRGBA.length)];
+            const opacity = Math.random() * 0.3 + 0.1;
+            fp_ctx.save();
+            fp_ctx.globalAlpha = opacity;
+            const gradient = fp_ctx.createRadialGradient(
+                x, y, 0,
+                x, y, size * 4
+            );
+            gradient.addColorStop(0, colorData.str);
+            gradient.addColorStop(1, 'transparent');
+            fp_ctx.fillStyle = gradient;
+            fp_ctx.beginPath();
+            fp_ctx.arc(x, y, size * 4, 0, Math.PI * 2);
+            fp_ctx.fill();
+            fp_ctx.restore();
+        }
+        fp_animationId = requestAnimationFrame(fp_animate);
+    }
+    function fp_toggleEffect(x, y) {
+        fp_isEffectActive = !fp_isEffectActive;
+        if (fp_isEffectActive) {
+            fp_canvas.style.display = 'block';
+            fp_mouseX = x || window.innerWidth / 2;
+            fp_mouseY = y || window.innerHeight / 2;
+            fp_initParticles();
+            if (!fp_animationId) {
+                fp_animate();
+            }
+        } else {
+            fp_canvas.style.display = 'none';
+            fp_ctx.fillStyle = 'black';
+            fp_ctx.fillRect(0, 0, fp_canvas.width, fp_canvas.height);
+        }
+    }
+    // 只监听中键点击
+    window.addEventListener('mousedown', function(e){
+        if (e.button === 1) {
+            e.preventDefault();
+            fp_mouseX = e.clientX;
+            fp_mouseY = e.clientY;
+            fp_toggleEffect(fp_mouseX, fp_mouseY);
+        }
+    });
+    // 鼠标移动时更新粒子中心
+    window.addEventListener('mousemove', function(e){
+        fp_mouseX = e.clientX;
+        fp_mouseY = e.clientY;
+    });
+    // 页面不可见时暂停动画
+    document.addEventListener('visibilitychange', function(){
+        if (document.hidden) {
+            if (fp_animationId) {
+                cancelAnimationFrame(fp_animationId);
+                fp_animationId = null;
+            }
+        } else if (fp_isEffectActive && !fp_animationId) {
+            fp_animate();
+        }
+    });
+})();   
+   
+   
+   </script>
 
 </body>
 
 </html>
+

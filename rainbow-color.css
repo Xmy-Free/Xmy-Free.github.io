@@ -1,0 +1,1001 @@
+/* 七彩节点色系定义 */
+:root {
+  --color-red: #FF3366;
+  --color-red-light: rgba(255, 51, 102, 0.15);
+  --color-red-border: #FF5C85;
+  --color-red-gradient: linear-gradient(135deg, rgba(255, 51, 102, 0.05), rgba(255, 51, 102, 0.1));
+  
+  --color-orange: #FF9500;
+  --color-orange-light: rgba(255, 149, 0, 0.15);
+  --color-orange-border: #FFB144;
+  --color-orange-gradient: linear-gradient(135deg, rgba(255, 149, 0, 0.05), rgba(255, 149, 0, 0.1));
+  
+  --color-yellow: #FFCC00;
+  --color-yellow-light: rgba(255, 204, 0, 0.15);
+  --color-yellow-border: #FFD633;
+  --color-yellow-gradient: linear-gradient(135deg, rgba(255, 204, 0, 0.05), rgba(255, 204, 0, 0.1));
+  
+  --color-green: #33CC66;
+  --color-green-light: rgba(51, 204, 102, 0.15);
+  --color-green-border: #5CD685;
+  --color-green-gradient: linear-gradient(135deg, rgba(51, 204, 102, 0.05), rgba(51, 204, 102, 0.1));
+  
+  --color-blue: #3399FF;
+  --color-blue-light: rgba(51, 153, 255, 0.15);
+  --color-blue-border: #5CB0FF;
+  --color-blue-gradient: linear-gradient(135deg, rgba(51, 153, 255, 0.05), rgba(51, 153, 255, 0.1));
+  
+  --color-purple: #9966FF;
+  --color-purple-light: rgba(153, 102, 255, 0.15);
+  --color-purple-border: #B088FF;
+  --color-purple-gradient: linear-gradient(135deg, rgba(153, 102, 255, 0.05), rgba(153, 102, 255, 0.1));
+  
+  --color-pink: #FF6699;
+  --color-pink-light: rgba(255, 102, 153, 0.15);
+  --color-pink-border: #FF85AD;
+  --color-pink-gradient: linear-gradient(135deg, rgba(255, 102, 153, 0.05), rgba(255, 102, 153, 0.1));
+  
+  /* 彩虹主题变量 */
+  --rainbow-gradient: linear-gradient(135deg, var(--color-red), var(--color-orange), var(--color-yellow), var(--color-green), var(--color-blue), var(--color-purple), var(--color-pink));
+  --rainbow-gradient-light: linear-gradient(135deg, rgba(255, 51, 102, 0.7), rgba(255, 149, 0, 0.7), rgba(255, 204, 0, 0.7), rgba(51, 204, 102, 0.7), rgba(51, 153, 255, 0.7), rgba(153, 102, 255, 0.7), rgba(255, 102, 153, 0.7));
+  --rainbow-gradient-soft: linear-gradient(135deg, rgba(255, 51, 102, 0.3), rgba(255, 149, 0, 0.3), rgba(255, 204, 0, 0.3), rgba(51, 204, 102, 0.3), rgba(51, 153, 255, 0.3), rgba(153, 102, 255, 0.3), rgba(255, 102, 153, 0.3));
+  --rainbow-shadow: 0 8px 25px rgba(0, 0, 0, 0.2), 0 0 15px rgba(255, 102, 153, 0.2);
+}
+
+/* 彩虹主题背景 */
+.rainbow-theme body {
+  background-color: #f8f9fa;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+/* 彩虹主题深色模式背景 */
+.rainbow-theme.dark-mode body {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+/* 根节点样式 */
+.rainbow-theme .node.root {
+    background: linear-gradient(135deg, rgba(172, 200, 234, 0.548), rgba(170, 217, 242, 0.548)); /* 使用静态渐变背景 */
+    color: white;
+    padding: 18px 25px;
+    border-radius: 18px;
+    font-weight: bold;
+    font-size: 1.3em;
+    box-shadow: 0 8px 25px rgba(182, 194, 201, 0.35), 0 0 20px rgba(152, 166, 174, 0.2);
+    text-shadow: 0 1px 3px rgba(246, 249, 250, 0.3);
+    letter-spacing: 1px;
+    min-width: 180px;
+    position: relative; /* 为边框效果添加定位 */
+    z-index: 1; /* 确保内容在边框之上 */
+}
+
+/* 根节点彩虹边框效果 - 使用伪元素创建边框 */
+.rainbow-theme .node.root::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    background: linear-gradient(90deg, 
+                #FF3366, #FF9500, #FFCC00, 
+                #33CC66, #3399FF, #9966FF, 
+                #FF6699, #FF3366);
+    border-radius: 22px; /* 略大于节点的边框半径 */
+    z-index: -1;
+    animation: rainbowFlowHorizontal 60s linear infinite;
+    background-size: 800% 100%;
+}
+
+/* 添加第二层交叉流动的彩虹效果 */
+.rainbow-theme .node.root::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    background: linear-gradient(135deg, 
+                rgba(50, 50, 80, 0.85), rgba(40, 40, 60, 0.85));
+    border-radius: 18px;
+    z-index: -1;
+    box-shadow: 0 8px 25px rgba(0, 118, 196, 0.35), 0 0 20px rgba(0, 152, 255, 0.2);
+    backdrop-filter: blur(2px); /* 添加模糊效果增强透明感 */
+    -webkit-backdrop-filter: blur(2px);
+}
+
+/* 添加跟随鼠标互动的光晕层 */
+.rainbow-theme .node.root {
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.rainbow-theme .node.root:hover::before {
+    animation-duration: 120s; /* 悬停时动画速度 */
+}
+
+/* 深色模式下的根节点调整 */
+.rainbow-theme.dark-mode .node.root::after {
+    background: linear-gradient(135deg, rgba(40, 40, 70, 0.8), rgba(30, 30, 50, 0.8));
+}
+
+/* 超级丝滑水平流动动画 */
+@keyframes rainbowFlowHorizontal {
+    0% {
+        background-position: 0% 50%;
+        box-shadow: 0 0 25px rgba(255, 51, 102, 0.3);
+    }
+    25% {
+        box-shadow: 0 0 25px rgba(255, 204, 0, 0.3);
+    }
+    50% {
+        background-position: 400% 50%;
+        box-shadow: 0 0 25px rgba(51, 153, 255, 0.3);
+    }
+    75% {
+        box-shadow: 0 0 25px rgba(153, 102, 255, 0.3);
+    }
+    100% {
+        background-position: 800% 50%;
+        box-shadow: 0 0 25px rgba(255, 51, 102, 0.3);
+    }
+}
+
+/* 彩虹主题所有节点文本颜色设置为白色 */
+.rainbow-theme .node .node-text {
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* 七彩色系节点样式 */
+.rainbow-theme .node:nth-child(7n+1):not(.root) {
+    border-color: var(--color-red-border);
+    background: var(--color-red-gradient);
+    box-shadow: 0 4px 12px var(--color-red-light);
+}
+
+.rainbow-theme .node:nth-child(7n+2):not(.root) {
+    border-color: var(--color-orange-border);
+    background: var(--color-orange-gradient);
+    box-shadow: 0 4px 12px var(--color-orange-light);
+}
+
+.rainbow-theme .node:nth-child(7n+3):not(.root) {
+    border-color: var(--color-yellow-border);
+    background: var(--color-yellow-gradient);
+    box-shadow: 0 4px 12px var(--color-yellow-light);
+}
+
+.rainbow-theme .node:nth-child(7n+4):not(.root) {
+    border-color: var(--color-green-border);
+    background: var(--color-green-gradient);
+    box-shadow: 0 4px 12px var(--color-green-light);
+}
+
+.rainbow-theme .node:nth-child(7n+5):not(.root) {
+    border-color: var(--color-blue-border);
+    background: var(--color-blue-gradient);
+    box-shadow: 0 4px 12px var(--color-blue-light);
+}
+
+.rainbow-theme .node:nth-child(7n+6):not(.root) {
+    border-color: var(--color-purple-border);
+    background: var(--color-purple-gradient);
+    box-shadow: 0 4px 12px var(--color-purple-light);
+}
+
+.rainbow-theme .node:nth-child(7n+7):not(.root) {
+    border-color: var(--color-pink-border);
+    background: var(--color-pink-gradient);
+    box-shadow: 0 4px 12px var(--color-pink-light);
+}
+
+/* 精致的连接线颜色样式 - 红色 */
+.rainbow-theme .connector-color-1,
+.rainbow-theme .node:nth-child(7n+1):not(.root) + .connector {
+    background: linear-gradient(90deg, var(--color-red), rgba(255, 51, 102, 0.75));
+    box-shadow: 0 0 6px rgba(255, 51, 102, 0.15);
+}
+
+.rainbow-theme .connector-color-1::before,
+.rainbow-theme .connector-color-1::after,
+.rainbow-theme .node:nth-child(7n+1):not(.root) + .connector::before,
+.rainbow-theme .node:nth-child(7n+1):not(.root) + .connector::after {
+    background: var(--color-red);
+    box-shadow: 0 0 6px rgba(255, 51, 102, 0.3);
+}
+
+/* 精致的连接线颜色样式 - 橙色 */
+.rainbow-theme .connector-color-2,
+.rainbow-theme .node:nth-child(7n+2):not(.root) + .connector {
+    background: linear-gradient(90deg, var(--color-orange), rgba(255, 149, 0, 0.75));
+    box-shadow: 0 0 6px rgba(255, 149, 0, 0.15);
+}
+
+.rainbow-theme .connector-color-2::before,
+.rainbow-theme .connector-color-2::after,
+.rainbow-theme .node:nth-child(7n+2):not(.root) + .connector::before,
+.rainbow-theme .node:nth-child(7n+2):not(.root) + .connector::after {
+    background: var(--color-orange);
+    box-shadow: 0 0 6px rgba(255, 149, 0, 0.3);
+}
+
+/* 精致的连接线颜色样式 - 黄色 */
+.rainbow-theme .connector-color-3,
+.rainbow-theme .node:nth-child(7n+3):not(.root) + .connector {
+    background: linear-gradient(90deg, var(--color-yellow), rgba(255, 204, 0, 0.75));
+    box-shadow: 0 0 6px rgba(255, 204, 0, 0.15);
+}
+
+.rainbow-theme .connector-color-3::before,
+.rainbow-theme .connector-color-3::after,
+.rainbow-theme .node:nth-child(7n+3):not(.root) + .connector::before,
+.rainbow-theme .node:nth-child(7n+3):not(.root) + .connector::after {
+    background: var(--color-yellow);
+    box-shadow: 0 0 6px rgba(255, 204, 0, 0.3);
+}
+
+/* 精致的连接线颜色样式 - 绿色 */
+.rainbow-theme .connector-color-4,
+.rainbow-theme .node:nth-child(7n+4):not(.root) + .connector {
+    background: linear-gradient(90deg, var(--color-green), rgba(51, 204, 102, 0.75));
+    box-shadow: 0 0 6px rgba(51, 204, 102, 0.15);
+}
+
+.rainbow-theme .connector-color-4::before,
+.rainbow-theme .connector-color-4::after,
+.rainbow-theme .node:nth-child(7n+4):not(.root) + .connector::before,
+.rainbow-theme .node:nth-child(7n+4):not(.root) + .connector::after {
+    background: var(--color-green);
+    box-shadow: 0 0 6px rgba(51, 204, 102, 0.3);
+}
+
+/* 精致的连接线颜色样式 - 蓝色 */
+.rainbow-theme .connector-color-5,
+.rainbow-theme .node:nth-child(7n+5):not(.root) + .connector {
+    background: linear-gradient(90deg, var(--color-blue), rgba(51, 153, 255, 0.75));
+    box-shadow: 0 0 6px rgba(51, 153, 255, 0.15);
+}
+
+.rainbow-theme .connector-color-5::before,
+.rainbow-theme .connector-color-5::after,
+.rainbow-theme .node:nth-child(7n+5):not(.root) + .connector::before,
+.rainbow-theme .node:nth-child(7n+5):not(.root) + .connector::after {
+    background: var(--color-blue);
+    box-shadow: 0 0 6px rgba(51, 153, 255, 0.3);
+}
+
+/* 精致的连接线颜色样式 - 紫色 */
+.rainbow-theme .connector-color-6,
+.rainbow-theme .node:nth-child(7n+6):not(.root) + .connector {
+    background: linear-gradient(90deg, var(--color-purple), rgba(153, 102, 255, 0.75));
+    box-shadow: 0 0 6px rgba(153, 102, 255, 0.15);
+}
+
+.rainbow-theme .connector-color-6::before,
+.rainbow-theme .connector-color-6::after,
+.rainbow-theme .node:nth-child(7n+6):not(.root) + .connector::before,
+.rainbow-theme .node:nth-child(7n+6):not(.root) + .connector::after {
+    background: var(--color-purple);
+    box-shadow: 0 0 6px rgba(153, 102, 255, 0.3);
+}
+
+/* 精致的连接线颜色样式 - 粉色 */
+.rainbow-theme .connector-color-7,
+.rainbow-theme .node:nth-child(7n+7):not(.root) + .connector {
+    background: linear-gradient(90deg, var(--color-pink), rgba(255, 102, 153, 0.75));
+    box-shadow: 0 0 6px rgba(255, 102, 153, 0.15);
+}
+
+.rainbow-theme .connector-color-7::before,
+.rainbow-theme .connector-color-7::after,
+.rainbow-theme .node:nth-child(7n+7):not(.root) + .connector::before,
+.rainbow-theme .node:nth-child(7n+7):not(.root) + .connector::after {
+    background: var(--color-pink);
+    box-shadow: 0 0 6px rgba(255, 102, 153, 0.3);
+}
+
+/* 根节点连接线高级彩虹效果 */
+.rainbow-theme .connector-color-root,
+.rainbow-theme .node.root + .connector {
+    background: linear-gradient(90deg, var(--color-red), var(--color-orange), var(--color-yellow), var(--color-green), var(--color-blue), var(--color-purple), var(--color-pink));
+    background-size: 200% 100%;
+    animation: rainbowFlow 6s linear infinite;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+    height: 2.5px; /* 根节点连线略粗 */
+}
+
+.rainbow-theme .connector-color-root::before,
+.rainbow-theme .connector-color-root::after,
+.rainbow-theme .node.root + .connector::before,
+.rainbow-theme .node.root + .connector::after {
+    background: white;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    width: 8px;
+    height: 8px;
+}
+
+/* 彩虹动画 */
+@keyframes rainbowGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes rainbowFlow {
+    0% {
+        background-position: 0% 0%;
+        box-shadow: 0 0 20px rgba(255, 51, 102, 0.5), 
+                    0 0 30px rgba(255, 51, 102, 0.2),
+                    0 0 40px rgba(255, 51, 102, 0.1);
+        opacity: 0.95;
+    }
+    12.5% {
+        box-shadow: 0 0 20px rgba(255, 149, 0, 0.5), 
+                    0 0 30px rgba(255, 149, 0, 0.2),
+                    0 0 40px rgba(255, 149, 0, 0.1);
+        opacity: 0.97;
+    }
+    25% {
+        box-shadow: 0 0 20px rgba(255, 204, 0, 0.5), 
+                    0 0 30px rgba(255, 204, 0, 0.2),
+                    0 0 40px rgba(255, 204, 0, 0.1);
+        opacity: 1;
+    }
+    37.5% {
+        box-shadow: 0 0 20px rgba(51, 204, 102, 0.5), 
+                    0 0 30px rgba(51, 204, 102, 0.2),
+                    0 0 40px rgba(51, 204, 102, 0.1);
+        opacity: 0.97;
+    }
+    50% {
+        background-position: 100% 0%;
+        box-shadow: 0 0 20px rgba(51, 153, 255, 0.5), 
+                    0 0 30px rgba(51, 153, 255, 0.2),
+                    0 0 40px rgba(51, 153, 255, 0.1);
+        opacity: 0.95;
+    }
+    62.5% {
+        box-shadow: 0 0 20px rgba(102, 102, 255, 0.5), 
+                    0 0 30px rgba(102, 102, 255, 0.2),
+                    0 0 40px rgba(102, 102, 255, 0.1);
+        opacity: 0.97;
+    }
+    75% {
+        box-shadow: 0 0 20px rgba(153, 102, 255, 0.5), 
+                    0 0 30px rgba(153, 102, 255, 0.2),
+                    0 0 40px rgba(153, 102, 255, 0.1);
+        opacity: 1;
+    }
+    87.5% {
+        box-shadow: 0 0 20px rgba(255, 102, 204, 0.5), 
+                    0 0 30px rgba(255, 102, 204, 0.2),
+                    0 0 40px rgba(255, 102, 204, 0.1);
+        opacity: 0.97;
+    }
+    100% {
+        background-position: 200% 0%;
+        box-shadow: 0 0 20px rgba(255, 51, 102, 0.5), 
+                    0 0 30px rgba(255, 51, 102, 0.2),
+                    0 0 40px rgba(255, 51, 102, 0.1);
+        opacity: 0.95;
+    }
+}
+
+/* 彩虹主题控制面板 */
+.rainbow-theme .control-panel {
+    background: rgba(20, 20, 35, 0.7);
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    animation: panelFadeIn 0.5s ease-out forwards;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    width: 320px;
+    user-select: none;
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    overflow: hidden;
+    transform: translateY(-5px);
+}
+
+.rainbow-theme .control-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg,
+                rgba(255, 0, 128, 0.1),
+                rgba(255, 103, 0, 0.1), 
+                rgba(255, 255, 0, 0.1),
+                rgba(0, 255, 128, 0.1), 
+                rgba(0, 128, 255, 0.1),
+                rgba(128, 0, 255, 0.1),
+                rgba(255, 0, 255, 0.1));
+    z-index: -2;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    border-radius: 16px;
+}
+
+.rainbow-theme .control-panel::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    z-index: -1;
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+    border-radius: 16px;
+}
+
+@keyframes panelFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.rainbow-theme .control-panel:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 255, 255, 0.1);
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.rainbow-theme .control-panel:hover::before {
+    opacity: 1;
+}
+
+.rainbow-theme.dark-mode .control-panel {
+    background: rgba(10, 10, 20, 0.8);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* 彩虹主题控制面板标题 */
+.rainbow-theme .control-panel .title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    text-align: center;
+    position: relative;
+    padding-bottom: 12px;
+    background: var(--rainbow-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.rainbow-theme .control-panel .title::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 20%;
+    right: 20%;
+    height: 2px;
+    background: var(--rainbow-gradient);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* 彩虹主题按钮容器 */
+.rainbow-theme .controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 22px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* 彩虹主题按钮 */
+.rainbow-theme .controls button {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    letter-spacing: 0.3px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.rainbow-theme .controls button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--rainbow-gradient);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.35s ease;
+}
+
+.rainbow-theme .controls button::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--rainbow-gradient);
+    transform: scaleX(0);
+    transition: transform 0.35s ease;
+    transform-origin: left;
+}
+
+.rainbow-theme .controls button:hover {
+    background: rgba(40, 40, 55, 0.8);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), 0 0 10px rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.rainbow-theme .controls button:hover::before {
+    opacity: 0.3;
+}
+
+.rainbow-theme .controls button:hover::after {
+    transform: scaleX(1);
+}
+
+.rainbow-theme .controls button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.rainbow-theme .controls button i {
+    font-size: 16px;
+    color: white;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.4));
+    transition: transform 0.35s ease;
+}
+
+.rainbow-theme .controls button:hover i {
+    transform: scale(1.2);
+}
+
+.rainbow-theme.dark-mode .controls button {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 彩虹主题指南部分 */
+.rainbow-theme .instructions {
+    font-size: 14.5px;
+    line-height: 1.7;
+    background: rgba(20, 20, 35, 0.75);
+    padding: 18px;
+    border-radius: 12px;
+    position: relative;
+    color: #FFFFFF;
+    border-left: 2px solid rgba(255, 255, 255, 0.25);
+    transition: all 0.4s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    font-weight: 500;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* 操作说明界面悬停时的七彩渐变背景效果 */
+.rainbow-theme .instructions::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--rainbow-gradient);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.5s ease;
+    border-radius: 12px;
+}
+
+/* 添加一个光晕效果 */
+.rainbow-theme .instructions::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    opacity: 0.5;
+    z-index: -1;
+    mix-blend-mode: overlay;
+    border-radius: 12px;
+}
+
+.rainbow-theme .instructions:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), 0 0 10px rgba(255, 255, 255, 0.1);
+    background: rgba(40, 40, 55, 0.8);
+    border-color: rgba(255, 255, 255, 0.25);
+    border-left: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.rainbow-theme .instructions:hover::before {
+    opacity: 0.3;
+    animation: none;
+}
+
+.rainbow-theme .instructions:hover::after {
+    opacity: 0.6;
+    animation: none;
+}
+
+/* 新增光晕动画 */
+@keyframes glow {
+    0% {
+        opacity: 0.2;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.4;
+        transform: scale(1.05);
+    }
+}
+
+/* 优化文字下方的动态划过效果 */
+.rainbow-theme .instructions p::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0; /* 初始宽度为0 */
+    height: 1.5px;
+    background: var(--rainbow-gradient);
+    transition: width 0.4s ease, opacity 0.3s ease;
+    opacity: 0;
+    z-index: 1;
+    border-radius: 1px;
+}
+
+.rainbow-theme .instructions p:hover::after {
+    width: 100%; /* 悬停时宽度变为100% */
+    opacity: 1;
+    animation: rainbowSweep 2s linear infinite; /* 使用新的划过动画 */
+    background-size: 200% 100%;
+}
+
+.rainbow-theme .instructions p {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    transition: transform 0.3s ease;
+    color: #FFFFFF;
+    position: relative; /* 为动态效果做准备 */
+    padding-bottom: 2px; /* 为下划线留出空间 */
+}
+
+.rainbow-theme .instructions p:hover {
+    transform: translateX(5px);
+}
+
+.rainbow-theme .instructions p:last-child {
+    margin-bottom: 0;
+}
+
+.rainbow-theme .instructions p::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    background: var(--rainbow-gradient);
+    margin-top: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 小圆点悬停效果 */
+.rainbow-theme .instructions p:hover::before {
+    transform: scale(1.2);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    animation: rainbowGradient 3s linear infinite;
+    background-size: 400% 400%;
+}
+
+.rainbow-theme .instructions b {
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+    color: #FFFFFF;
+    padding: 0 3px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    transition: transform 0.3s ease;
+}
+
+/* 加强 b 标签的悬停效果 */
+.rainbow-theme .instructions p:hover b:not(:first-child) {
+    transform: translateY(-1px);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.rainbow-theme .instructions b::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--rainbow-gradient);
+    z-index: -1;
+    opacity: 0.6;
+    border-radius: 4px;
+    transition: opacity 0.3s ease;
+}
+
+/* 加强 b 标签背景的悬停效果 */
+.rainbow-theme .instructions p:hover b::before {
+    opacity: 0.75;
+    animation: rainbowGradient 5s linear infinite;
+    background-size: 400% 400%;
+}
+
+.rainbow-theme.dark-mode .instructions {
+    background: rgba(10, 10, 20, 0.9);
+    color: #FFFFFF;
+}
+
+.rainbow-theme.dark-mode .instructions:hover {
+    background: rgba(15, 15, 30, 0.95);
+}
+
+/* 特别优化"操作说明"标题的样式 */
+.rainbow-theme .instructions p:first-child b {
+    font-weight: 800; /* 更粗的字体 */
+    color: #FFFFFF; /* 纯白色 */
+    background: linear-gradient(135deg, rgba(50, 50, 80, 0.85), rgba(40, 40, 60, 0.85)); /* 调整渐变背景亮度 */
+    padding: 3px 8px; /* 增加内边距 */
+    border-radius: 5px; /* 圆角 */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8); /* 稍微减弱文字阴影 */
+    letter-spacing: 1px; /* 增加字间距 */
+    border: 1px solid rgba(255, 255, 255, 0.35); /* 添加边框 */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 255, 255, 0.2); /* 调整阴影 */
+    position: relative;
+    display: inline-block;
+    margin-bottom: 2px;
+    transform: translateZ(0);
+    transition: all 0.3s ease;
+}
+
+.rainbow-theme .instructions p:first-child b::before {
+    opacity: 0.6; /* 调整不透明度为适中值 */
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.25); /* 调整发光效果 */
+    border-radius: 5px;
+}
+
+.rainbow-theme .instructions p:first-child b::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+    opacity: 0.8;
+}
+
+/* 操作说明标题悬停效果 */
+.rainbow-theme .instructions p:first-child:hover b {
+    transform: translateY(-1px) translateZ(0);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4), 0 0 12px rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, rgba(55, 55, 85, 0.9), rgba(45, 45, 65, 0.9)); /* 调整悬停时背景亮度 */
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* 操作说明标题特殊彩虹效果 */
+.rainbow-theme .instructions p:first-child:hover b::before {
+    animation: rainbowGradient 4s linear infinite;
+    background-size: 400% 400%;
+    opacity: 0.7; /* 调整为适中的不透明度 */
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+}
+
+.rainbow-theme .instructions p:first-child:hover b::after {
+    background: var(--rainbow-gradient);
+    opacity: 1;
+    height: 2px;
+    animation: rainbowFlow 3s linear infinite;
+    background-size: 200% 100%;
+}
+
+/* 深色模式下的特殊调整 */
+.rainbow-theme.dark-mode .instructions p:first-child b {
+    background: linear-gradient(135deg, rgba(45, 45, 75, 0.9), rgba(35, 35, 55, 0.9)); /* 深色模式下稍微亮一点 */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), 0 0 10px rgba(255, 255, 255, 0.15);
+}
+
+.rainbow-theme.dark-mode .instructions p:first-child b::before {
+    opacity: 0.65; /* 深色模式下稍微亮一点 */
+}
+
+.rainbow-theme.dark-mode .instructions p:first-child:hover b {
+    background: linear-gradient(135deg, rgba(50, 50, 80, 0.95), rgba(40, 40, 60, 0.95));
+}
+
+/* 彩虹主题提示工具 */
+.rainbow-theme .tooltip {
+    background: rgba(15, 15, 30, 0.95);
+    color: #FFFFFF;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    position: absolute;
+    z-index: 2000;
+    max-width: 280px;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+    font-weight: 500;
+    letter-spacing: 0.2px;
+}
+
+.rainbow-theme .tooltip::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--rainbow-gradient);
+    opacity: 0.2;
+    z-index: -1;
+    border-radius: 8px;
+}
+
+.rainbow-theme .tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 响应式布局优化 */
+@media (max-width: 768px) {
+    .rainbow-theme .control-panel {
+        width: 280px;
+        padding: 16px;
+        top: 12px;
+        right: 12px;
+    }
+    
+    .rainbow-theme .control-panel .title {
+        font-size: 18px;
+        margin-bottom: 15px;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+    }
+    
+    .rainbow-theme .controls {
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+    
+    .rainbow-theme .controls button {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    .rainbow-theme .instructions {
+        font-size: 13.5px;
+        padding: 15px;
+        line-height: 1.6;
+        background: rgba(15, 15, 28, 0.9);
+    }
+    
+    /* 优化移动端悬停效果 */
+    .rainbow-theme .instructions:hover {
+        transform: translateY(-1px); /* 减小移动距离 */
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25), 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+    
+    .rainbow-theme .instructions p:hover {
+        transform: translateX(3px); /* 减小移动距离 */
+    }
+    
+    .rainbow-theme .instructions p::after {
+        height: 1px; /* 更细的下划线 */
+    }
+    
+    .rainbow-theme .instructions p:hover::after {
+        animation-duration: 1.5s; /* 加快动画速度 */
+    }
+    
+    .rainbow-theme .instructions p:hover::before {
+        transform: scale(1.1); /* 减小缩放比例 */
+    }
+    
+    .rainbow-theme .instructions p {
+        margin-bottom: 10px;
+    }
+    
+    .rainbow-theme .instructions b {
+        font-weight: 600;
+    }
+    
+    .rainbow-theme .instructions p:first-child b {
+        font-size: 14px;
+        padding: 2px 5px;
+        letter-spacing: 0.8px;
+    }
+}
+
+@media (max-width: 600px) {
+    .rainbow-theme .control-panel {
+        width: 240px;
+        padding: 12px;
+        font-size: 0.9em;
+    }
+    
+    .rainbow-theme .instructions {
+        padding: 14px;
+        font-size: 13px;
+    }
+    
+    /* 优化小屏幕悬停效果 */
+    .rainbow-theme .instructions:hover {
+        transform: none; /* 移除上移效果，避免在小屏幕上出现问题 */
+        box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2), 0 0 8px rgba(255, 255, 255, 0.1);
+    }
+    
+    .rainbow-theme .instructions p:first-child b {
+        font-size: 13.5px;
+        padding: 1px 4px;
+    }
+}
+
+/* 修改动态划过动画 */
+@keyframes rainbowSweep {
+    0% {
+        background-position: 0% 0%;
+    }
+    100% {
+        background-position: 200% 0%;
+    }
+}

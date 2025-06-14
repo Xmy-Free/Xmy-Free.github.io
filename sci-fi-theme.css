@@ -1,0 +1,330 @@
+/* 科幻主题风格 */
+.sci-fi-theme-only {
+    --primary-glow: rgba(0, 255, 255, 0.7);
+    --secondary-glow: rgba(0, 191, 255, 0.5);
+    --tertiary-glow: rgba(11, 19, 43, 0.3);
+    --border-glow: rgba(0, 255, 255, 0.3);
+    --sci-fi-neon: #00f2ff;
+    --sci-fi-energy: #6efffa;
+    --sci-fi-dark: #05001a;
+    --sci-fi-lines: rgba(0, 217, 255, 0.3);
+    --sci-fi-grid: rgba(0, 191, 255, 0.15);
+}
+
+/* 科幻主题背景 */
+.sci-fi-theme-only body {
+    background-color: var(--sci-fi-dark);
+    background-image: 
+        linear-gradient(0deg, rgba(5, 0, 26, 0.98), rgba(11, 19, 60, 0.97)),
+        repeating-linear-gradient(0deg, transparent, transparent 30px, var(--sci-fi-grid) 30px, var(--sci-fi-grid) 31px),
+        repeating-linear-gradient(90deg, transparent, transparent 30px, var(--sci-fi-grid) 30px, var(--sci-fi-grid) 31px);
+    background-attachment: fixed;
+}
+
+/* 科幻主题根节点 */
+.sci-fi-theme-only .root {
+    background: linear-gradient(135deg, rgba(5, 0, 26, 0.8), rgba(11, 19, 60, 0.8));
+    border: 2px solid var(--sci-fi-neon);
+    box-shadow: 
+        0 0 30px rgba(0, 242, 255, 0.6),
+        inset 0 0 15px rgba(0, 242, 255, 0.3);
+    text-shadow: 0 0 15px var(--sci-fi-neon);
+    backdrop-filter: blur(8px);
+    color: white;
+    padding: 22px 28px;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Orbitron', 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+    clip-path: polygon(0 10%, 10% 0, 90% 0, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0 90%);
+}
+
+/* 科幻主题节点统一样式 */
+.sci-fi-theme-only .node {
+    background-color: rgba(11, 19, 43, 0.7) !important;
+    border: 1px solid var(--sci-fi-neon);
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+    color: white;
+    backdrop-filter: blur(10px);
+    font-family: 'Rajdhani', 'Orbitron', sans-serif;
+    letter-spacing: 0.5px;
+    transition: all 0.4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+    clip-path: polygon(0 5%, 5% 0, 95% 0, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0 95%);
+}
+
+/* 科幻主题一级节点 */
+.sci-fi-theme-only .node-level-1 {
+    background: linear-gradient(135deg, rgba(11, 25, 70, 0.8), rgba(11, 19, 43, 0.8)) !important;
+    border: 1px solid var(--sci-fi-neon);
+    box-shadow: 0 0 25px rgba(0, 242, 255, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+/* 科幻主题二级和三级节点 */
+.sci-fi-theme-only .node-level-2,
+.sci-fi-theme-only .node-level-3,
+.sci-fi-theme-only .node-level-4,
+.sci-fi-theme-only .node-level-5 {
+    background: rgba(11, 19, 43, 0.7) !important;
+    border: 1px solid rgba(0, 242, 255, 0.6);
+}
+
+/* 科幻主题节点悬停效果 */
+.sci-fi-theme-only .node:hover {
+    border-color: var(--sci-fi-energy);
+    box-shadow: 
+        0 0 30px rgba(0, 242, 255, 0.7),
+        0 0 50px rgba(110, 255, 250, 0.4);
+    transform: translateY(-3px) scale(1.05);
+    background-color: rgba(15, 25, 60, 0.8) !important;
+}
+
+/* 科幻主题节点选中状态 */
+.sci-fi-theme-only .node.selected {
+    border: 2px solid var(--sci-fi-energy);
+    box-shadow: 
+        0 0 30px rgba(0, 242, 255, 0.8),
+        0 0 60px rgba(110, 255, 250, 0.6);
+    animation: sciPulse 1.5s infinite;
+    z-index: 100;
+}
+
+/* 科幻主题连接线 */
+.sci-fi-theme-only .connection-path,
+.sci-fi-theme-only #connectionsContainer path {
+    stroke-linecap: round;
+    stroke-width: 3;
+    filter: url(#sciFiGlow);
+    opacity: 0.9;
+}
+
+.sci-fi-theme-only .sci-fi-connection {
+    stroke-width: 3 !important;
+    stroke-dasharray: 10, 5 !important;
+    animation: sciFiPulse 1.5s linear infinite;
+    stroke-linecap: round !important;
+}
+
+/* 科幻主题控制面板 */
+.sci-fi-theme-only .control-panel {
+    background: linear-gradient(135deg, rgba(5, 0, 26, 0.85), rgba(11, 19, 60, 0.85));
+    border: 1px solid var(--sci-fi-neon);
+    box-shadow: 0 0 30px rgba(0, 242, 255, 0.4);
+    backdrop-filter: blur(15px);
+    clip-path: polygon(0 3%, 3% 0, 97% 0, 100% 3%, 100% 97%, 97% 100%, 3% 100%, 0 97%);
+    border-radius: 0;
+}
+
+/* 科幻主题按钮 */
+.sci-fi-theme-only .controls button {
+    background: rgba(11, 19, 43, 0.8);
+    border: 1px solid var(--sci-fi-neon);
+    color: white;
+    text-shadow: 0 0 8px var(--sci-fi-neon);
+    clip-path: polygon(0 10%, 10% 0, 90% 0, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0 90%);
+    border-radius: 0;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.sci-fi-theme-only .controls button:hover {
+    background: rgba(0, 242, 255, 0.3);
+    border-color: var(--sci-fi-energy);
+    box-shadow: 0 0 20px rgba(110, 255, 250, 0.5);
+    transform: translateY(-3px) scale(1.05);
+}
+
+/* 科幻主题粒子效果 */
+.sci-fi-particle {
+    position: absolute;
+    background-color: var(--sci-fi-neon) !important;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(1px);
+    box-shadow: 0 0 10px var(--sci-fi-neon) !important;
+    animation: floatSciFi 15s linear infinite !important;
+    opacity: 0.7 !important;
+}
+
+/* 科幻主题编辑框 */
+.sci-fi-theme-only .node-edit-box {
+    background: rgba(5, 0, 26, 0.9);
+    color: var(--sci-fi-neon);
+    border: 1px solid var(--sci-fi-neon);
+    border-radius: 0;
+    font-family: 'Consolas', monospace;
+    padding: 10px 14px;
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+    caret-color: var(--sci-fi-energy);
+    text-shadow: 0 0 5px var(--sci-fi-neon);
+}
+
+.sci-fi-theme-only .node-edit-box:focus {
+    background: rgba(5, 0, 26, 0.95);
+    border-color: var(--sci-fi-energy);
+    box-shadow: 0 0 30px rgba(110, 255, 250, 0.6);
+}
+
+/* 动画效果 */
+@keyframes sciPulse {
+    0% {
+        box-shadow: 
+            0 0 30px rgba(0, 242, 255, 0.8),
+            0 0 60px rgba(110, 255, 250, 0.6);
+        border-color: var(--sci-fi-neon);
+    }
+    50% {
+        box-shadow: 
+            0 0 40px rgba(0, 242, 255, 1),
+            0 0 80px rgba(110, 255, 250, 0.8);
+        border-color: var(--sci-fi-energy);
+    }
+    100% {
+        box-shadow: 
+            0 0 30px rgba(0, 242, 255, 0.8),
+            0 0 60px rgba(110, 255, 250, 0.6);
+        border-color: var(--sci-fi-neon);
+    }
+}
+
+@keyframes floatSciFi {
+    0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.7;
+    }
+    90% {
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(-100vh) translateX(50px);
+        opacity: 0;
+    }
+}
+
+@keyframes sciFiPulse {
+    to {
+        stroke-dashoffset: 30;
+    }
+}
+
+/* 科幻主题闪光连接线效果 */
+@keyframes neonGlow {
+    0% {
+        filter: url(#sciFiGlow);
+        opacity: 0.7;
+    }
+    50% {
+        filter: url(#sciFiGlow);
+        opacity: 1;
+    }
+    100% {
+        filter: url(#sciFiGlow);
+        opacity: 0.7;
+    }
+}
+
+/* 科幻主题 - 未来感超强的视觉效果 */
+:root {
+  /* 科幻主题基础变量 */
+  --sci-fi-primary: #0b132b;
+  --sci-fi-secondary: #1c2541;
+  --sci-fi-tertiary: #3a506b;
+  --sci-fi-quaternary: #5bc0be;
+  --sci-fi-dark: #0b132b;
+  --sci-fi-darkest: #06080f;
+  
+  /* 强调色 */
+  --sci-fi-accent: #00bfff;
+  --sci-fi-bright: #2de2e6;
+  --sci-fi-glow: #5bc0eb;
+  --sci-fi-light: #86c6f4;
+  
+  /* 辉光效果 */
+  --sci-fi-primary-glow: rgba(0, 191, 255, 0.95);
+  --sci-fi-secondary-glow: rgba(45, 226, 230, 0.7);
+  --sci-fi-tertiary-glow: rgba(58, 80, 107, 0.15);
+  --sci-fi-border-glow: rgba(45, 226, 230, 0.22);
+  
+  /* 文本颜色 */
+  --sci-fi-text-primary: rgba(255, 255, 255, 0.95);
+  --sci-fi-text-secondary: rgba(255, 255, 255, 0.85);
+  --sci-fi-text-tertiary: rgba(134, 198, 244, 0.9);
+  
+  /* 边框 */
+  --sci-fi-border-light: rgba(45, 226, 230, 0.3);
+  --sci-fi-border-medium: rgba(45, 226, 230, 0.5);
+  --sci-fi-border-dark: rgba(0, 191, 255, 0.7);
+  
+  /* 动画 */
+  --sci-fi-hover-transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+  --sci-fi-pulse-animation: sciPulse 4s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  
+  /* 滤镜 */
+  --sci-fi-glow-filter: drop-shadow(0 0 12px rgba(0, 191, 255, 0.7));
+  --sci-fi-soft-filter: blur(20px);
+}
+
+/* 科幻主题思维导图节点 */
+.sci-fi-theme .mind-map .node {
+  transition: var(--sci-fi-hover-transition);
+  color: var(--sci-fi-text-primary) !important; /* 确保所有节点文本为白色 */
+  text-shadow: 0 0 8px var(--sci-fi-accent) !important; /* 增加发光效果 */
+}
+
+/* 根节点 */
+.sci-fi-theme .root {
+  background: linear-gradient(135deg, var(--sci-fi-tertiary), var(--sci-fi-secondary));
+  color: var(--sci-fi-text-primary) !important; /* 明确设置为白色 */
+  border: 2px solid var(--sci-fi-accent);
+  box-shadow: 0 0 20px rgba(0, 191, 255, 0.4), inset 0 0 10px rgba(45, 226, 230, 0.2);
+  text-shadow: 0 0 12px rgba(45, 226, 230, 0.8);
+}
+
+/* 一级节点 */
+.sci-fi-theme .node-level-1 {
+  background: linear-gradient(135deg, rgba(28, 37, 65, 0.8), rgba(11, 19, 43, 0.75));
+  color: var(--sci-fi-text-primary) !important; /* 明确设置为白色 */
+  border: 1px solid var(--sci-fi-border-light);
+  box-shadow: 0 0 15px rgba(0, 191, 255, 0.3), inset 0 0 8px rgba(45, 226, 230, 0.15);
+  text-shadow: 0 0 8px rgba(45, 226, 230, 0.7);
+}
+
+/* 二级节点 */
+.sci-fi-theme .node-level-2 {
+  background: linear-gradient(135deg, rgba(11, 19, 43, 0.7), rgba(6, 8, 15, 0.65));
+  color: var(--sci-fi-text-primary) !important; /* 明确设置为白色 */
+  border: 1px solid var(--sci-fi-border-light);
+  box-shadow: 0 0 12px rgba(0, 191, 255, 0.25), inset 0 0 6px rgba(45, 226, 230, 0.1);
+  text-shadow: 0 0 6px rgba(45, 226, 230, 0.6);
+}
+
+/* 三级及以下节点 */
+.sci-fi-theme .node-level-3,
+.sci-fi-theme .node-level-4,
+.sci-fi-theme .node-level-5 {
+  background: linear-gradient(135deg, rgba(6, 8, 15, 0.6), rgba(6, 8, 15, 0.55));
+  color: var(--sci-fi-text-primary) !important; /* 明确设置为白色 */
+  border: 1px solid var(--sci-fi-border-light);
+  box-shadow: 0 0 10px rgba(0, 191, 255, 0.2), inset 0 0 4px rgba(45, 226, 230, 0.08);
+  text-shadow: 0 0 4px rgba(45, 226, 230, 0.5);
+}
+
+/* 确保节点文本元素也是白色 */
+.sci-fi-theme .node-text {
+  color: var(--sci-fi-text-primary) !important; /* 明确设置为白色 */
+}
+
+/* 编辑状态下也保持白色文本 */
+.sci-fi-theme .node-editing {
+  color: var(--sci-fi-text-primary) !important;
+}
+
+.sci-fi-theme .edit-textarea {
+  color: var(--sci-fi-text-primary) !important;
+} 
