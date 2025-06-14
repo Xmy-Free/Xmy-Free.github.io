@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>思维导图-星梦游Xmy</title>
+    <!-- 添加科幻字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="my-mindMap.css">
+    <link rel="stylesheet" href="rainbow-color.css">
+    <link rel="stylesheet" href="control-panel.css">
+    <link rel="stylesheet" href="background.css">
+    <link rel="stylesheet" href="blue-theme.css">
+    <link rel="stylesheet" href="theme-selector.css">
+    <!-- 添加科幻主题样式 -->
+    <link rel="stylesheet" href="sci-fi-theme.css">
+    <link rel="stylesheet" href="sci-fi-theme-selector.css">
+    <!-- 添加深海蓝主题样式 -->
+    <link rel="stylesheet" href="deep-sea-blue-theme.css">
+    <meta name="description" content="一个功能强大、视觉优美的交互式思维导图工具">
+    <style>
+        /* 确保body可以接收所有事件 */
+        body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+            padding: 0;
+            pointer-events: auto;
+        }
+        
+        /* 强制视频填满整个屏幕 */
+        #custom-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        #custom-background video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate3d(-50%, -50%, 0) scale(1.05);
+            min-width: 105vw;
+            min-height: 105vh;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover !important;
+            will-change: transform, opacity;
+        }
+        
+        /* 隐藏视频控件 */
+        video::-webkit-media-controls-enclosure,
+        video::-webkit-media-controls-panel,
+        video::-webkit-media-controls,
+        video::-webkit-media-controls-overlay-enclosure,
+        video::-webkit-media-controls-play-button,
+        video::-webkit-media-controls-timeline,
+        video::-webkit-media-controls-current-time-display,
+        video::-webkit-media-controls-time-remaining-display,
+        video::-webkit-media-controls-mute-button,
+        video::-webkit-media-controls-toggle-closed-captions-button,
+        video::-webkit-media-controls-volume-slider,
+        video::-webkit-media-controls-fullscreen-button {
+            display: none !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+    </style>
+    <!-- 强制设置默认主题为彩虹主题 -->
+    <script>
+        // 在页面加载前就设置默认主题
+        localStorage.setItem('mindMapTheme', 'rainbow');
+        // 禁用蓝色主题
+        localStorage.setItem('blueThemePrefs', JSON.stringify({
+            enabled: false,
+            variant: 'classic',
+            crystalNodesEnabled: false
+        }));
+        // 禁用深海蓝主题
+        localStorage.setItem('deepseaThemePreferences', JSON.stringify({
+            enabled: false,
+            variant: 'classic',
+            bubblesEnabled: true,
+            particlesEnabled: true
+        }));
+        // 默认视频背景
+        localStorage.setItem('backgroundType', 'video');
+    </script>
+    <!-- 预加载视频以提高播放流畅性 -->
+    <link rel="preload" href="meteor-sky-line-4.mp4" as="video" type="video/mp4" />
+</head>
+<body class="rainbow-theme">
+    <!-- 自定义背景容器 -->
+    <div id="custom-background" class="custom-background">
+        <!-- 默认加载视频背景 -->
+        <video id="defaultBackgroundVideo" autoplay loop muted playsinline 
+            disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback" 
+            style="width: 100vw; height: 100vh; object-fit: cover; will-change: transform; backface-visibility: hidden;" 
+            poster="alone-star.jpg"
+            preload="auto">
+            <source src="meteor-sky-line-4.mp4" type="video/mp4">
+            <!-- 添加备用格式提高兼容性 -->
+            <source src="meteor-sky-line-4.webm" type="video/webm" onerror="this.remove()">
+        </video>
+    </div>
+    
+    <div class="mind-map-container">
+        <div class="mind-map" id="mindMap"></div>
+        
+        <div class="control-panel">
+            <div class="title">
+                思维导图控制中心
+                <span id="minimizeBtn" class="minimize-btn" title="最小化控制面板"></span>
+            </div>
+            <div class="controls">
+                <button id="resetBtn" title="重置视图"><i>↺</i>重置</button>
+                <button id="zoomInBtn" title="放大"><i>+</i>放大</button>
+                <button id="zoomOutBtn" title="缩小"><i>-</i>缩小</button>
+                <button id="themeBtn" title="选择主题样式"><i>🎨</i>主题</button>
+                <button id="autoLayoutBtn" title="自动布局"><i>⟲</i>自动布局</button>
+                <button id="expandAllBtn" title="展开所有节点"><i>⊞</i>展开全部</button>
+                <button id="saveBtn" title="保存思维导图为HTML (可再次编辑)"><i>💾</i>保存</button>
+                <button id="backgroundBtn" title="选择自定义背景"><i>🖼️</i>自定义背景</button>
+            </div>
+            <div class="instructions">
+                <p><b>操作说明：</b></p>
+                <p>单击左键：选中节点</p>
+                <p>双击左键：编辑文本</p>
+                <p>双击右键：添加子节点</p>
+                <p>长按右键：隐藏/显示子节点</p>
+                <p>Delete键：删除选中节点</p>
+                <p>Ctrl+滚轮：缩放视图</p>
+                <p>Ctrl+L：自动布局所有节点</p>
+                <p>Ctrl+S：保存(可再次编辑)</p>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+    
+    <!-- 添加隐藏的文件输入元素 -->
+    <input type="file" id="backgroundFileInput" style="display: none;" accept="image/*,video/*">
+    
+    <!-- 先加载彩虹主题脚本，确保优先级 -->
+    <script src="rainbow-color.js"></script>
+    
+    <!-- 引入拆分后的JS文件 -->
+    <script src="mindmap-core.js"></script>
+    <script src="mindmap-nodes.js"></script>
+    <script src="mindmap-connectors.js"></script>
+    <script src="mindmap-events.js"></script>
+    <script src="mindmap-utils.js"></script>
+    
+    <!-- 其他功能模块 -->
+    <script src="control-panel.js"></script>
+    <script src="save.js"></script>
+    <script src="background.js"></script>
+    <!-- 主题相关脚本 -->
+    <script src="blue-theme.js"></script>
+    <script src="sci-fi-theme.js"></script>
+    <script src="deep-sea-blue-theme.js"></script>
+    <!-- 添加主题选择器增强脚本 -->
+    <script src="theme-selector.js"></script>
+    <script src="my-function.js"></script>
+    
+    <!-- 视频无缝循环帧补偿优化脚本 -->
+    <script>
+    // 添加延迟初始化确保视频加载完成并平滑循环播放
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const video = document.getElementById('defaultBackgroundVideo');
+            if (video) {
+                // 确保视频在循环时不会卡顿
+                video.addEventListener('timeupdate', () => {
+                    // 在视频接近结尾时提前重置时间点
+                    const bufferTime = 0.2; // 提前200毫秒重置
+                    if(video.duration > 0 && video.currentTime > video.duration - bufferTime) {
+                        // 使用requestAnimationFrame确保与显示器刷新率同步
+                        requestAnimationFrame(() => {
+                            video.currentTime = 0;
+                        });
+                    }
+                });
+            }
+        }, 100);
+    });
+    </script>
+    
+    <!-- 增强视频循环功能 -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 获取背景视频元素
+        const bgVideo = document.getElementById('defaultBackgroundVideo');
+        
+        if (bgVideo) {
+            // 设置多重循环保障机制
+            bgVideo.loop = true; // HTML5原生循环
+            
+            // 监听视频结束事件
+            bgVideo.addEventListener('ended', function() {
+                console.log('视频结束，重新播放');
+                bgVideo.currentTime = 0;
+                bgVideo.play().catch(err => console.log('重新播放失败:', err));
+            });
+            
+            // 当页面重新获得焦点时，检查视频是否在播放
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    if (bgVideo.paused) {
+                        bgVideo.play().catch(err => {});
+                    }
+                }
+            });
+            
+            // 使用MutationObserver监视视频元素的移除和替换
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'childList' && mutation.removedNodes.length > 0) {
+                        // 检查是否有新的视频元素添加
+                        const newVideo = document.querySelector('#custom-background video');
+                        if (newVideo && newVideo !== bgVideo) {
+                            // 为新视频设置循环属性
+                            newVideo.loop = true;
+                            newVideo.addEventListener('ended', function() {
+                                this.currentTime = 0;
+                                this.play().catch(err => {});
+                            });
+                        }
+                    }
+                });
+            });
+            
+            // 监视背景容器的子节点变化
+            observer.observe(document.getElementById('custom-background'), {
+                childList: true,
+                subtree: true
+            });
+            
+            // 确保视频能够自动播放
+            bgVideo.play().catch(function(error) {
+                console.log('自动播放失败:', error);
+                
+                // 监听用户交互以启动播放
+                const playVideo = function() {
+                    bgVideo.play().catch(err => {});
+                    document.removeEventListener('click', playVideo);
+                    document.removeEventListener('keydown', playVideo);
+                    document.removeEventListener('touchstart', playVideo);
+                };
+                
+                document.addEventListener('click', playVideo);
+                document.addEventListener('keydown', playVideo);
+                document.addEventListener('touchstart', playVideo);
+            });
+        }
+    });
+    </script>
+</body>
+</html>

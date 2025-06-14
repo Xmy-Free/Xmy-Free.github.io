@@ -1,0 +1,3631 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技术亮点思维导图</title>
+    <style>
+        /* 1. 优化思维导图整体的排版和页面布局 */
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000814;
+            position: relative;
+            overflow-x: auto; /* 允许水平滚动 */
+            overflow-y: auto; /* 同时允许垂直滚动 */
+            color: #e6f7ff;
+            min-height: 100vh; /* 确保最小高度为视口高度 */
+            --primary-glow: rgba(101, 219, 255, 0.95);
+            --secondary-glow: rgba(0, 182, 255, 0.7);
+            --tertiary-glow: rgba(0, 148, 255, 0.15);
+            --border-glow: rgba(77, 220, 255, 0.12);
+            --hover-transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+            zoom: 0.9; /* 添加整体缩小比例，使更多内容可见 */
+        }
+        
+        /* 视频背景样式 */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            object-fit: cover;
+            opacity: 0.95; /* 提高不透明度，使背景更清晰 */
+        }
+        
+        /* 连线容器样式 - 优化版 */
+        .connections-container {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: visible;
+            will-change: transform; /* 提高性能 */
+        }
+        
+        /* 蓝白渐变连线样式 */
+        .connection-path {
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 8px rgba(0, 182, 255, 0.7));
+            opacity: 0.8;
+            will-change: opacity;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        /* 增强的连接线悬停效果 */
+        .map-container:hover .connection-path,
+        .branches:hover .connection-path {
+            opacity: 1;
+            filter: drop-shadow(0 0 12px rgba(0, 182, 255, 0.9));
+        }
+        
+        /* 增强的连接线流动特效 */
+        .connection-flow {
+            stroke-dasharray: 10, 15;
+            opacity: 0.9;
+            filter: blur(0.5px);
+            animation: enhancedFlowDash 3s linear infinite;
+        }
+        
+        @keyframes enhancedFlowDash {
+            to {
+                stroke-dashoffset: -25;
+            }
+        }
+        
+        /* 增强的脉冲光点 */
+        .connection-pulse {
+            r: 4;
+            fill: rgba(101, 219, 255, 0.95);
+            filter: drop-shadow(0 0 8px rgba(0, 182, 255, 0.8));
+            animation: enhancedPulseDot 3s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+        }
+        
+        @keyframes enhancedPulseDot {
+            0%, 100% {
+                opacity: 0.2;
+                r: 2;
+                transform: translateY(0);
+                filter: drop-shadow(0 0 3px rgba(0, 182, 255, 0.5));
+            }
+            50% {
+                opacity: 1;
+                r: 5;
+                transform: translateY(-3px);
+                filter: drop-shadow(0 0 15px rgba(0, 182, 255, 0.9));
+            }
+        }
+        
+        /* 思维导图整体布局优化 */
+        .mind-map {
+            max-width: none;
+            margin: 15px auto; /* 减小上下边距，让更多内容可见 */
+            padding: 15px 10px; /* 减小内边距 */
+            position: relative;
+            z-index: 1;
+            background-color: transparent;
+            border-radius: 0;
+            box-shadow: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 居中整个思维导图结构 */
+            width: fit-content; /* 宽度适应内容 */
+            min-width: 100%;
+            box-sizing: border-box;
+            transform: scale(0.95); /* 轻微缩小整体，使更多内容可见 */
+            transform-origin: top center;
+        }
+        
+        /* 调整map-container的样式使其水平布局 */
+        .map-container {
+            display: flex;
+            flex-direction: row; /* 水平排列 */
+            align-items: center; /* 垂直居中对齐 */
+            width: fit-content; /* 宽度适应内容 */
+            margin-bottom: 25px; /* 减小与分支的间距 */
+            padding: 0; /* 移除内边距 */
+            justify-content: center; /* 中心对齐 */
+            position: relative; /* 用于定位装饰元素 */
+        }
+        
+        /* 修改branches容器为优化后的水平布局 */
+        .branches {
+            display: flex;
+            flex-direction: row; /* 水平排列分支 */
+            align-items: flex-start;
+            gap: 30px; /* 减少分支间距 */
+            width: fit-content; /* 宽度适应内容 */
+            padding: 10px 0; /* 减小上下内边距 */
+            flex-wrap: nowrap; /* 防止换行 */
+            margin-left: 30px; /* 减小与根节点保持距离 */
+            justify-content: center; /* 中心对齐 */
+            position: relative; /* 用于定位装饰元素 */
+        }
+        
+        /* 调整分支样式 - 更紧凑 */
+        .branch {
+            min-width: 250px; /* 减小最小宽度 */
+            margin-bottom: 0;
+            margin-right: 0;
+            transition: var(--hover-transition);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            box-sizing: border-box;
+            padding: 10px; /* 减小内边距 */
+            position: relative;
+            border-radius: 12px;
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            box-shadow: none;
+            border: none;
+        }
+        
+        /* 分支悬停效果 - 保留轻微效果但不显示背景 */
+        .branch:hover {
+            box-shadow: none;
+            border-color: transparent;
+            transform: translateY(-3px);
+        }
+        
+        /* 分支展开状态 - 优化版 - 保留左侧边框但简化样式 */
+        .branch-expanded {
+            min-width: 320px;
+            border-left: 1px solid rgba(101, 219, 255, 0.1);
+            padding-left: 18px;
+            background: transparent;
+            box-shadow: none;
+        }
+        
+        /* 宽内容状态 - 优化版 - 移除背景 */
+        .branch-wide-content {
+            min-width: 420px;
+            background: transparent;
+        }
+        
+        /* 超宽内容 - 保持原样 */
+        .content-wide {
+            max-width: 600px;
+            overflow-x: auto;
+        }
+        
+        /* 调整根节点样式 - 优化位置及大小 */
+        .root-node {
+            background: linear-gradient(135deg, rgba(0, 112, 214, 0.08), rgba(0, 180, 255, 0.1), rgba(0, 225, 255, 0.05));
+            color: rgba(255, 255, 255, 0.95);
+            padding: 15px 30px; /* 减小内边距 */
+            border-radius: 24px;
+            font-weight: bold;
+            font-size: 1.5em; /* 减小字体大小 */
+            letter-spacing: 2px;
+            box-shadow: 0 15px 35px rgba(0, 148, 255, 0.25), inset 0 0 25px rgba(77, 213, 255, 0.1);
+            text-align: center;
+            margin-right: 40px; /* 减少与分支的间距 */
+            margin-left: 15px;
+            width: auto;
+            border: 1.5px solid rgba(77, 220, 255, 0.15);
+            transition: var(--hover-transition);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            text-shadow: 0 0 20px rgba(77, 223, 255, 0.9), 0 0 40px rgba(0, 188, 255, 0.7);
+            min-width: 180px; /* 减小最小宽度 */
+            display: inline-block;
+            align-self: center;
+            z-index: 5;
+        }
+        
+        /* 根节点悬停效果 */
+        .root-node:hover {
+            box-shadow: 0 20px 40px rgba(0, 148, 255, 0.35), inset 0 0 30px rgba(77, 213, 255, 0.15);
+            border-color: rgba(77, 220, 255, 0.3);
+            transform: translateY(-5px) scale(1.03);
+            color: #ffffff;
+            text-shadow: 0 0 25px rgba(77, 223, 255, 1), 0 0 50px rgba(0, 188, 255, 0.8);
+        }
+        
+        /* 项目标题调整 - 精简高度 */
+        .project-title {
+            text-align: center;
+            margin: 15px auto 25px; /* 减小上下边距 */
+            padding: 10px 25px; /* 减小内边距 */
+            text-shadow: 0 0 20px rgba(77, 223, 255, 0.95), 0 0 40px rgba(0, 188, 255, 0.8);
+            color: rgba(255, 255, 255, 0.98);
+            font-weight: bold;
+            letter-spacing: 3px;
+            font-size: 1.8em; /* 略微减小字体大小 */
+            position: relative;
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(0, 112, 214, 0.08), rgba(0, 180, 255, 0.1), rgba(0, 225, 255, 0.05));
+            border-radius: 24px;
+            border: 1.5px solid rgba(77, 220, 255, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 15px 35px rgba(0, 148, 255, 0.25), inset 0 0 25px rgba(77, 213, 255, 0.1);
+            overflow: hidden;
+            max-width: 90%;
+            transition: var(--hover-transition);
+            cursor: pointer;
+            align-self: center;
+            z-index: 5;
+        }
+        
+        /* 项目标题悬停效果 */
+        .project-title:hover {
+            box-shadow: 0 20px 40px rgba(0, 148, 255, 0.35), inset 0 0 30px rgba(77, 213, 255, 0.15);
+            border-color: rgba(77, 220, 255, 0.3);
+            transform: translateY(-5px) scale(1.02);
+            color: #ffffff;
+            text-shadow: 0 0 25px rgba(77, 223, 255, 1), 0 0 50px rgba(0, 188, 255, 0.8);
+        }
+        
+        /* 统一调整节点布局 - 优化版 */
+        .node {
+            position: relative;
+            display: flex;
+            flex-direction: column; /* 内容在节点下方 */
+            border-radius: 8px;
+            transition: var(--hover-transition);
+            margin-bottom: 14px; /* 减小节点间距 */
+            padding: 0;
+            align-items: flex-start;
+        }
+        
+        /* 移除列表样式 */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        /* 调整不同层级布局 - 优化嵌套结构 */
+        .level-1, .level-2, .level-3, .level-4 {
+            display: flex;
+            flex-direction: column; /* 每个级别内部元素垂直排列 */
+            width: 100%;
+        }
+        
+        /* 第一级节点特殊处理 - 优化左对齐 */
+        .level-1 {
+            padding-left: 0;
+        }
+        
+        /* 第二级及以下节点增加左侧偏移 - 减小内边距 */
+        .level-2 {
+            padding-left: 15px;
+        }
+        
+        .level-3 {
+            padding-left: 20px;
+        }
+        
+        .level-4 {
+            padding-left: 25px;
+        }
+        
+        /* 修改节点内容样式 - 优化版 */
+        .node-content {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            position: relative;
+            z-index: 5;
+            cursor: pointer;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: var(--hover-transition);
+            margin: 5px 0;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-sizing: border-box;
+            width: auto !important;
+            display: inline-flex !important;
+            flex-wrap: nowrap !important;
+            align-self: flex-start !important;
+            border: 1px solid transparent;
+            overflow: hidden;
+        }
+        
+        /* 添加节点内容悬停前效果 */
+        .node-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(101, 219, 255, 0.15), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: -1;
+        }
+        
+        /* 添加节点内容悬停效果 */
+        .node-content:hover {
+            border-color: rgba(101, 219, 255, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 148, 255, 0.2), 0 0 12px rgba(101, 219, 255, 0.2);
+            transform: translateY(-2px) scale(1.02);
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(101, 219, 255, 0.8);
+        }
+        
+        /* 悬停时触发前效果 */
+        .node-content:hover::before {
+            transform: translateX(100%);
+        }
+        
+        /* 添加节点内容悬停后效果 */
+        .node-content::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-glow), transparent);
+            transform: scaleX(0);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            transform-origin: center;
+        }
+        
+        /* 悬停时触发后效果 */
+        .node-content:hover::after {
+            transform: scaleX(1);
+        }
+        
+        /* 优化子节点连接器 - 水平连接线 */
+        .child-connector {
+            position: absolute;
+            left: -22px;
+            top: 50%;
+            width: 22px;
+            height: 2px;
+            background: linear-gradient(to left, rgba(101, 219, 255, 0.95), rgba(101, 219, 255, 0.1));
+            box-shadow: 0 0 8px rgba(0, 182, 255, 0.6);
+            transform: translateY(-50%);
+        }
+        
+        /* 调整children容器 - 优化版 */
+        .children {
+            padding-left: 25px !important;
+            padding-top: 8px !important;
+            position: relative !important;
+            width: auto !important;
+            box-sizing: border-box !important;
+            display: none !important;
+            border-left: 1px solid rgba(101, 219, 255, 0.2) !important;
+        }
+        
+        /* 展开时的子层级样式 - 优化版 */
+        .node-content.open + .children {
+            position: relative !important;
+            display: flex !important;
+            flex-direction: column !important;
+            padding-left: 35px !important;
+            margin-top: 8px !important;
+            margin-left: 5px !important;
+            border-left: 2px solid rgba(101, 219, 255, 0.25) !important;
+            width: auto !important;
+            box-sizing: border-box !important;
+            animation: fadeIn 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        /* 优化淡入动画 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* 大括号垂直线 - 优化版 */
+        .node-content.open + .children::before {
+            content: '' !important;
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            height: 100% !important;
+            width: 2px !important;
+            background: linear-gradient(to bottom, rgba(101, 219, 255, 0.1), rgba(101, 219, 255, 0.8), rgba(101, 219, 255, 0.1)) !important;
+            box-shadow: 0 0 10px rgba(0, 182, 255, 0.7) !important;
+            border-radius: 2px !important;
+            z-index: 2 !important;
+        }
+        
+        /* 调整不同层级节点样式 - 优化版 */
+        .level-1 > .node > .node-content {
+            background: linear-gradient(135deg, rgba(1, 43, 81, 0.3), rgba(6, 84, 160, 0.3));
+            color: white;
+            padding: 14px 22px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 118, 196, 0.3), 0 0 20px rgba(0, 152, 255, 0.2), inset 0 0 15px rgba(77, 223, 255, 0.1);
+            border: 1px solid rgba(101, 219, 255, 0.12);
+            transition: var(--hover-transition);
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 0 8px rgba(0, 215, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            width: auto;
+            box-sizing: border-box;
+            font-size: 1.15em;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            line-height: 1.4;
+            min-width: 160px; /* 减小最小宽度 */
+            margin-bottom: 12px; /* 减小底部间距 */
+        }
+        
+        /* 一级节点悬停效果增强 */
+        .level-1 > .node > .node-content:hover {
+            background: linear-gradient(135deg, rgba(1, 53, 101, 0.35), rgba(6, 104, 190, 0.35));
+            box-shadow: 0 12px 25px rgba(0, 118, 196, 0.4), 0 0 25px rgba(0, 152, 255, 0.3), inset 0 0 20px rgba(77, 223, 255, 0.15);
+            border-color: rgba(101, 219, 255, 0.25);
+            transform: translateY(-3px) scale(1.03);
+            color: #ffffff;
+            text-shadow: 0 0 12px rgba(0, 215, 255, 1);
+        }
+        
+        /* 内容样式优化 - 精简版 */
+        .content-text {
+            background: rgba(0, 30, 60, 0.3);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin: 6px 0;
+            border-left: 2px solid rgba(101, 219, 255, 0.3);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            line-height: 1.5;
+            font-size: 0.94em;
+            transition: var(--hover-transition);
+            word-break: break-word;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 内容文本悬停前效果 */
+        .content-text::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, var(--primary-glow), transparent);
+            opacity: 0.7;
+            transition: var(--hover-transition);
+        }
+        
+        /* 内容文本悬停效果 */
+        .content-text:hover {
+            background: rgba(0, 45, 90, 0.4);
+            border-left-color: var(--primary-glow);
+            transform: translateX(5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25), 0 0 8px rgba(0, 148, 255, 0.2);
+        }
+        
+        /* 内容文本悬停时前效果变化 */
+        .content-text:hover::before {
+            width: 5px;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+        
+        /* 动态滚动指示器 - 精简版 */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px; /* 减小尺寸 */
+            height: 40px; /* 减小尺寸 */
+            border-radius: 50%;
+            background: rgba(0, 36, 72, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            border: 1px solid rgba(101, 219, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 182, 255, 0.5);
+            animation: pulse 2s infinite;
+            opacity: 0.8;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+        
+        .scroll-indicator:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        .scroll-indicator-arrow {
+            width: 15px; /* 减小箭头尺寸 */
+            height: 15px; /* 减小箭头尺寸 */
+            border-right: 3px solid rgba(101, 219, 255, 0.9);
+            border-bottom: 3px solid rgba(101, 219, 255, 0.9);
+            transform: rotate(-45deg) translate(-2px, -2px);
+        }
+        
+        /* 响应式布局优化 - 更全面的断点 */
+        @media (max-width: 1400px) {
+            .branches {
+                gap: 30px;
+            }
+            
+            .branch {
+                min-width: 260px;
+            }
+            
+            .branch-expanded {
+                min-width: 300px;
+            }
+            
+            .branch-wide-content {
+                min-width: 360px;
+            }
+            
+            .root-node {
+                font-size: 1.5em;
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .branches {
+                gap: 25px;
+            }
+            
+            .branch {
+                min-width: 240px;
+            }
+            
+            .branch-expanded {
+                min-width: 280px;
+            }
+            
+            .branch-wide-content {
+                min-width: 340px;
+            }
+            
+            .project-title {
+                font-size: 1.7em;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .mind-map {
+                margin: 15px;
+            }
+            
+            .map-container {
+                flex-direction: column; /* 小屏幕上改为垂直布局 */
+                align-items: center;
+                margin-bottom: 25px;
+            }
+            
+            .root-node {
+                margin-right: 0;
+                margin-bottom: 25px;
+                text-align: center;
+                margin-left: 0;
+                font-size: 1.4em;
+            }
+            
+            .branches {
+                flex-direction: column;
+                align-items: center;
+                margin-left: 0;
+                gap: 25px;
+            }
+            
+            .branch {
+                width: 100%;
+                max-width: 500px;
+                margin-right: 0;
+                border-left: none;
+                padding-left: 10px;
+            }
+            
+            .branch-expanded,
+            .branch-wide-content {
+                min-width: auto;
+                width: 100%;
+                max-width: 500px;
+            }
+            
+            .project-title {
+                font-size: 1.6em;
+                padding: 12px 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .mind-map {
+                margin: 10px;
+            }
+            
+            .project-title {
+                font-size: 1.4em;
+                padding: 10px 15px;
+                margin: 15px auto 20px;
+            }
+            
+            .root-node {
+                font-size: 1.3em;
+                padding: 10px 20px;
+                margin-bottom: 20px;
+            }
+            
+            .level-1 > .node > .node-content {
+                font-size: 1em;
+                padding: 10px 15px;
+            }
+            
+            .node-content {
+                padding: 8px 12px;
+                font-size: 0.95em;
+            }
+            
+            .content-text {
+                font-size: 0.9em;
+                padding: 8px 10px;
+            }
+            
+            .branch {
+                max-width: 100%;
+                padding: 5px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .project-title {
+                font-size: 1.2em;
+                padding: 8px 12px;
+            }
+            
+            .root-node {
+                font-size: 1.1em;
+                padding: 8px 15px;
+            }
+            
+            .level-1 > .node > .node-content {
+                font-size: 0.95em;
+                padding: 8px 12px;
+            }
+            
+            .node-content {
+                padding: 6px 10px;
+                font-size: 0.9em;
+            }
+            
+            .content-text {
+                font-size: 0.85em;
+                padding: 6px 8px;
+            }
+        }
+        
+        /* 动态气泡装饰 */
+        #bubbles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .decorative-bubble {
+            position: absolute;
+            background: radial-gradient(circle at 30% 30%, rgba(101, 219, 255, 0.6), rgba(0, 118, 196, 0.2));
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(101, 219, 255, 0.4), 0 0 20px rgba(0, 118, 196, 0.2) inset;
+            animation: floatBubble 15s ease-in-out infinite alternate, glowBubble 6s ease-in-out infinite alternate;
+            filter: blur(1px);
+        }
+        
+        @keyframes floatBubble {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(15px, -15px) scale(1.05);
+            }
+            50% {
+                transform: translate(-10px, 20px) scale(1.1);
+            }
+            75% {
+                transform: translate(-20px, 5px) scale(0.95);
+            }
+        }
+        
+        @keyframes glowBubble {
+            0%, 100% {
+                opacity: 0.1;
+                box-shadow: 0 0 8px rgba(101, 219, 255, 0.4), 0 0 20px rgba(0, 118, 196, 0.2) inset;
+            }
+            50% {
+                opacity: 0.25;
+                box-shadow: 0 0 15px rgba(101, 219, 255, 0.6), 0 0 30px rgba(0, 118, 196, 0.3) inset;
+            }
+        }
+
+        /* 增强的根节点边框发光效果 */
+        .root-node::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 26px;
+            background: linear-gradient(45deg, 
+                rgba(101, 219, 255, 0) 0%, 
+                rgba(101, 219, 255, 0.3) 50%, 
+                rgba(101, 219, 255, 0) 100%);
+            z-index: -1;
+            transform: rotate(0deg);
+            transition: transform 0.5s ease;
+        }
+
+        .root-node:hover::before {
+            transform: rotate(180deg);
+        }
+
+        /* 增强的根节点内部光效 */
+        .root-node::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, 
+                rgba(101, 219, 255, 0.2) 0%, 
+                transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .root-node:hover::after {
+            opacity: 1;
+        }
+
+        /* 增强的流光效果 */
+        .flow-light {
+            position: absolute;
+            top: -50%;
+            left: -100%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(101, 219, 255, 0.05), 
+                rgba(101, 219, 255, 0.2), 
+                rgba(101, 219, 255, 0.05), 
+                transparent);
+            transform: rotate(45deg);
+            animation: enhancedFlowLight 1s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes enhancedFlowLight {
+            0% {
+                left: -200%;
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                left: 200%;
+                opacity: 0;
+            }
+        }
+
+        /* 增强的点击波纹效果 */
+        @keyframes enhancedRippleEffect {
+            0% {
+                transform: scale(0);
+                opacity: 0.8;
+                background-color: rgba(101, 219, 255, 0.4);
+            }
+            40% {
+                opacity: 0.6;
+                background-color: rgba(101, 219, 255, 0.3);
+            }
+            100% {
+                transform: scale(2.5);
+                opacity: 0;
+                background-color: rgba(101, 219, 255, 0);
+            }
+        }
+
+        /* 增强的点击波纹元素 */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, 
+                rgba(101, 219, 255, 0.7) 0%, 
+                rgba(101, 219, 255, 0.3) 40%, 
+                rgba(101, 219, 255, 0.1) 70%, 
+                rgba(101, 219, 255, 0) 100%);
+            width: 100px;
+            height: 100px;
+            margin-top: -50px;
+            margin-left: -50px;
+            animation: enhancedRippleEffect 1s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 0 20px rgba(101, 219, 255, 0.5);
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景视频 -->
+    <video class="video-background" autoplay loop muted playsinline>
+        <source src="sea-never.mp4" type="video/mp4">
+    </video>
+    
+    <!-- 添加深海发光效果 -->
+    <div class="deep-sea-glow"></div>
+    <div class="deep-sea-glow" style="left: 60%; top: 60%; animation-delay: -5s;"></div>
+    
+    <!-- 添加连线容器 -->
+    <svg class="connections-container" id="connectionsContainer">
+        <!-- 蓝白渐变定义 -->
+        <defs>
+            <!-- 超长无断点渐变 - 无限循环版 -->
+            <linearGradient id="blueWhiteGradient" x1="0%" y1="0%" x2="300%" y2="0%" gradientUnits="userSpaceOnUse" spreadMethod="repeat">
+                <!-- 前半段 -->
+                <stop offset="0%" stop-color="rgba(101, 219, 255, 0.05)" />
+                <stop offset="5%" stop-color="rgba(101, 219, 255, 0.2)" />
+                <stop offset="10%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="15%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="16.66%" stop-color="rgba(101, 219, 255, 0.8)" />
+                <stop offset="20%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="25%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="30%" stop-color="rgba(101, 219, 255, 0.2)" />
+                <stop offset="33.33%" stop-color="rgba(101, 219, 255, 0.05)" />
+                
+                <!-- 中间段 -->
+                <stop offset="33.34%" stop-color="rgba(101, 219, 255, 0.05)" />
+                <stop offset="38.34%" stop-color="rgba(101, 219, 255, 0.2)" />
+                <stop offset="43.34%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="48.34%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="50%" stop-color="rgba(101, 219, 255, 0.8)" />
+                <stop offset="53.34%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="58.34%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="63.34%" stop-color="rgba(101, 219, 255, 0.2)" />
+                <stop offset="66.66%" stop-color="rgba(101, 219, 255, 0.05)" />
+                
+                <!-- 后半段 -->
+                <stop offset="66.67%" stop-color="rgba(101, 219, 255, 0.05)" />
+                <stop offset="71.67%" stop-color="rgba(101, 219, 255, 0.2)" />
+                <stop offset="76.67%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="81.67%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="83.33%" stop-color="rgba(101, 219, 255, 0.8)" />
+                <stop offset="86.67%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="91.67%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="96.67%" stop-color="rgba(101, 219, 255, 0.2)" />
+                <stop offset="100%" stop-color="rgba(101, 219, 255, 0.05)" />
+                
+                <animateTransform
+                  attributeName="gradientTransform"
+                  type="translate"
+                  from="-1"
+                  to="0"
+                  dur="5s"
+                  repeatCount="indefinite"
+                />
+            </linearGradient>
+            
+            <!-- 强烈渐变 - 无限循环版 -->
+            <linearGradient id="intensiveGradient" x1="0%" y1="0%" x2="300%" y2="0%" gradientUnits="userSpaceOnUse" spreadMethod="repeat">
+                <!-- 前半段 -->
+                <stop offset="0%" stop-color="rgba(101, 219, 255, 0.05)" />
+                <stop offset="5%" stop-color="rgba(101, 219, 255, 0.2)" />
+                <stop offset="10%" stop-color="rgba(101, 219, 255, 0.5)" />
+                <stop offset="15%" stop-color="rgba(101, 219, 255, 0.8)" />
+                <stop offset="16.66%" stop-color="rgba(101, 219, 255, 0.95)" />
+                <stop offset="20%" stop-color="rgba(101, 219, 255, 0.8)" />
+                <stop offset="25%" stop-color="rgba(101, 219, 255, 0.5)" />
+                <stop offset="30%" stop-color="rgba(101, 219, 255, 0.2)" />
+                <stop offset="33.33%" stop-color="rgba(101, 219, 255, 0.05)" />
+                
+                <!-- 中间段 -->
+                <stop offset="33.34%" stop-color="rgba(101, 219, 255, 0.05)" />
+                <stop offset="38.34%" stop-color="rgba(101, 219, 255, 0.2)" />
+                <stop offset="43.34%" stop-color="rgba(101, 219, 255, 0.5)" />
+                <stop offset="48.34%" stop-color="rgba(101, 219, 255, 0.8)" />
+                <stop offset="50%" stop-color="rgba(101, 219, 255, 0.95)" />
+                <stop offset="53.34%" stop-color="rgba(101, 219, 255, 0.8)" />
+                <stop offset="58.34%" stop-color="rgba(101, 219, 255, 0.5)" />
+                <stop offset="63.34%" stop-color="rgba(101, 219, 255, 0.2)" />
+                <stop offset="66.66%" stop-color="rgba(101, 219, 255, 0.05)" />
+                
+                <!-- 后半段 -->
+                <stop offset="66.67%" stop-color="rgba(101, 219, 255, 0.05)" />
+                <stop offset="71.67%" stop-color="rgba(101, 219, 255, 0.2)" />
+                <stop offset="76.67%" stop-color="rgba(101, 219, 255, 0.5)" />
+                <stop offset="81.67%" stop-color="rgba(101, 219, 255, 0.8)" />
+                <stop offset="83.33%" stop-color="rgba(101, 219, 255, 0.95)" />
+                <stop offset="86.67%" stop-color="rgba(101, 219, 255, 0.8)" />
+                <stop offset="91.67%" stop-color="rgba(101, 219, 255, 0.5)" />
+                <stop offset="96.67%" stop-color="rgba(101, 219, 255, 0.2)" />
+                <stop offset="100%" stop-color="rgba(101, 219, 255, 0.05)" />
+                
+                <animateTransform
+                  attributeName="gradientTransform"
+                  type="translate"
+                  from="-1"
+                  to="0"
+                  dur="4s"
+                  repeatCount="indefinite"
+                />
+            </linearGradient>
+            
+            <!-- 流动渐变 - 无限循环版 -->
+            <linearGradient id="flowGradient" x1="0%" y1="0%" x2="300%" y2="0%" gradientUnits="userSpaceOnUse" spreadMethod="repeat">
+                <!-- 前半段 -->
+                <stop offset="0%" stop-color="rgba(101, 219, 255, 0)" />
+                <stop offset="5%" stop-color="rgba(101, 219, 255, 0.1)" />
+                <stop offset="10%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="15%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="16.66%" stop-color="rgba(101, 219, 255, 0.9)" />
+                <stop offset="20%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="25%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="30%" stop-color="rgba(101, 219, 255, 0.1)" />
+                <stop offset="33.33%" stop-color="rgba(101, 219, 255, 0)" />
+                
+                <!-- 中间段 -->
+                <stop offset="33.34%" stop-color="rgba(101, 219, 255, 0)" />
+                <stop offset="38.34%" stop-color="rgba(101, 219, 255, 0.1)" />
+                <stop offset="43.34%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="48.34%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="50%" stop-color="rgba(101, 219, 255, 0.9)" />
+                <stop offset="53.34%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="58.34%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="63.34%" stop-color="rgba(101, 219, 255, 0.1)" />
+                <stop offset="66.66%" stop-color="rgba(101, 219, 255, 0)" />
+                
+                <!-- 后半段 -->
+                <stop offset="66.67%" stop-color="rgba(101, 219, 255, 0)" />
+                <stop offset="71.67%" stop-color="rgba(101, 219, 255, 0.1)" />
+                <stop offset="76.67%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="81.67%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="83.33%" stop-color="rgba(101, 219, 255, 0.9)" />
+                <stop offset="86.67%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="91.67%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="96.67%" stop-color="rgba(101, 219, 255, 0.1)" />
+                <stop offset="100%" stop-color="rgba(101, 219, 255, 0)" />
+                
+                <animateTransform
+                  attributeName="gradientTransform"
+                  type="translate"
+                  from="-1"
+                  to="0"
+                  dur="3s"
+                  repeatCount="indefinite"
+                />
+            </linearGradient>
+            
+            <!-- 附加流动渐变 - 反向流动 -->
+            <linearGradient id="flowGradientReverse" x1="0%" y1="0%" x2="300%" y2="0%" gradientUnits="userSpaceOnUse" spreadMethod="repeat">
+                <!-- 使用相同的色标设置 -->
+                <stop offset="0%" stop-color="rgba(101, 219, 255, 0)" />
+                <stop offset="5%" stop-color="rgba(101, 219, 255, 0.1)" />
+                <stop offset="10%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="15%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="16.66%" stop-color="rgba(101, 219, 255, 0.9)" />
+                <stop offset="20%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="25%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="30%" stop-color="rgba(101, 219, 255, 0.1)" />
+                <stop offset="33.33%" stop-color="rgba(101, 219, 255, 0)" />
+                
+                <stop offset="33.34%" stop-color="rgba(101, 219, 255, 0)" />
+                <stop offset="38.34%" stop-color="rgba(101, 219, 255, 0.1)" />
+                <stop offset="43.34%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="48.34%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="50%" stop-color="rgba(101, 219, 255, 0.9)" />
+                <stop offset="53.34%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="58.34%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="63.34%" stop-color="rgba(101, 219, 255, 0.1)" />
+                <stop offset="66.66%" stop-color="rgba(101, 219, 255, 0)" />
+                
+                <stop offset="66.67%" stop-color="rgba(101, 219, 255, 0)" />
+                <stop offset="71.67%" stop-color="rgba(101, 219, 255, 0.1)" />
+                <stop offset="76.67%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="81.67%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="83.33%" stop-color="rgba(101, 219, 255, 0.9)" />
+                <stop offset="86.67%" stop-color="rgba(101, 219, 255, 0.7)" />
+                <stop offset="91.67%" stop-color="rgba(101, 219, 255, 0.4)" />
+                <stop offset="96.67%" stop-color="rgba(101, 219, 255, 0.1)" />
+                <stop offset="100%" stop-color="rgba(101, 219, 255, 0)" />
+                
+                <!-- 反向动画 -->
+                <animateTransform
+                  attributeName="gradientTransform"
+                  type="translate"
+                  from="0"
+                  to="-1"
+                  dur="3.6s"
+                  repeatCount="indefinite"
+                />
+            </linearGradient>
+            
+            <!-- 添加毛玻璃流动效果 -->
+            <filter id="blurryFlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" />
+            </filter>
+        </defs>
+        
+        <!-- 连线将由JavaScript动态生成 -->
+    </svg>
+    
+    <div class="mind-map">
+        <h1 class="project-title" onclick="window.location.href='my-mindMap.html'" style="cursor: pointer;" title="点击跳转到交互式思维导图"><span><strong>星梦游Xmy项目-思维导图</strong></span></h1>
+        
+        <div class="map-container">
+            <div class="root-node" id="rootAlgorithmNode" onclick="toggleAllLevels()">
+                <div class="root-node-top-line"></div>
+                <div class="root-node-left-line"></div>
+                <div class="root-node-right-line"></div>
+                <span>核心算法</span>
+            </div>
+        </div>
+        
+        <!-- 动态气泡容器 -->
+        <div id="bubbles-container"></div>
+        
+        <div class="branches">
+            <!-- 第一部分：3D流浪地球+3D旋转星空 -->
+            <div class="branch">
+                <ul class="level-1">
+                    <li class="node">
+                        <div class="node-content" onclick="toggleItem(this)">一、3D流浪地球+3D旋转星空</div>
+                        <div class="children">
+                            <ul class="level-2">
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">一、3D流浪地球</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.Three.js基础设置</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.渲染环境初始化</div>
+                                                            <div class="content-text">
+                                                                <p>实例化WebGLRenderer对象，配置{alpha: true, antialias: true}启用透明背景和抗锯齿</p>
+                                                                <p>设置renderer.setPixelRatio(window.devicePixelRatio)优化渲染精度</p>
+                                                                <p>通过renderer.setSize()方法实现画布尺寸的响应式调整</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">2.场景图构建</div>
+                                                            <div class="content-text">
+                                                                <p>创建THREE.Scene实例作为渲染的根容器</p>
+                                                                <p>使用PerspectiveCamera配置75°视场角，实现真实透视效果</p>
+                                                                <p>摄像机位置设置为position.z = 300，提供合适的观察距离</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">3.视角控制系统</div>
+                                                            <div class="content-text">
+                                                                <p>应用OrbitControls连接摄像机与DOM事件</p>
+                                                                <p>禁用enableZoom和enablePan，保持纯旋转交互模式</p>
+                                                                <p>开启autoRotate属性，实现无交互时的自动旋转效果</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.地球模型核心实现</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.几何体定义</div>
+                                                            <div class="content-text">
+                                                                <p>使用SphereGeometry(80, 256, 256)创建高精度球体</p>
+                                                                <p>半径80单位与高分段参数确保曲面细节丰富</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">2.纹理加载器</div>
+                                                            <div class="content-text">
+                                                                <p>创建TextureLoader实例管理纹理加载</p>
+                                                                <p>加载地球表面贴图、法线贴图、高光贴图、夜景光照贴图和云层贴图</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">二、3D旋转星空</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.核心代码：矩阵组装</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.组装星星的实例矩阵</div>
+                                                            <div class="content-text">
+                                                                <p>矩阵就像是星星在宇宙中的"身份证"，它记录了星星的位置、旋转和缩放信息。</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">2.星星的位置</div>
+                                                            <div class="content-text">
+                                                                <p>position就像是星星在宇宙坐标中的定位器，告诉我们这颗星星具体位于宇宙的哪个角落。</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">3.星星的旋转信息</div>
+                                                            <div class="content-text">
+                                                                <p>在宇宙中，星星并非静止不动，它们也会旋转，这里用四元数new THREE.Quaternion()来表示星星的旋转状态。</p>
+                                                                <p>在计算机图形学里，四元数常用于表示三维空间中的旋转。</p>
+                                                                <p>由一个实部和三个虚部组成，通常表示为q = w + xi + yj + zk，其中w是实部，x、y、z是虚部，i、j、k是虚数单位，且满足i² = j² = k² = ijk = -1。</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">4.星星的缩放比例</div>
+                                                            <div class="content-text">
+                                                                <p>scale决定了不同星星的大小</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">5.组合矩阵</div>
+                                                            <div class="content-text">
+                                                                <p>使用compose方法，就像是启动了一台宇宙组装机，把星星的位置、旋转信息和缩放比例这三个关键要素组合成一个矩阵matrix。</p>
+                                                                <p>这个矩阵就如同星星的"宇宙身份证"，包含了这颗星星在宇宙中该如何摆放的所有信息。</p>
+                                                                <p>想象一下，我们在宇宙中摆放星星，这个矩阵就是告诉宇宙每个星星该放在哪里，怎么旋转，以及大小是多少。</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.应用矩阵到星星实例</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.应用矩阵到星星</div>
+                                                            <div class="content-text">
+                                                                <p>现在我们已经有了星星的"身份证"矩阵，接下来要把这个"身份证"交给对应的星星。</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">2.设置星星矩阵</div>
+                                                            <div class="content-text">
+                                                                <p>stars.setMatrixAt(i, matrix)就是把第i个星星的矩阵设置为我们刚刚组装好的matrix。</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">3.星星定位</div>
+                                                            <div class="content-text">
+                                                                <p>这样，宇宙就知道第i个星星该按照这个矩阵的信息来摆放啦。</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">3.设置星星的颜色</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.星星颜色设置</div>
+                                                            <div class="content-text">
+                                                                <p>星星有了位置、旋转和缩放信息还不够，还得有漂亮的颜色。</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">2.颜色应用</div>
+                                                            <div class="content-text">
+                                                                <p>stars.setColorAt(i, color)就是给第i个星星设置颜色color。</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">3.视觉效果</div>
+                                                            <div class="content-text">
+                                                                <p>想象一下，五彩斑斓的星星点缀在宇宙中，是不是超级炫酷！</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 第二部分：粒子聚能喷射 -->
+            <div class="branch">
+                <ul class="level-1">
+                    <li class="node">
+                        <div class="node-content" onclick="toggleItem(this)">二、粒子聚能喷射</div>
+                        <div class="children">
+                            <ul class="level-2">
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">一、基础设计</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.粒子系统架构</div>
+                                                <div class="content-text">
+                                                    <p>采用Three.js的BufferGeometry创建高性能粒子系统</p>
+                                                    <p>使用PointsMaterial配合顶点着色实现粒子渲染</p>
+                                                    <p>通过自定义update函数实现粒子动态更新</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.粒子分布策略</div>
+                                                <div class="content-text">
+                                                    <p>使用球坐标系（θ, φ, r）实现锥形喷射分布</p>
+                                                    <p>粒子位置在地球尾部集中，远处逐渐稀疏</p>
+                                                    <p>通过非线性分布（Math.pow）加强喷射视觉效果</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">二、粒子属性设计</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.位置计算算法</div>
+                                                <div class="content-text">
+                                                    <p>采用球坐标转笛卡尔坐标的映射算法</p>
+                                                    <p>theta角（0~2π）控制粒子在圆周上的分布</p>
+                                                    <p>phi角（0~π/2）控制喷射角度范围</p>
+                                                    <p>距离采用非线性增长（Math.pow(Math.random(), 3)）使粒子分布更加自然</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.颜色渲染策略</div>
+                                                <div class="content-text">
+                                                    <p>采用HSL色彩空间（比RGB更易控制色相过渡）</p>
+                                                    <p>基础色相在0.55~0.65之间（蓝色调）</p>
+                                                    <p>亮度与距离反相关，越近越暗，模拟等离子体能量分布</p>
+                                                    <p>随机闪烁算法增加粒子视觉活跃度</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">3.尺寸动态变化</div>
+                                                <div class="content-text">
+                                                    <p>粒子尺寸与距离相关</p>
+                                                    <p>添加随机因子避免尺寸均匀，增强自然感</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">三、动态更新算法</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.速度计算</div>
+                                                <div class="content-text">
+                                                    <p>基础速度 + 随机扰动 + 距离反比加速</p>
+                                                    <p>通过currentParticleCount/200000控制喷射强度</p>
+                                                    <p>粒子数量越多，喷射越强烈，形成反馈机制</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.湍流模拟</div>
+                                                <div class="content-text">
+                                                    <p>湍流强度与距离反相关，近处扰动更强</p>
+                                                    <p>实时XY平面随机位移模拟等离子体湍流</p>
+                                                    <p>通过speedFactor参数实现整体速度控制</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">3.循环重用机制</div>
+                                                <div class="content-text">
+                                                    <p>超出边界的粒子重置回喷射源</p>
+                                                    <p>边界检测双条件（Z轴位置或总距离）</p>
+                                                    <p>形成无限循环喷射的视觉效果</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">四、涡流场物理模拟</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.涡流场参数设计</div>
+                                                <div class="content-text">
+                                                    <p>涡流中心(vortexCenter)设置在地球尾部后方100单位</p>
+                                                    <p>涡流强度(vortexStrength)为0.5，控制旋转剧烈程度</p>
+                                                    <p>涡流影响半径(vortexRadius)为150，定义影响衰减范围</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.世界坐标系转换</div>
+                                                <div class="content-text">
+                                                    <p>应用欧拉旋转（applyEuler）保证粒子跟随地球旋转</p>
+                                                    <p>使用矢量乘法（multiply）实现缩放</p>
+                                                    <p>基于地球尾部位置偏移计算最终世界坐标</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">五、欧拉旋转与矢量变换技术解析</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.三维坐标变换基础</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.坐标系统层级关系</div>
+                                                            <div class="content-text">
+                                                                <p>局部坐标系（Local Space）：粒子初始生成的坐标系</p>
+                                                                <p>世界坐标系（World Space）：整个3D场景的全局坐标系</p>
+                                                                <p>视图坐标系（View Space）：相机视角的坐标系</p>
+                                                                <p>投影坐标系（Projection Space）：最终渲染到屏幕的2D坐标系</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">2.变换矩阵链</div>
+                                                            <div class="content-text">
+                                                                <p>模型矩阵（Model Matrix）：物体从局部到世界的变换</p>
+                                                                <p>视图矩阵（View Matrix）：世界到相机视角的变换</p>
+                                                                <p>投影矩阵（Projection Matrix）：相机视角到屏幕的变换</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.欧拉旋转实现机制</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.欧拉角表示法</div>
+                                                            <div class="content-text">
+                                                                <p>欧拉角通过绕三个互相垂直轴的旋转角度表示3D旋转</p>
+                                                                <p>Three.js中使用Euler类，包含x、y、z三个分量和旋转顺序</p>
+                                                                <p>默认旋转顺序为XYZ，表示先绕X轴、再绕Y轴、最后绕Z轴</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">2.applyEuler方法解析</div>
+                                                            <div class="content-text">
+                                                                <p>const position = new THREE.Vector3(x, y, z);</p>
+                                                                <p>position.applyEuler(tailInfo.rotation);</p>
+                                                                <p>本质是将向量应用欧拉旋转变换</p>
+                                                                <p>内部实现通过欧拉角构建旋转矩阵，然后将向量与矩阵相乘</p>
+                                                                <p>THREE.Vector3.prototype.applyEuler内部会将Euler转换为Quaternion，再应用四元数旋转</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">3.粒子跟随地球旋转的实现</div>
+                                                            <div class="content-text">
+                                                                <p>从calculateEarthTailPosition获取地球当前旋转状态</p>
+                                                                <p>每个粒子初始位置通过applyEuler应用相同的旋转</p>
+                                                                <p>保证所有粒子与地球保持相对位置关系不变</p>
+                                                                <p>地球旋转时，粒子也整体旋转，维持喷射效果的方向一致性</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">3.矢量乘法实现缩放</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.Vector3.multiply方法</div>
+                                                            <div class="content-text">
+                                                                <p>position.multiply</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">2.执行逐分量乘法</div>
+                                                            <div class="content-text">
+                                                                <p>不同于矩阵乘法，而是对应分量直接相乘：</p>
+                                                                <p>result.x = v1.x * v2.x</p>
+                                                                <p>result.y = v1.y * v2.y</p>
+                                                                <p>result.z = v1.z * v2.z</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">3.非均匀缩放处理</div>
+                                                            <div class="content-text">
+                                                                <p>支持x、y、z三个轴向的独立缩放系数</p>
+                                                                <p>允许粒子系统随地球的非均匀缩放（如椭球形变）</p>
+                                                                <p>比单一系数缩放更精确，保持与地球模型的完美契合</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">4.缩放在变换链中的位置</div>
+                                                            <div class="content-text">
+                                                                <p>先进行欧拉旋转，再应用缩放，顺序至关重要</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 第三部分：三体运动 -->
+            <div class="branch">
+                <ul class="level-1">
+                    <li class="node">
+                        <div class="node-content" onclick="toggleItem(this)">三、三体运动</div>
+                        <div class="children">
+                            <ul class="level-2">
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">一、牛顿万有引力定律</div>
+                                    <div class="content-text">
+                                        <p>F = G * m1 * m2 / r²</p>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">二、三维空间模拟</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.三维坐标系</div>
+                                                <div class="content-text">
+                                                    <p>每个天体都有完整的x、y和z坐标，通过CSS的transform属性进行三维变换。</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.透视效果</div>
+                                                <div class="content-text">
+                                                    <p>通过scale属性动态改变天体的大小，模拟三维深度感，距离越远的天体显示越小，增强视觉深度。</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">3.三维力分解</div>
+                                                <div class="content-text">
+                                                    <p>力在三个维度上分别计算和应用，使用了三角函数Math.cos和Math.sin精确计算每个方向的力分量。</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">三、星体物理属性</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.质量与引力</div>
+                                                <div class="content-text">
+                                                    <p>每个天体都具有mass属性，质量越大引力越强，直接影响轨道演化。</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.速度向量</div>
+                                                <div class="content-text">
+                                                    <p>使用vx、vy、vz三个分量表示天体的速度向量，确保三维空间中的自由运动。</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">3.碰撞物理</div>
+                                                <div class="content-text">
+                                                    <p>非弹性碰撞，动能损失，碰撞后速度减小，避免星体速度过快。</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">四、混沌系统特性</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.初始条件敏感性</div>
+                                                <div class="content-text">
+                                                    <p>系统通过精心设计的初始位置和速度，展现了三体问题的混沌特性，微小的初始条件差异会导致完全不同的轨道。</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.不可预测性</div>
+                                                <div class="content-text">
+                                                    <p>没有使用预设轨道，而是让系统自然演化，每次刷新页面都会产生不同的轨道形态，体现三体问题的无解性。</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">3.临时稳定态</div>
+                                                <div class="content-text">
+                                                    <p>通过boundTo和boundTime，自动索敌，模拟天体间的临时捕获，使系统能够展现短暂的稳定状态，然后再次进入混沌。</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">五、渲染与视觉效果</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.动态轨迹</div>
+                                                <div class="content-text">
+                                                    <p>使用trail数组记录天体历史位置，通过DOM元素可视化轨迹，轨迹长度可通过maxTrailLength调整。</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.光晕效果</div>
+                                                <div class="content-text">
+                                                    <p>利用CSS的radial-gradient和box-shadow创建星体光晕，通过updateColor方法动态变化，模拟恒星的光辐射。</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">3.碰撞特效</div>
+                                                <div class="content-text">
+                                                    <p>createCollisionEffect方法生成华丽的碰撞视觉效果，包括冲击波和粒子爆发，增强用户体验。</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">六、交互设计</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.鼠标引力</div>
+                                                <div class="content-text">
+                                                    <p>将鼠标作为一个虚拟的高质量天体(mousePlanet)，用户可以通过移动鼠标干扰系统，增加交互性。</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.推力传递</div>
+                                                <div class="content-text">
+                                                    <p>鼠标移动速度被转化为推力，用户可以"推动"天体，模拟外部干扰对三体系统的影响。</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">3.碰撞反馈</div>
+                                                <div class="content-text">
+                                                    <p>当鼠标与天体接触时，会触发视觉和物理反馈，增强沉浸感。</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">七、性能优化</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.速度限制</div>
+                                                <div class="content-text">
+                                                    <p>通过limitPlanetSpeed方法防止系统因数值溢出导致天体速度过快。</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.碰撞冷却</div>
+                                                <div class="content-text">
+                                                    <p>使用collisionCooldown机制避免连续多次碰撞计算，提高性能。</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">3.边界处理</div>
+                                                <div class="content-text">
+                                                    <p>实现了边界反弹逻辑，防止天体飞出可视区域，保持系统的完整性。</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 第四部分：奇思宇宙 -->
+            <div class="branch">
+                <ul class="level-1">
+                    <li class="node">
+                        <div class="node-content" onclick="toggleItem(this)">四、奇思宇宙-爆炸坍缩</div>
+                        <div class="children">
+                            <ul class="level-2">
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">一、参数化曲线数学基础</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.基本参数方程定义</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.1.二维参数曲线一般式</div>
+                                                            <div class="content-text">
+                                                                <p>x = f(t)</p>
+                                                                <p>y = g(t)</p>
+                                                                <p>t为时间参数，(x,y)为曲线上的点</p>
+                                                                <p>代码实现:</p>
+                                                                <p>//t从0到1，分n段</p>
+                                                                <p>for (let i = 0; i <= n; i++) {</p>
+                                                                <p>  const t = i / n;</p>
+                                                                <p>  const x = f(t);</p>
+                                                                <p>  const y = g(t);</p>
+                                                                <p></p>
+                                                                <p>  if (i === 0) ctx.moveTo(x, y);</p>
+                                                                <p>  else ctx.lineTo(x, y);</p>
+                                                                <p>}</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.极坐标曲线转换</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">2.1.极坐标到直角坐标转换公式</div>
+                                                            <div class="content-text">
+                                                                <p>x = x₀ + r * cos(θ)</p>
+                                                                <p>y = y₀ + r * sin(θ)</p>
+                                                                <p>其中(x₀,y₀)为极点，r为极径，θ为极角</p>
+                                                                <p>代码实现:</p>
+                                                                <p></p>
+                                                                <p>const angle = (i / beamCount) * Math.PI * 2 + progress * 7;</p>
+                                                                <p>const x = centerX + Math.cos(angle) * distance;</p>
+                                                                <p>const y = centerY + Math.sin(angle) * distance;</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">二、粒子轨迹曲线的数学模型</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.离散点轨迹的数学表示</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.1.轨迹点序列定义为时间函数</div>
+                                                            <div class="content-text">
+                                                                <p>P(t) = {x(t), y(t), α(t)}</p>
+                                                                <p>其中t为离散时间点，α为透明度</p>
+                                                                <p>代码实现:</p>
+                                                                <p></p>
+                                                                <p>if (stageTime % Math.max(1, Math.floor(OPTIMIZATION.TRAIL_SKIP / OPTIMIZATION.QUALITY)) === 0) {</p>
+                                                                <p>  p.trail.push({x: p.x, y: p.y, alpha: p.alpha});</p>
+                                                                <p>}</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.2.离散采样点密度与曲线平滑度关系</div>
+                                                            <div class="content-text">
+                                                                <p>采样点数n与渲染精度OPTIMIZATION.QUALITY成正比</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.3.采样间隔</div>
+                                                            <div class="content-text">
+                                                                <p>Δt = Math.max(1, Math.floor(OPTIMIZATION.TRAIL_SKIP / OPTIMIZATION.QUALITY))</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.4.有限长度轨迹的FIFO队列模型</div>
+                                                            <div class="content-text">
+                                                                <p>保持最近n个点，移除最旧的点</p>
+                                                                <p></p>
+                                                                <p>trail = [P(t-n+1), P(t-n+2), ..., P(t)]</p>
+                                                                <p></p>
+                                                                <p>代码实现:</p>
+                                                                <p></p>
+                                                                <p>if (p.trail.length >= p.trailLength) {</p>
+                                                                <p>  p.trail.shift(); // 移除最旧的轨迹点</p>
+                                                                <p>}</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.分段线性插值算法</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">2.1.相邻轨迹点间的线性插值函数</div>
+                                                            <div class="content-text">
+                                                                <p>P(t+λ) = (1-λ)·P(t) + λ·P(t+1), 插值参数λ∈[0,1]</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">2.2.线段宽度的线性衰减函数</div>
+                                                            <div class="content-text">
+                                                                <p>w(ratio) = p.size * (1-ratio) * 1.5</p>
+                                                                <p></p>
+                                                                <p>代码实现:</p>
+                                                                <p>const ratio = j / p.trail.length;</p>
+                                                                <p>const trailWidth = p.size * (1-ratio) * 1.5;</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">2.3.透明度的线性衰减模型</div>
+                                                            <div class="content-text">
+                                                                <p>α(ratio) = ratio * trailAlpha * factor * BRIGHTNESS_FACTOR</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">3.彗星尾迹的数学模型</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">3.1.彗星尾部长度与方向向量计算</div>
+                                                            <div class="content-text">
+                                                                <p>v̂ = (xt+1-xt, yt+1-yt) / ||(xt+1-xt, yt+1-yt)||</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">3.2.非均匀采样的优化算法</div>
+                                                            <div class="content-text">
+                                                                <p>采样步长函数s(QUALITY) = Math.max(1, Math.floor(2 / QUALITY))</p>
+                                                                <p>在处理大型数据集（如长轨迹）时，画面质量差，QUALITY小，采样步长s长，采样少，减少处理的数据量，实现了质量与性能的平衡</p>
+                                                                <p></p>
+                                                                <p>代码实现:</p>
+                                                                <p>for (let j = 0; j < p.trail.length-1; j += Math.max(1, Math.floor(2 / OPTIMIZATION.QUALITY))) {</p>
+                                                                <p>  // 处理轨迹段</p>
+                                                                <p>}</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">3.3.彗星轨迹渐变的数学表达式</div>
+                                                            <div class="content-text">
+                                                                <p>color(λ) = (1-λ)·tailColor + λ·coreColor</p>
+                                                                <p>alpha(λ) = λ·baseAlpha</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">三、阿基米德双螺旋(算法核心点)</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.基础数学公式</div>
+                                                <div class="content-text">
+                                                    <p>r(θ) = a + b·θ</p>
+                                                    <p>r(θ) = a - b·θ</p>
+                                                    <p>其中a为初始半径，b为螺距参数</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.数学公式随时间变式</div>
+                                                <div class="content-text">
+                                                    <p>θ(t) = θ₀ + s·π + t·turns·2π</p>
+                                                    <p>r(t) = r₀ + t·(rₘₐₓ - r₀)</p>
+                                                    <p>其中t∈[0,1]，turns为螺旋圈数，s为螺旋索引(0或1)，代表两条螺旋线</p>
+                                                    <p>当 t 在 [0,1] 之间时，r(t) 从 r₀ 线性增加到 rₘₐₓ</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">3.代码实现</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">3.1.螺旋圈数计算</div>
+                                                            <div class="content-text">
+                                                                <p>const spiralTurns = 3 + collapseState.phaseProgress * 5;</p>
+                                                                <p>// 螺旋圈数动态变化，这允许螺旋在动画过程中逐渐展开或收缩</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">3.2.分段数计算</div>
+                                                            <div class="content-text">
+                                                                <p>const segments = Math.floor(20 * spiralTurns);</p>
+                                                                <p>// 分段数与螺旋圈数成正比，确保每圈有足够的点来平滑显示螺旋线</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">3.3.螺旋参数计算循环</div>
+                                                            <div class="content-text">
+                                                                <p>for (let j = 1; j <= segments; j++) {</p>
+                                                                <p>    // 将当前分段索引转换为 0 到 1 之间的归一化参数t，t∈[0,1]</p>
+                                                                <p>    const spiralProgress = j / segments;</p>
+                                                                <p>    // angle 是初始角度偏移</p>
+                                                                <p>    // s * Math.PI 控制螺旋的方向（s=0 或 1）</p>
+                                                                <p>    // spiralProgress * spiralTurns * Math.PI * 2 计算随时间增加的角度</p>
+                                                                <p>    // 相当于 θ(t) = θ₀ + s·π + t·turns·2π 公式</p>
+                                                                <p>    const spiralAngle = angle + s * Math.PI + spiralProgress * spiralTurns * Math.PI * 2;</p>
+                                                                <p>    // size * 0.9 是初始半径</p>
+                                                                <p>    // beamLength 是最终半径</p>
+                                                                <p>    // 半径从 size * 0.9 线性增加到 beamLength</p>
+                                                                <p>    // 相当于 r(t) = r₀ + t·(rₘₐₓ - r₀) 公式</p>
+                                                                <p>    const spiralDistance = size * 0.9 + spiralProgress * (beamLength - size * 0.9);</p>
+                                                                <p>}</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">4.螺旋宽度正弦变化</div>
+                                                            <div class="content-text">
+                                                                <p>wₘₐₓ = 0.8 + collapseProgress * 2</p>
+                                                                <p>w(t) = sin(t·π) * wₘₐₓ * r(t) / rₘₐₓ</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">四、分形折线效果的数学模型</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.方法一：基于中点位移的随机化递归算法</div>
+                                                <div class="content-text">
+                                                    <p>初始化两个端点 P₁和 P₂</p>
+                                                    <p>计算中点 P_new = (P₁ + P₂)/2</p>
+                                                    <p>为中点添加随机位移：P_new = P_new + random_displacement</p>
+                                                    <p>递归处理新生成的线段 (P₁, P_new) 和 (P_new, P₂)</p>
+                                                    <p>每次递归时，通常减小随机位移的幅度，以保持分形特性</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.方法二：直接从起点开始，逐段生成带有随机偏移的折线</div>
+                                                <div class="content-text">
+                                                    <p>代码实现:</p>
+                                                    <p></p>
+                                                    <p>for (let j = 1; j <= segments; j++) {</p>
+                                                    <p>    const segmentProgress = j / segments;</p>
+                                                    <p>    const segmentAngle = angle + (Math.random() - 0.5) * 1.2 * tearProgress;</p>
+                                                    <p>    const segmentLength = tearLength * segmentProgress;</p>
+                                                    <p></p>
+                                                    <p>    const jitter = tearProgress * 50 * (Math.random() - 0.5) * segmentProgress;</p>
+                                                    <p></p>
+                                                    <p>    currentX = collapsePoint.x + Math.cos(segmentAngle) * segmentLength + </p>
+                                                    <p>              Math.cos(segmentAngle + Math.PI/2) * jitter;</p>
+                                                    <p>    currentY = collapsePoint.y + Math.sin(segmentAngle) * segmentLength + </p>
+                                                    <p>              Math.sin(segmentAngle + Math.PI/2) * jitter;</p>
+                                                    <p>}</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">五、粒子运动动力学模型</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.径向加速度公式</div>
+                                                <div class="content-text">
+                                                    <p>a = G * M / r² // 万有引力定律</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.速度与距离关系</div>
+                                                <div class="content-text">
+                                                    <p>f(r) = max(0.1, min(1, 1 - r/D))</p>
+                                                    <p>v(r) = p * v₀ * speedFactor * f(r)</p>
+                                                    <p></p>
+                                                    <p>代码实现:</p>
+                                                    <p>const distanceFactor = Math.max(0.1, Math.min(1, 1 - distance / </p>
+                                                    <p>                                Math.max(window.innerWidth, window.innerHeight)));</p>
+                                                    <p>speed = collapseState.phaseProgress * 25 * p.speedFactor * distanceFactor;</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">3.加速度公式在不同阶段的变化</div>
+                                                <div class="content-text">
+                                                    <p>a(r,p) = a₀ * (1 + p * k) / r²</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">4.第二次坍缩阶段的加速度增强</div>
+                                                <div class="content-text">
+                                                    <p>secondGravityFactor = 3 + collapseState.phaseProgress * 15</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">六、彩虹渐变算法</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.三相位移正弦波均匀分布色彩</div>
+                                                <div class="content-text">
+                                                    <p>R(φ) = R₀ + A * sin(φ) * richness</p>
+                                                    <p>G(φ) = G₀ + A * sin(φ + 2π/3) * richness</p>
+                                                    <p>B(φ) = B₀ + A * sin(φ + 4π/3) * richness</p>
+                                                    <p>此模型通过三个相位差为120°的正弦波生成均匀分布的色彩，创造和谐色域</p>
+                                                    <p></p>
+                                                    <p>代码实现:</p>
+                                                    <p></p>
+                                                    <p>const phase = i / count * Math.PI * 2;</p>
+                                                    <p>const r = Math.floor(60 + 80 * Math.sin(phase) * richness);</p>
+                                                    <p>const g = Math.floor(60 + 80 * Math.sin(phase + Math.PI/3) * richness);</p>
+                                                    <p>const b = Math.floor(100 + 80 * Math.sin(phase + Math.PI*2/3) * richness);</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.傅里叶多频率色彩合成</div>
+                                                <div class="content-text">
+                                                    <p>C(φ) = C₀ + A₁*sin(φ) + A₂*sin(n₂*φ + φ₂)</p>
+                                                    <p>通过叠加不同频率的正弦波，创造更丰富的色彩变化</p>
+                                                    <p></p>
+                                                    <p>代码实现:</p>
+                                                    <p></p>
+                                                    <p>const colorPhase = p.colorOffset + stageTime * 0.0005;</p>
+                                                    <p>const rBase = Math.floor(70 + 90 * Math.sin(colorPhase) * richness + </p>
+                                                    <p>                         Math.sin(colorPhase * 3.1 + 0.2) * 50 * richness * 0.5);</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">3.色彩渐变模型</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">3.1.线性梯度插值</div>
+                                                            <div class="content-text">
+                                                                <p>C(t) = C₁ * (1-t) + C₂ * t,  t∈[0,1]</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">3.2.径向渐变丝滑过渡</div>
+                                                            <div class="content-text">
+                                                                <p>C(r) = C₁ * (1-min(1, r/R)) + C₂ * min(1, r/R)</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 第五部分：银河系 -->
+            <div class="branch">
+                <ul class="level-1">
+                    <li class="node">
+                        <div class="node-content" onclick="toggleItem(this)">五、银河系</div>
+                        <div class="children">
+                            <ul class="level-2">
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">一、球坐标转直角坐标变换</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.数学模型</div>
+                                                <div class="content-text">
+                                                    <p>x = r * sin(φ) * cos(θ)</p>
+                                                    <p>y = r * sin(φ) * sin(θ) * 0.02</p>
+                                                    <p>z = r * cos(φ)</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.代码实现</div>
+                                                <div class="content-text">
+                                                    <p>const radius = Math.pow(Math.random(), 8) * galaxyParams.coreRadius;</p>
+                                                    <p>corePositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);</p>
+                                                    <p>corePositions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.02;</p>
+                                                    <p>corePositions[i * 3 + 2] = radius * Math.cos(phi);</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">二、螺旋臂生成算法</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.数学基础模型</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.1.对数螺旋</div>
+                                                            <div class="content-text">
+                                                                <p>r = a * e^(bθ)</p>
+                                                                <p>转换为角度形式：</p>
+                                                                <p>θ = (1/b) * ln(r/a)</p>
+                                                                <p>完整角度计算：</p>
+                                                                <p>θ_total = θ_arm + θ_spiral + θ_feather</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.2.代码实现</div>
+                                                            <div class="content-text">
+                                                                <p>const arm = i % galaxyParams.spiralArms;</p>
+                                                                <p>const armAngle = arm * (Math.PI * 2 / galaxyParams.spiralArms);</p>
+                                                                <p>let spiralAngle = radius * 0.015 * (1 + 0.8 * Math.sin(arm * 0.5));</p>
+                                                                <p>let angle = armAngle + spiralAngle + feather;</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.密度分布策略</div>
+                                                <div class="content-text">
+                                                    <p>代码实现：</p>
+                                                    <p>const t = Math.pow(Math.random(), 2.2);</p>
+                                                    <p>const radius = galaxyParams.coreRadius + t * (galaxyParams.diskRadius - galaxyParams.coreRadius);</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">3.分形扰动算法</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">3.1.羽状分支扰动函数</div>
+                                                            <div class="content-text">
+                                                                <p>θ_feather = sin(kr + φ) * A(t)</p>
+                                                                <p>其中A(t) = A_min + (A_max - A_min)(1-t)^2</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">3.2.代码实现</div>
+                                                            <div class="content-text">
+                                                                <p>const feather = Math.sin(radius * 0.04 + Math.random() * 2) * (0.2 + 0.8 * Math.pow(1 - t, 2));</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">4.垂直高度模型</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">4.1.分段高度函数</div>
+                                                            <div class="content-text">
+                                                                <p>h(t,r,θ) = {</p>
+                                                                <p>  H_1 * (X-0.5),                                              t < 0.08</p>
+                                                                <p>  H_2 * (X-0.5) * (1-√t) + A_1 * sin(k_1r + k_2θ),    0.08 ≤ t < 0.18</p>
+                                                                <p>  H_3 * (X-0.5) * (1-√t) + A_2 * sin(k_1r + k_2θ),    t ≥ 0.18</p>
+                                                                <p>}</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">4.2.代码实现</div>
+                                                            <div class="content-text">
+                                                                <p>if (t < 0.08) {</p>
+                                                                <p>    height = (Math.random() - 0.5) * 80;</p>
+                                                                <p>} else if (t < 0.18) {</p>
+                                                                <p>    height = (Math.random() - 0.5) * 300 * (1 - Math.pow(t, 0.5)) + Math.sin(radius * 0.003 + armAngle * 2) * 60;</p>
+                                                                <p>} else {</p>
+                                                                <p>    height = (Math.random() - 0.5) * 800 * (1 - Math.pow(t, 0.5)) + Math.sin(radius * 0.003 + armAngle * 2) * 180;</p>
+                                                                <p>}</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="node">
+                                    <div class="node-content" onclick="toggleItem(this)">三、光线汇聚算法</div>
+                                    <div class="children">
+                                        <ul class="level-3">
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">1.HSL色彩空间应用</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.1.温度到色相映射</div>
+                                                            <div class="content-text">
+                                                                <p>h_hot ∈ [0.58, 0.66]（蓝色系）</p>
+                                                                <p>h_medium ∈ [0.1, 0.18]（黄色系）</p>
+                                                                <p>h_cool ∈ [0.005, 0.045]（红色系）</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">1.2.代码实现</div>
+                                                            <div class="content-text">
+                                                                <p>if (interArm) {</p>
+                                                                <p>    hue = 0.1 + Math.random() * 0.08; // 金色到浅橙色</p>
+                                                                <p>} else if (t < 0.3) {</p>
+                                                                <p>    hue = 0.58 + Math.random() * 0.08; // 蓝色到浅蓝色</p>
+                                                                <p>} else {</p>
+                                                                <p>    hue = 0.5 + Math.random() * 0.2; // 青色到蓝紫色</p>
+                                                                <p>}</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">2.距离衰减模型</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">2.1.亮度衰减函数</div>
+                                                            <div class="content-text">
+                                                                <p>L(t) = L_0 * [0.5 + 0.5(1-t)]</p>
+                                                                <p>对于t < 0.5</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">2.2.代码实现</div>
+                                                            <div class="content-text">
+                                                                <p>if (t < 0.5) {</p>
+                                                                <p>    lightness *= 0.5 + 0.5 * (1 - t);</p>
+                                                                <p>}</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">3.光线汇聚线</div>
+                                                <div class="content-text">
+                                                    <p>const curve = new THREE.CatmullRomCurve3([</p>
+                                                    <p>    start,</p>
+                                                    <p>    mid,</p>
+                                                    <p>    end</p>
+                                                    <p>]);</p>
+                                                    <p>const points = curve.getPoints(120);</p>
+                                                </div>
+                                            </li>
+                                            <li class="node">
+                                                <div class="node-content" onclick="toggleItem(this)">4.透明度渐变函数</div>
+                                                <div class="children">
+                                                    <ul class="level-4">
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">4.1.透明度分段函数</div>
+                                                            <div class="content-text">
+                                                                <p>α(t) = {</p>
+                                                                <p>  1.0,                                     t ≤ 0.7</p>
+                                                                <p>  max(0, 1.0 - ((t-0.7)² * 1.5)/(0.15²)),  0.7 < t ≤ 0.85</p>
+                                                                <p>  0,                                       t > 0.85</p>
+                                                                <p>}</p>
+                                                            </div>
+                                                        </li>
+                                                        <li class="node">
+                                                            <div class="node-content" onclick="toggleItem(this)">4.2.代码实现</div>
+                                                            <div class="content-text">
+                                                                <p>if (t > 0.70) {</p>
+                                                                <p>    const fadeT = (t - 0.70) / (0.85 - 0.70);</p>
+                                                                <p>    alphas.push(Math.max(0, 1.0 - fadeT * fadeT * 1.5));</p>
+                                                                <p>} else {</p>
+                                                                <p>    alphas.push(1.0);</p>
+                                                                <p>}</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <script>
+            // ... existing code ...
+            
+            // 添加一个全局变量跟踪核心算法节点的展开状态
+            let rootNodeExpanded = false;
+            
+            // 切换所有层级的展开/折叠状态
+            function toggleAllLevels() {
+                // 添加点击特效
+                const rootNode = document.getElementById('rootAlgorithmNode');
+                rootNode.classList.add('clicked');
+                
+                // 添加波纹效果
+                addRippleEffect(event || {clientX: rootNode.offsetWidth/2, clientY: rootNode.offsetHeight/2, currentTarget: rootNode});
+                
+                setTimeout(() => {
+                    rootNode.classList.remove('clicked');
+                }, 500);
+                
+                if (!rootNodeExpanded) {
+                    // 展开所有层级
+                    expandAllLevels();
+                    rootNodeExpanded = true;
+                } else {
+                    // 折叠所有层级
+                    collapseAllLevels();
+                    rootNodeExpanded = false;
+                }
+                
+                // 更新连线
+                updateConnections();
+            }
+            
+            // 展开所有层级
+            function expandAllLevels() {
+                // 逐层展开所有节点
+                for (let level = 1; level <= MAX_LEVEL; level++) {
+                    const nodes = document.querySelectorAll(`.level-${level} > .node > .node-content:not(.open)`);
+                    nodes.forEach(node => {
+                        if (!node.classList.contains('open')) {
+                            toggleItem(node);
+                        }
+                    });
+                }
+                currentExpandLevel = MAX_LEVEL; // 更新当前展开层级
+                
+                // 在所有节点展开后，调整所有分支宽度
+                setTimeout(() => {
+                    document.querySelectorAll('.branch').forEach(branch => {
+                        const openNodes = branch.querySelectorAll('.node-content.open');
+                        if (openNodes.length > 0) {
+                            branch.classList.add('branch-expanded');
+                            
+                            // 检查是否有宽内容
+                            openNodes.forEach(node => {
+                                const content = node.nextElementSibling;
+                                if (content && measureContentWidth(content) > 400) {
+                                    branch.classList.add('branch-wide-content');
+                                }
+                            });
+                        }
+                    });
+                }, 300);
+                
+                // 确保视图可以容纳所有展开的内容
+                setTimeout(adjustMindMapWidth, 500);
+            }
+            
+            // 折叠所有层级
+            function collapseAllLevels() {
+                // 从最深层级开始折叠，确保子节点先被折叠
+                for (let level = MAX_LEVEL; level >= 1; level--) {
+                    const nodes = document.querySelectorAll(`.level-${level} > .node > .node-content.open`);
+                    nodes.forEach(node => {
+                        if (node.classList.contains('open')) {
+                            toggleItem(node);
+                        }
+                    });
+                }
+                currentExpandLevel = 0; // 重置当前展开层级
+                currentCollapseLevel = MAX_LEVEL; // 重置当前折叠层级
+                
+                // 重置所有分支宽度
+                document.querySelectorAll('.branch').forEach(branch => {
+                    branch.classList.remove('branch-expanded');
+                    branch.classList.remove('branch-wide-content');
+                });
+                
+                // 重置思维导图宽度
+                setTimeout(adjustMindMapWidth, 500);
+            }
+
+            // 添加波纹效果函数
+            function addRippleEffect(event) {
+                if (!event || !event.currentTarget) return;
+                
+                const element = event.currentTarget;
+                
+                // 确保有容器
+                let rippleContainer = element.querySelector('.ripple-container');
+                if (!rippleContainer) {
+                    rippleContainer = document.createElement('div');
+                    rippleContainer.className = 'ripple-container';
+                    element.appendChild(rippleContainer);
+                }
+                
+                // 创建波纹
+                const ripple = document.createElement('div');
+                ripple.className = 'ripple';
+                
+                // 计算点击位置相对于元素的坐标
+                const rect = element.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                
+                // 根据元素大小调整波纹大小
+                const size = Math.max(rect.width, rect.height) * 2;
+                ripple.style.width = size + 'px';
+                ripple.style.height = size + 'px';
+                ripple.style.marginTop = -(size / 2) + 'px';
+                ripple.style.marginLeft = -(size / 2) + 'px';
+                
+                // 添加波纹到容器
+                rippleContainer.appendChild(ripple);
+                
+                // 动画结束后移除波纹
+                setTimeout(() => {
+                    if (ripple.parentNode === rippleContainer) {
+                        rippleContainer.removeChild(ripple);
+                    }
+                }, 1000);
+            }
+
+            function toggleItem(element) {
+                // 切换当前节点的开关状态
+                element.classList.toggle('open');
+                
+                // 添加点击特效
+                element.classList.add('clicked');
+                
+                // 添加波纹效果
+                if (event) {
+                    addRippleEffect(event);
+                }
+                
+                // 创建流光效果
+                const flowLight = document.createElement('div');
+                flowLight.className = 'flow-light';
+                element.appendChild(flowLight);
+                
+                // 添加全局闪光效果
+                const flashEffect = document.createElement('div');
+                flashEffect.className = 'glow-effect';
+                element.appendChild(flashEffect);
+                
+                setTimeout(() => {
+                    if(element.contains(flowLight)) {
+                        element.removeChild(flowLight);
+                    }
+                    if(element.contains(flashEffect)) {
+                        element.removeChild(flashEffect);
+                    }
+                    element.classList.remove('clicked');
+                }, 1000);
+                
+                // 找到下一个相邻元素（可能是内容或子节点容器）
+                let nextElement = element.nextElementSibling;
+                
+                // 如果下一个元素存在，切换其显示状态
+                if (nextElement) {
+                    if (nextElement.style.display === 'none' || nextElement.style.display === '') {
+                        nextElement.style.display = 'block';
+                        
+                        // 展开时，检查内容宽度并调整父容器
+                        setTimeout(() => {
+                            adjustBranchWidth(element);
+                            // 调整整个思维导图的宽度
+                            adjustMindMapWidth();
+                        }, 100);
+                    } else {
+                        nextElement.style.display = 'none';
+                        
+                        // 折叠时，重置父容器宽度
+                        resetBranchWidth(element);
+                        // 调整整个思维导图的宽度
+                        setTimeout(adjustMindMapWidth, 100);
+                    }
+                }
+                
+                // 展开/折叠节点后更新连线
+                setTimeout(updateConnections, 300);
+            }
+
+            // 创建一个变量来跟踪当前展开到哪个层级
+            let currentExpandLevel = 0;
+            const MAX_LEVEL = 4; // 最大层级数量
+            
+            // 用于长按检测的变量
+            let rightClickTimer = null;
+            let isRightMouseDown = false;
+            let currentCollapseLevel = MAX_LEVEL;
+            const LONG_PRESS_DURATION = 500; // 长按时间阈值(毫秒)
+
+            // 根据层级展开所有节点
+            function expandByLevel(level) {
+                if (level <= MAX_LEVEL) {
+                    // 查找当前层级的所有节点
+                    const nodes = document.querySelectorAll(`.level-${level} > .node > .node-content:not(.open)`);
+                    
+                    // 如果没有更多节点需要展开，返回false
+                    if (nodes.length === 0) {
+                        return false;
+                    }
+                    
+                    // 展开所有找到的节点
+                    nodes.forEach(node => {
+                        if (!node.classList.contains('open')) {
+                            toggleItem(node);
+                        }
+                    });
+                    
+                    // 调整整个思维导图的宽度
+                    setTimeout(adjustMindMapWidth, 300);
+                    
+                    return true;
+                }
+                return false;
+            }
+
+            // 根据层级收缩所有节点
+            function collapseByLevel(level) {
+                if (level > 0) {
+                    // 查找当前层级的所有已展开节点
+                    const nodes = document.querySelectorAll(`.level-${level} > .node > .node-content.open`);
+                    
+                    // 如果没有节点需要收缩，返回false
+                    if (nodes.length === 0) {
+                        return false;
+                    }
+                    
+                    // 收缩所有找到的节点
+                    nodes.forEach(node => {
+                        if (node.classList.contains('open')) {
+                            toggleItem(node);
+                        }
+                    });
+                    
+                    // 调整整个思维导图的宽度
+                    setTimeout(adjustMindMapWidth, 300);
+                    
+                    return true;
+                }
+                return false;
+            }
+
+            // 高级连线系统 - 创建蓝白渐变连线
+            function createConnections() {
+                const svgContainer = document.getElementById('connectionsContainer');
+                const rootNode = document.querySelector('.root-node');
+                const mainTopics = document.querySelectorAll('.level-1 > .node > .node-content');
+                
+                // 清除之前的连线
+                while (svgContainer.querySelector('path')) {
+                    svgContainer.removeChild(svgContainer.querySelector('path'));
+                }
+                while (svgContainer.querySelector('circle')) {
+                    svgContainer.removeChild(svgContainer.querySelector('circle'));
+                }
+                
+                // 确保SVG容器与页面大小一致
+                svgContainer.setAttribute('width', window.innerWidth);
+                svgContainer.setAttribute('height', document.body.scrollHeight);
+                
+                // 连接核心节点到四个主题 - 水平连接
+                if (rootNode && mainTopics.length > 0) {
+                    const rootRect = rootNode.getBoundingClientRect();
+                    
+                    // 调整核心节点连接点 - 精确到节点右侧中心
+                    const rootRight = {
+                        x: rootRect.right + window.scrollX,
+                        y: rootRect.top + rootRect.height / 2 + window.scrollY
+                    };
+                    
+                    mainTopics.forEach((topic, index) => {
+                        const topicRect = topic.getBoundingClientRect();
+                        
+                        // 调整主题节点连接点 - 精确到节点左侧中心
+                        const topicLeft = {
+                            x: topicRect.left + window.scrollX,
+                            y: topicRect.top + topicRect.height / 2 + window.scrollY
+                        };
+                        
+                        // 使用贝塞尔曲线连接，更自然
+                        const controlX = rootRight.x + (topicLeft.x - rootRight.x) * 0.5;
+                        const pathData = `M ${rootRight.x} ${rootRight.y} C ${controlX} ${rootRight.y}, ${controlX} ${topicLeft.y}, ${topicLeft.x} ${topicLeft.y}`;
+                        
+                        // 创建连线阴影底层
+                        const shadowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        shadowPath.setAttribute('d', pathData);
+                        shadowPath.setAttribute('class', 'connection-path');
+                        shadowPath.setAttribute('stroke', 'rgba(0, 182, 255, 0.08)');
+                        shadowPath.setAttribute('stroke-width', '5');
+                        shadowPath.setAttribute('filter', 'url(#blurryFlow)');
+                        svgContainer.appendChild(shadowPath);
+                        
+                        // 创建基础宽线
+                        const basePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        basePath.setAttribute('d', pathData);
+                        basePath.setAttribute('class', 'connection-path');
+                        basePath.setAttribute('stroke', 'rgba(101, 219, 255, 0.15)');
+                        basePath.setAttribute('stroke-width', '3.5');
+                        basePath.setAttribute('filter', 'url(#blurryFlow)');
+                        svgContainer.appendChild(basePath);
+                        
+                        // 创建反向流动层
+                        const reverseFlowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        reverseFlowPath.setAttribute('d', pathData);
+                        reverseFlowPath.setAttribute('class', 'connection-path');
+                        reverseFlowPath.setAttribute('stroke', 'url(#flowGradientReverse)');
+                        reverseFlowPath.setAttribute('stroke-width', '2.5');
+                        reverseFlowPath.setAttribute('opacity', '0.5');
+                        svgContainer.appendChild(reverseFlowPath);
+                        
+                        // 创建主路径
+                        const topicPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        topicPath.setAttribute('d', pathData);
+                        topicPath.setAttribute('class', 'connection-path');
+                        topicPath.setAttribute('stroke', 'url(#intensiveGradient)');
+                        topicPath.setAttribute('stroke-width', '2');
+                        svgContainer.appendChild(topicPath);
+                        
+                        // 添加流动效果
+                        const topicFlowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        topicFlowPath.setAttribute('d', pathData);
+                        topicFlowPath.setAttribute('class', 'connection-path connection-flow');
+                        topicFlowPath.setAttribute('stroke', 'url(#flowGradient)');
+                        topicFlowPath.setAttribute('stroke-width', '1.8');
+                        topicFlowPath.setAttribute('opacity', '0.8');
+                        svgContainer.appendChild(topicFlowPath);
+                        
+                        // 创建高亮中心线
+                        const centerPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        centerPath.setAttribute('d', pathData);
+                        centerPath.setAttribute('class', 'connection-path');
+                        centerPath.setAttribute('stroke', 'rgba(101, 219, 255, 0.8)');
+                        centerPath.setAttribute('stroke-width', '0.8');
+                        centerPath.setAttribute('opacity', '0.7');
+                        svgContainer.appendChild(centerPath);
+                        
+                        // 添加点光源
+                        for (let i = 0; i < 6; i++) {
+                            const pulseCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                            pulseCircle.setAttribute('class', 'connection-pulse');
+                            pulseCircle.setAttribute('cx', rootRight.x);
+                            pulseCircle.setAttribute('cy', rootRight.y);
+                            pulseCircle.style.animationDelay = `${i * 0.5 + index * 0.1}s`;
+                            
+                            const animateMotion = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
+                            animateMotion.setAttribute('dur', `${2.8 + index * 0.3}s`);
+                            animateMotion.setAttribute('begin', `${i * 0.5 + index * 0.1}s`);
+                            animateMotion.setAttribute('repeatCount', 'indefinite');
+                            animateMotion.setAttribute('path', pathData);
+                            animateMotion.setAttribute('calcMode', 'linear');
+                            pulseCircle.appendChild(animateMotion);
+                            
+                            svgContainer.appendChild(pulseCircle);
+                        }
+                    });
+                }
+                
+                // 新增：绘制层级节点之间的连接线
+                drawLevelConnections(svgContainer);
+            }
+            
+            // 新增：绘制层级节点之间的连接线 - 优化版
+            function drawLevelConnections(svgContainer) {
+                // 创建连接线分组
+                const levelConnectionGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                levelConnectionGroup.setAttribute('class', 'level-connections');
+                svgContainer.appendChild(levelConnectionGroup);
+                
+                // 查找所有打开的节点
+                const openNodes = document.querySelectorAll('.node-content.open');
+                
+                openNodes.forEach(node => {
+                    const nodeRect = node.getBoundingClientRect();
+                    const childContainer = node.nextElementSibling;
+                    
+                    if (childContainer && childContainer.style.display !== 'none') {
+                        const childNodes = childContainer.querySelectorAll(':scope > ul > li > .node-content');
+                        
+                        childNodes.forEach(childNode => {
+                            const childRect = childNode.getBoundingClientRect();
+                            
+                            // 起点：父节点右侧中心
+                            const startPoint = {
+                                x: nodeRect.right + window.scrollX,
+                                y: nodeRect.top + nodeRect.height / 2 + window.scrollY
+                            };
+                            
+                            // 终点：子节点左侧中心
+                            const endPoint = {
+                                x: childRect.left + window.scrollX,
+                                y: childRect.top + childRect.height / 2 + window.scrollY
+                            };
+                            
+                            // 创建平滑的连接线
+                            createSmoothLevelConnection(levelConnectionGroup, startPoint, endPoint, 
+                                node.getAttribute('data-hierarchy-level'));
+                        });
+                    }
+                });
+            }
+            
+            // 新增：创建平滑的层级连接线
+            function createSmoothLevelConnection(parentElement, startPoint, endPoint, level) {
+                // 确定线条样式基于层级
+                const opacity = level ? Math.max(0.1, 0.4 - level * 0.1) : 0.2;
+                const width = level ? Math.max(1, 2.5 - level * 0.4) : 1.5;
+                
+                // 计算控制点
+                const controlX = startPoint.x + (endPoint.x - startPoint.x) * 0.5;
+                const pathData = `M ${startPoint.x} ${startPoint.y} C ${controlX} ${startPoint.y}, ${controlX} ${endPoint.y}, ${endPoint.x} ${endPoint.y}`;
+                
+                // 创建底层线条
+                createConnectionLayer(parentElement, pathData, {
+                    class: 'connection-path level-connection',
+                    stroke: 'rgba(101, 219, 255, 0.08)',
+                    'stroke-width': (width + 0.7).toString(),
+                    opacity: (opacity - 0.1).toString()
+                });
+                
+                // 创建主线条
+                createConnectionLayer(parentElement, pathData, {
+                    class: 'connection-path level-connection',
+                    stroke: 'rgba(101, 219, 255, 0.3)',
+                    'stroke-width': width.toString(),
+                    opacity: opacity.toString()
+                });
+                
+                // 添加发光效果
+                if (parseInt(level) < 3) { // 只为前两级添加发光效果
+                    createConnectionLayer(parentElement, pathData, {
+                        class: 'connection-path level-connection',
+                        stroke: 'rgba(101, 219, 255, 0.1)',
+                        'stroke-width': '0.6',
+                        opacity: '0.6',
+                        filter: 'url(#blurryFlow)'
+                    });
+                }
+            }
+            
+            // 更新连线
+            function updateConnections() {
+                // 延迟以确保DOM更新完成
+                setTimeout(() => {
+                    createConnections();
+                }, 300);
+            }
+            
+            // 新增：调整思维导图整体宽度
+            function adjustMindMapWidth() {
+                const mindMap = document.querySelector('.mind-map');
+                const mapContainer = document.querySelector('.map-container');
+                const branches = document.querySelector('.branches');
+                const allBranches = document.querySelectorAll('.branch');
+                
+                if (!mindMap || !mapContainer || !branches) return;
+                
+                // 确保所有元素都可见
+                setTimeout(() => {
+                    // 计算所需的总宽度
+                    let totalWidth = mapContainer.scrollWidth + 40; // 根节点容器宽度 + 边距
+                    
+                    // 计算所有展开分支的宽度总和
+                    let branchesWidth = 0;
+                    allBranches.forEach(branch => {
+                        // 检查分支中是否有展开的节点
+                        const expandedNodes = branch.querySelectorAll('.node-content.open');
+                        if (expandedNodes.length > 0) {
+                            branchesWidth += branch.scrollWidth + 60; // 分支宽度 + 间距
+                        } else {
+                            branchesWidth += branch.scrollWidth + 40; // 未展开分支 + 较小间距
+                        }
+                    });
+                    
+                    // 设置思维导图宽度为根节点宽度 + 分支宽度
+                    const requiredWidth = Math.max(totalWidth, branchesWidth + 100);
+                    
+                    // 如果需要的宽度超过当前宽度，则更新
+                    if (requiredWidth > mindMap.offsetWidth) {
+                        mindMap.style.width = requiredWidth + 'px';
+                    }
+                    
+                    // 更新连接线
+                    updateConnections();
+                }, 200);
+            }
+
+            // 页面加载完成后初始化
+            window.onload = function() {
+                // 禁止鼠标右键弹出菜单栏，但保留右键事件处理
+                document.addEventListener('contextmenu', function(e) {
+                    e.preventDefault(); // 只阻止默认菜单
+                    return false;
+                });
+                
+                // 添加双击功能 - 展开所有大主题的下一个层级
+                document.addEventListener('dblclick', function(e) {
+                    if (e.button === 0) { // 左键双击
+                        // 获取所有一级主题节点
+                        const mainTopics = document.querySelectorAll('.level-1 > .node > .node-content');
+                        
+                        // 遍历所有主题节点
+                        mainTopics.forEach(topic => {
+                            // 检查每个主题节点
+                            if (topic.classList.contains('open')) {
+                                // 获取该主题下的所有二级节点
+                                const subTopics = topic.nextElementSibling.querySelectorAll('.level-2 > .node > .node-content:not(.open)');
+                                
+                                // 展开所有未展开的二级节点
+                                subTopics.forEach(subTopic => {
+                                    toggleItem(subTopic);
+                                });
+                            } else {
+                                // 先展开主题节点本身
+                                toggleItem(topic);
+                            }
+                        });
+                        
+                        // 更新连接线
+                        setTimeout(updateConnections, 300);
+                    }
+                });
+                
+                // 创建动态气泡
+                createDynamicBubbles();
+                
+                // 防抖函数 - 优化滚动和调整大小事件处理
+                function debounce(func, wait) {
+                    let timeout;
+                    return function() {
+                        const context = this, args = arguments;
+                        clearTimeout(timeout);
+                        timeout = setTimeout(() => {
+                            func.apply(context, args);
+                        }, wait);
+                    };
+                }
+                
+                // 确保视频自动播放
+                const video = document.querySelector('.video-background');
+                video.play().catch(error => {
+                    console.log("视频自动播放失败:", error);
+                });
+                
+                // 添加海洋波浪效果的动画监听
+                document.querySelectorAll('.node-content').forEach(item => {
+                    item.addEventListener('mouseenter', function() {
+                        // 添加额外的流光效果
+                        let glowEffect = document.createElement('div');
+                        glowEffect.className = 'glow-effect';
+                        this.appendChild(glowEffect);
+                        
+                        setTimeout(() => {
+                            if(glowEffect && glowEffect.parentNode === this) {
+                                this.removeChild(glowEffect);
+                            }
+                        }, 800); // 加快移除时间
+                    });
+                    
+                    // 添加点击波纹效果
+                    item.addEventListener('mousedown', addRippleEffect);
+                });
+                
+                // 为根节点和项目标题添加波纹效果
+                document.querySelectorAll('.root-node, .project-title').forEach(item => {
+                    item.addEventListener('mousedown', addRippleEffect);
+                });
+                
+                // 添加鼠标按下事件监听
+                document.addEventListener('mousedown', function(e) {
+                    // 检测鼠标右键按下
+                    if (e.button === 2) {
+                        isRightMouseDown = false;
+                        rightClickTimer = setTimeout(() => {
+                            isRightMouseDown = true;
+                            
+                            // 尝试从当前层级开始收缩
+                            const hasCollapsed = collapseByLevel(currentCollapseLevel);
+                            
+                            // 如果当前层级没有节点可收缩，则尝试收缩下一较低层级
+                            if (!hasCollapsed) {
+                                currentCollapseLevel--;
+                                const nextLevelCollapsed = collapseByLevel(currentCollapseLevel);
+                                
+                                // 如果下一层级也没有节点可收缩，重置层级计数
+                                if (!nextLevelCollapsed) {
+                                    // 检查是否还有任何已展开的节点
+                                    let anyExpanded = false;
+                                    for (let i = MAX_LEVEL; i > 0; i--) {
+                                        const expandedNodes = document.querySelectorAll(`.level-${i} > .node > .node-content.open`);
+                                        if (expandedNodes.length > 0) {
+                                            anyExpanded = true;
+                                            currentCollapseLevel = i;
+                                            collapseByLevel(currentCollapseLevel);
+                                            break;
+                                        }
+                                    }
+                                    
+                                    // 如果没有任何展开的节点，重置回最高层级
+                                    if (!anyExpanded) {
+                                        currentCollapseLevel = MAX_LEVEL;
+                                        currentExpandLevel = 0; // 重置展开层级
+                                    }
+                                }
+                            }
+                            
+                            // 更新连线
+                            updateConnections();
+                        }, LONG_PRESS_DURATION);
+                    }
+                });
+                
+                // 添加鼠标松开事件监听
+                document.addEventListener('mouseup', function(e) {
+                    // 检测鼠标右键松开
+                    if (e.button === 2) {
+                        // 清除长按定时器
+                        if (rightClickTimer) {
+                            clearTimeout(rightClickTimer);
+                            rightClickTimer = null;
+                            
+                            // 如果不是长按，则执行双击检测
+                            if (!isRightMouseDown) {
+                                // 双击检测
+                                const now = new Date().getTime();
+                                if (lastRightClickTime && (now - lastRightClickTime < 300)) {
+                                    // 这是一个双击，展开下一层级
+                                    currentExpandLevel++;
+                                    const hasExpanded = expandByLevel(currentExpandLevel);
+                                    
+                                    // 如果当前层级没有更多节点可展开，重置层级计数
+                                    if (!hasExpanded) {
+                                        currentExpandLevel = 0; // 重置回起始状态
+                                    }
+                                    
+                                    // 更新连线
+                                    setTimeout(updateConnections, 300);
+                                }
+                                lastRightClickTime = now;
+                            }
+                        }
+                        isRightMouseDown = false;
+                    }
+                });
+                
+                // 记录最后一次右键点击时间，用于双击检测
+                let lastRightClickTime = 0;
+                
+                // 添加鼠标离开页面事件监听，防止在页面外松开鼠标
+                document.addEventListener('mouseleave', function() {
+                    if (rightClickTimer) {
+                        clearTimeout(rightClickTimer);
+                        rightClickTimer = null;
+                    }
+                    isRightMouseDown = false;
+                });
+                
+                // 使用防抖优化窗口大小调整事件
+                const debouncedResize = debounce(function() {
+                    updateConnections();
+                    adjustMindMapWidth();
+                    autoAdjustForScreenSize();
+                    createDynamicBubbles(); // 更新气泡装饰
+                }, 150);
+                
+                // 窗口大小改变时更新连线
+                window.addEventListener('resize', debouncedResize);
+                
+                // 使用防抖优化滚动事件
+                const debouncedScroll = debounce(function() {
+                    updateConnections();
+                }, 180);
+                
+                // 添加滚动事件监听，更新连线
+                window.addEventListener('scroll', debouncedScroll);
+                
+                // 初始创建连线
+                createConnections();
+                
+                // 添加滚动指示器
+                addScrollIndicator();
+                
+                // 页面载入后延迟更新一次连线，确保所有元素都已正确渲染
+                setTimeout(() => {
+                    updateConnections();
+                    adjustMindMapWidth();
+                    autoAdjustForScreenSize();
+                }, 400);
+                
+                // 在1秒后再次更新一次连线，解决某些浏览器可能的延迟加载问题
+                setTimeout(() => {
+                    updateConnections();
+                    adjustMindMapWidth();
+                }, 1000);
+                
+                // 初始化时调整所有已展开节点的分支宽度
+                setTimeout(() => {
+                    document.querySelectorAll('.node-content.open').forEach(node => {
+                        adjustBranchWidth(node);
+                    });
+                    adjustMindMapWidth();
+                }, 400);
+            };
+            
+            // 新增：添加滚动指示器
+            function addScrollIndicator() {
+                // 创建指示器元素
+                const indicator = document.createElement('div');
+                indicator.className = 'scroll-indicator';
+                
+                // 创建箭头图标
+                const arrow = document.createElement('div');
+                arrow.className = 'scroll-indicator-arrow';
+                indicator.appendChild(arrow);
+                
+                // 添加点击事件，滚动到下一部分
+                indicator.addEventListener('click', function() {
+                    // 获取当前可视区域
+                    const viewportHeight = window.innerHeight;
+                    const scrollTop = window.scrollY || window.pageYOffset;
+                    
+                    // 计算下一个滚动目标点
+                    const scrollTarget = scrollTop + viewportHeight;
+                    
+                    // 平滑滚动
+                    window.scrollTo({
+                        top: scrollTarget,
+                        behavior: 'smooth'
+                    });
+                });
+                
+                // 添加到文档中
+                document.body.appendChild(indicator);
+                
+                // 监听滚动事件，更新指示器方向
+                window.addEventListener('scroll', function() {
+                    const scrollTop = window.scrollY || window.pageYOffset;
+                    const docHeight = document.documentElement.scrollHeight;
+                    const winHeight = window.innerHeight;
+                    
+                    // 如果滚动到了底部，显示向上箭头
+                    if (scrollTop + winHeight >= docHeight - 50) {
+                        arrow.style.transform = 'rotate(135deg) translate(-2px, -2px)';
+                    } else {
+                        arrow.style.transform = 'rotate(-45deg) translate(-2px, -2px)';
+                    }
+                });
+            }
+            
+            // 新增：调整分支宽度的函数
+            function adjustBranchWidth(element) {
+                // 查找当前节点所在的分支
+                const branch = findParentBranch(element);
+                if (!branch) return;
+                
+                // 检查该节点的内容宽度
+                const content = element.nextElementSibling;
+                if (!content) return;
+                
+                // 测量内容实际宽度
+                const contentWidth = measureContentWidth(content);
+                
+                // 如果内容较宽，则标记分支为宽内容
+                if (contentWidth > 400) {
+                    branch.classList.add('branch-wide-content');
+                    branch.classList.add('branch-expanded');
+                    
+                    // 为过长的内容添加宽内容类
+                    if (contentWidth > 600) {
+                        content.classList.add('content-wide');
+                    }
+                } else if (contentWidth > 300) {
+                    // 如果内容中等宽度，标记分支为展开状态
+                    branch.classList.add('branch-expanded');
+                }
+                
+                // 检查该分支下的所有展开节点，标记分支状态
+                const openNodes = branch.querySelectorAll('.node-content.open');
+                if (openNodes.length > 0) {
+                    branch.classList.add('branch-expanded');
+                }
+                
+                // 检查当前节点是否是一级节点
+                if (element.closest('.level-1')) {
+                    branch.classList.add('branch-expanded');
+                }
+            }
+            
+            // 新增：重置分支宽度的函数
+            function resetBranchWidth(element) {
+                // 查找当前节点所在的分支
+                const branch = findParentBranch(element);
+                if (!branch) return;
+                
+                // 检查该分支下是否还有其他展开的节点
+                const openNodes = branch.querySelectorAll('.node-content.open');
+                
+                // 如果没有展开的节点，移除宽度类
+                if (openNodes.length === 0) {
+                    branch.classList.remove('branch-expanded');
+                    branch.classList.remove('branch-wide-content');
+                } else {
+                    // 否则，重新检查剩余展开节点的内容宽度
+                    let hasWideContent = false;
+                    openNodes.forEach(node => {
+                        const content = node.nextElementSibling;
+                        if (content && measureContentWidth(content) > 400) {
+                            hasWideContent = true;
+                        }
+                    });
+                    
+                    // 根据检查结果调整分支类
+                    if (!hasWideContent) {
+                        branch.classList.remove('branch-wide-content');
+                    }
+                }
+            }
+            
+            // 新增：查找父分支元素
+            function findParentBranch(element) {
+                let parent = element;
+                while (parent && !parent.classList.contains('branch')) {
+                    parent = parent.parentElement;
+                }
+                return parent;
+            }
+            
+            // 新增：测量内容实际宽度
+            function measureContentWidth(element) {
+                // 创建一个临时克隆以测量宽度
+                const clone = element.cloneNode(true);
+                clone.style.position = 'absolute';
+                clone.style.visibility = 'hidden';
+                clone.style.display = 'block';
+                clone.style.width = 'auto';
+                document.body.appendChild(clone);
+                
+                // 测量宽度
+                const width = clone.scrollWidth;
+                
+                // 移除临时元素
+                document.body.removeChild(clone);
+                
+                return width;
+            }
+
+            // 新增：创建动态气泡装饰
+            function createDynamicBubbles() {
+                const bubblesContainer = document.getElementById('bubbles-container');
+                if (!bubblesContainer) return;
+                
+                // 清除现有气泡
+                bubblesContainer.innerHTML = '';
+                
+                // 检查屏幕宽度，仅在较宽的屏幕上显示装饰气泡
+                if (window.innerWidth < 768) return;
+                
+                // 确定气泡数量 - 响应式调整
+                const bubblesCount = window.innerWidth < 1200 ? 5 : 8;
+                
+                // 创建新气泡
+                for (let i = 0; i < bubblesCount; i++) {
+                    const bubble = document.createElement('div');
+                    bubble.className = 'decorative-bubble';
+                    
+                    // 设置随机大小 (6px - 18px)
+                    const size = 6 + Math.random() * 12;
+                    bubble.style.width = `${size}px`;
+                    bubble.style.height = `${size}px`;
+                    
+                    // 设置随机位置
+                    bubble.style.left = `${Math.random() * 95}%`;
+                    bubble.style.top = `${Math.random() * 90 + 5}%`;
+                    
+                    // 设置随机透明度
+                    bubble.style.opacity = `${0.1 + Math.random() * 0.3}`;
+                    
+                    // 设置随机动画延迟
+                    bubble.style.animationDelay = `${Math.random() * 5}s`;
+                    
+                    // 添加到容器
+                    bubblesContainer.appendChild(bubble);
+                }
+            }
+        </script>
+        
+        <!-- 添加优化从左到右布局的脚本 -->
+        <script>
+            // 在文档加载完成后执行
+            document.addEventListener('DOMContentLoaded', function() {
+                // 优化从左到右的布局
+                function optimizeLeftToRightLayout() {
+                    // 获取主要容器元素
+                    const mindMap = document.querySelector('.mind-map');
+                    const branches = document.querySelector('.branches');
+                    const rootNode = document.getElementById('rootAlgorithmNode');
+                    
+                    if (!mindMap || !branches || !rootNode) return;
+                    
+                    // 将分支容器移到与根节点同级，实现水平排列
+                    const mapContainer = document.querySelector('.map-container');
+                    if (mapContainer && mapContainer.contains(branches)) {
+                        mapContainer.style.display = 'flex';
+                        mapContainer.style.flexDirection = 'row';
+                        mapContainer.style.alignItems = 'flex-start';
+                        mapContainer.style.width = 'fit-content';
+                        mapContainer.style.flexWrap = 'nowrap';
+                        mapContainer.style.overflowX = 'visible';
+                    }
+                    
+                    // 调整所有层级节点显示
+                    enhanceLevelNodeDisplay();
+                    
+                    // 计算每个分支的宽度并调整容器宽度
+                    setTimeout(() => {
+                        adjustMindMapWidth();
+                        
+                        // 处理从根节点到一级节点的连接线
+                        updateConnections();
+                    }, 200);
+                    
+                    // 根据屏幕大小进行最终优化
+                    optimizeForCurrentScreenSize();
+                }
+                
+                // 增强层级节点显示
+                function enhanceLevelNodeDisplay() {
+                    // 为每个层级添加可视化标识
+                    for (let level = 1; level <= 4; level++) {
+                        document.querySelectorAll(`.level-${level}`).forEach(levelElement => {
+                            levelElement.setAttribute('data-level', level);
+                        });
+                    }
+                    
+                    // 确保节点连接线正确显示
+                    document.querySelectorAll('.node').forEach(node => {
+                        const nodeContent = node.querySelector('.node-content');
+                        const children = node.querySelector('.children');
+                        
+                        if (nodeContent && children) {
+                            // 添加连接线标识
+                            if (!node.querySelector('.node-connector')) {
+                                const connector = document.createElement('div');
+                                connector.className = 'node-connector';
+                                node.appendChild(connector);
+                            }
+                        }
+                    });
+                    
+                    // 优化视觉层级
+                    optimizeNodeVisualHierarchy();
+                }
+                
+                // 新增：优化节点的视觉层级
+                function optimizeNodeVisualHierarchy() {
+                    // 设置各级别节点的不同视觉样式
+                    const levelStyles = {
+                        1: { bg: 'rgba(1, 43, 81, 0.2)', shadow: '0 5px 15px rgba(0, 118, 196, 0.3)' },
+                        2: { bg: 'rgba(3, 52, 98, 0.15)', shadow: '0 4px 12px rgba(0, 118, 196, 0.25)' },
+                        3: { bg: 'rgba(5, 61, 115, 0.12)', shadow: '0 3px 10px rgba(0, 118, 196, 0.2)' },
+                        4: { bg: 'rgba(7, 70, 132, 0.1)', shadow: '0 2px 8px rgba(0, 118, 196, 0.15)' }
+                    };
+                    
+                    // 应用样式到各级别节点
+                    Object.keys(levelStyles).forEach(level => {
+                        document.querySelectorAll(`.level-${level} > .node > .node-content`).forEach(node => {
+                            if (level > 1) { // 仅应用于非一级节点，一级节点保留原样式
+                                node.style.background = levelStyles[level].bg;
+                                node.style.boxShadow = levelStyles[level].shadow;
+                            }
+                            
+                            // 为每个级别添加层级标识符
+                            if (!node.hasAttribute('data-hierarchy-level')) {
+                                node.setAttribute('data-hierarchy-level', level);
+                            }
+                        });
+                    });
+                }
+                
+                // 高级连线系统 - 创建蓝白渐变连线 (优化版)
+                function createConnections() {
+                    const svgContainer = document.getElementById('connectionsContainer');
+                    const rootNode = document.querySelector('.root-node');
+                    const mainTopics = document.querySelectorAll('.level-1 > .node > .node-content');
+                    
+                    // 设置SVG容器尺寸
+                    updateSvgContainerSize(svgContainer);
+                    
+                    // 清除之前的连线
+                    clearExistingSvgElements(svgContainer);
+                    
+                    // 连接核心节点到四个主题 - 水平连接
+                    connectRootToMainTopics(svgContainer, rootNode, mainTopics);
+                    
+                    // 绘制层级节点之间的连接线
+                    drawLevelConnections(svgContainer);
+                    
+                    // 优化移动设备上的连线
+                    optimizeConnectionsForMobile();
+                }
+                
+                // 新增：更新SVG容器尺寸
+                function updateSvgContainerSize(svgContainer) {
+                    if (!svgContainer) return;
+                    
+                    // 计算所需的高度
+                    const bodyHeight = Math.max(
+                        document.body.scrollHeight,
+                        document.documentElement.scrollHeight
+                    );
+                    
+                    // 设置SVG容器尺寸
+                    svgContainer.setAttribute('width', window.innerWidth);
+                    svgContainer.setAttribute('height', bodyHeight);
+                    
+                    // 添加视窗盒子属性以确保适当的缩放
+                    svgContainer.setAttribute('viewBox', `0 0 ${window.innerWidth} ${bodyHeight}`);
+                    svgContainer.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+                }
+                
+                // 新增：清除现有SVG元素
+                function clearExistingSvgElements(svgContainer) {
+                    if (!svgContainer) return;
+                    
+                    // 使用更高效的方法清除元素
+                    while (svgContainer.firstChild) {
+                        if (svgContainer.firstChild.tagName === 'defs') {
+                            // 保留defs部分
+                            const defs = svgContainer.firstChild;
+                            svgContainer.innerHTML = '';
+                            svgContainer.appendChild(defs);
+                            break;
+                        }
+                        svgContainer.removeChild(svgContainer.firstChild);
+                    }
+                }
+                
+                // 新增：连接根节点到主题节点
+                function connectRootToMainTopics(svgContainer, rootNode, mainTopics) {
+                    if (!svgContainer || !rootNode || !mainTopics.length) return;
+                    
+                    const rootRect = rootNode.getBoundingClientRect();
+                    
+                    // 调整核心节点连接点 - 精确到节点右侧中心
+                    const rootRight = {
+                        x: rootRect.right + window.scrollX,
+                        y: rootRect.top + rootRect.height / 2 + window.scrollY
+                    };
+                    
+                    // 创建连线组
+                    const connectionGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                    connectionGroup.setAttribute('class', 'root-connections');
+                    svgContainer.appendChild(connectionGroup);
+                    
+                    // 为每个主题创建连线
+                    mainTopics.forEach((topic, index) => {
+                        const topicRect = topic.getBoundingClientRect();
+                        
+                        // 调整主题节点连接点 - 精确到节点左侧中心
+                        const topicLeft = {
+                            x: topicRect.left + window.scrollX,
+                            y: topicRect.top + topicRect.height / 2 + window.scrollY
+                        };
+                        
+                        // 创建更自然的贝塞尔曲线
+                        createEnhancedConnection(connectionGroup, rootRight, topicLeft, index);
+                    });
+                }
+                
+                // 新增：创建增强的连接线
+                function createEnhancedConnection(parentElement, startPoint, endPoint, index) {
+                    // 使用贝塞尔曲线连接，更自然
+                    const controlX = startPoint.x + (endPoint.x - startPoint.x) * 0.5;
+                    
+                    // 计算更自然的曲线控制点
+                    const controlY1 = startPoint.y;
+                    const controlY2 = endPoint.y;
+                    const pathData = `M ${startPoint.x} ${startPoint.y} C ${controlX} ${controlY1}, ${controlX} ${controlY2}, ${endPoint.x} ${endPoint.y}`;
+                    
+                    // 创建连线阴影底层
+                    createConnectionLayer(parentElement, pathData, {
+                        class: 'connection-path',
+                        stroke: 'rgba(0, 182, 255, 0.08)',
+                        strokeWidth: '5',
+                        filter: 'url(#blurryFlow)'
+                    });
+                    
+                    // 创建基础宽线
+                    createConnectionLayer(parentElement, pathData, {
+                        class: 'connection-path',
+                        stroke: 'rgba(101, 219, 255, 0.15)',
+                        strokeWidth: '3.5',
+                        filter: 'url(#blurryFlow)'
+                    });
+                    
+                    // 创建反向流动层
+                    createConnectionLayer(parentElement, pathData, {
+                        class: 'connection-path',
+                        stroke: 'url(#flowGradientReverse)',
+                        strokeWidth: '2.5',
+                        opacity: '0.5'
+                    });
+                    
+                    // 创建主路径
+                    createConnectionLayer(parentElement, pathData, {
+                        class: 'connection-path',
+                        stroke: 'url(#intensiveGradient)',
+                        strokeWidth: '2'
+                    });
+                    
+                    // 添加流动效果
+                    createConnectionLayer(parentElement, pathData, {
+                        class: 'connection-path connection-flow',
+                        stroke: 'url(#flowGradient)',
+                        strokeWidth: '1.8',
+                        opacity: '0.8'
+                    });
+                    
+                    // 创建高亮中心线
+                    createConnectionLayer(parentElement, pathData, {
+                        class: 'connection-path',
+                        stroke: 'rgba(101, 219, 255, 0.8)',
+                        strokeWidth: '0.8',
+                        opacity: '0.7'
+                    });
+                    
+                    // 添加流动点光源
+                    addPulseDots(parentElement, pathData, startPoint, index);
+                }
+                
+                // 新增：创建连线图层
+                function createConnectionLayer(parentElement, pathData, attributes) {
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('d', pathData);
+                    
+                    // 应用所有属性
+                    Object.keys(attributes).forEach(attr => {
+                        path.setAttribute(attr, attributes[attr]);
+                    });
+                    
+                    // 保存原始宽度以供响应式调整
+                    if (attributes.strokeWidth) {
+                        path.setAttribute('data-original-width', attributes.strokeWidth);
+                    }
+                    
+                    parentElement.appendChild(path);
+                    return path;
+                }
+                
+                // 新增：添加脉冲光点
+                function addPulseDots(parentElement, pathData, startPoint, index) {
+                    // 减少移动设备上的点数量
+                    const dotsCount = window.innerWidth < 768 ? 3 : 6;
+                    
+                    for (let i = 0; i < dotsCount; i++) {
+                        const pulseCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                        pulseCircle.setAttribute('class', 'connection-pulse');
+                        pulseCircle.setAttribute('cx', startPoint.x);
+                        pulseCircle.setAttribute('cy', startPoint.y);
+                        pulseCircle.style.animationDelay = `${i * 0.5 + index * 0.1}s`;
+                        
+                        const animateMotion = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
+                        animateMotion.setAttribute('dur', `${2.8 + index * 0.3}s`);
+                        animateMotion.setAttribute('begin', `${i * 0.5 + index * 0.1}s`);
+                        animateMotion.setAttribute('repeatCount', 'indefinite');
+                        animateMotion.setAttribute('path', pathData);
+                        animateMotion.setAttribute('calcMode', 'linear');
+                        pulseCircle.appendChild(animateMotion);
+                        
+                        parentElement.appendChild(pulseCircle);
+                    }
+                }
+                
+                // 新增：优化移动设备上的连接线
+                function optimizeConnectionsForMobile() {
+                    const windowWidth = window.innerWidth;
+                    
+                    if (windowWidth < 768) {
+                        // 在移动设备上减少连线的复杂性
+                        adjustConnectionDensity(windowWidth);
+                        
+                        // 降低动画效果
+                        document.querySelectorAll('.connection-flow').forEach(flow => {
+                            flow.style.opacity = '0.5';
+                        });
+                    }
+                }
+                
+                // 根据当前屏幕尺寸进行最终优化
+                function optimizeForCurrentScreenSize() {
+                    const windowWidth = window.innerWidth;
+                    
+                    // 设置布局模式
+                    if (windowWidth < 768) {
+                        document.body.setAttribute('data-layout', 'mobile');
+                        
+                        // 在移动设备上自动调整
+                        collapseExcessiveLevels(1); // 仅保留一级展开
+                    } else if (windowWidth < 1024) {
+                        document.body.setAttribute('data-layout', 'tablet');
+                        
+                        // 在平板上限制层级展开
+                        collapseExcessiveLevels(2); // 保留两级展开
+                    } else {
+                        document.body.setAttribute('data-layout', 'desktop');
+                    }
+                }
+                
+                // 新增：折叠超过指定级别的所有层级
+                function collapseExcessiveLevels(maxLevel) {
+                    // 从最高级别开始向下折叠
+                    for (let level = MAX_LEVEL; level > maxLevel; level--) {
+                        const openNodes = document.querySelectorAll(`.level-${level} > .node > .node-content.open`);
+                        openNodes.forEach(node => {
+                            if (node.classList.contains('open')) {
+                                // 使用现有的折叠功能
+                                toggleItem(node);
+                            }
+                        });
+                    }
+                }
+                
+                // 在节点展开/折叠时重新优化布局
+                const originalToggleItem = window.toggleItem;
+                if (originalToggleItem) {
+                    window.toggleItem = function(element) {
+                        originalToggleItem(element);
+                        setTimeout(() => {
+                            optimizeLeftToRightLayout();
+                        }, 300); // 等待展开/折叠动画完成
+                    };
+                }
+                
+                // 初始化优化
+                setTimeout(optimizeLeftToRightLayout, 500);
+                
+                // 当窗口大小改变时重新优化布局
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(() => {
+                        optimizeLeftToRightLayout();
+                    }, 200);
+                });
+                
+                // 以下是优化版的大小调整处理
+                let resizeTimer;
+                window.addEventListener('resize', () => {
+                    // 更高效的窗口调整大小事件处理
+                    if (resizeTimer) {
+                        clearTimeout(resizeTimer);
+                    }
+                    resizeTimer = setTimeout(() => {
+                        adjustMindMapWidth();
+                        updateConnections();
+                        
+                        // 自动适应不同屏幕尺寸
+                        autoAdjustForScreenSize();
+                    }, 150);
+                });
+                
+                // 新增：自动适应屏幕尺寸的函数
+                function autoAdjustForScreenSize() {
+                    const windowWidth = window.innerWidth;
+                    
+                    // 自动调整思维导图布局比例
+                    if (windowWidth < 768) {
+                        // 移动设备，自动折叠所有节点
+                        if (currentExpandLevel > 1) {
+                            collapseAllLevels();
+                            currentExpandLevel = 0;
+                        }
+                    } else if (windowWidth < 1200) {
+                        // 平板设备，限制展开层级
+                        if (currentExpandLevel > 2) {
+                            // 保留一级和二级节点展开
+                            for (let level = MAX_LEVEL; level > 2; level--) {
+                                collapseByLevel(level);
+                            }
+                            currentExpandLevel = 2;
+                        }
+                    }
+                    
+                    // 调整连接线密度和节点间距
+                    adjustConnectionDensity(windowWidth);
+                }
+                
+                // 根据屏幕宽度调整连接线密度
+                function adjustConnectionDensity(windowWidth) {
+                    const svgContainer = document.getElementById('connectionsContainer');
+                    if (!svgContainer) return;
+                    
+                    // 清除现有的连接线
+                    const existingPaths = svgContainer.querySelectorAll('.connection-path');
+                    const existingPulses = svgContainer.querySelectorAll('.connection-pulse');
+                    
+                    // 根据屏幕宽度调整连接线样式
+                    if (windowWidth < 768) {
+                        // 移动设备：简化连接线
+                        existingPaths.forEach(path => {
+                            // 减小连接线宽度
+                            const currentWidth = parseFloat(path.getAttribute('stroke-width'));
+                            path.setAttribute('stroke-width', (currentWidth * 0.7).toString());
+                            
+                            // 减少特效
+                            if (path.classList.contains('connection-flow')) {
+                                path.style.opacity = '0.6';
+                            }
+                        });
+                        
+                        // 减少光点数量
+                        existingPulses.forEach((pulse, index) => {
+                            // 保留一半的光点
+                            if (index % 2 !== 0) {
+                                pulse.style.display = 'none';
+                            }
+                        });
+                    } else {
+                        // 恢复正常连接线样式
+                        existingPaths.forEach(path => {
+                            if (path.hasAttribute('data-original-width')) {
+                                path.setAttribute('stroke-width', path.getAttribute('data-original-width'));
+                            }
+                            
+                            if (path.classList.contains('connection-flow')) {
+                                path.style.opacity = '';
+                            }
+                        });
+                        
+                        // 显示所有光点
+                        existingPulses.forEach(pulse => {
+                            pulse.style.display = '';
+                        });
+                    }
+                }
+                
+                // 监听滚动事件，当用户滚动时更新连接线
+                window.addEventListener('scroll', function() {
+                    if (window.scrollY % 50 === 0) { // 每滚动50像素更新一次，避免过于频繁
+                        updateConnections();
+                    }
+                });
+            });
+        </script>
+    </div>
+
+    <!-- 添加滚动指示器元素 -->
+    <div id="scrollIndicator" class="scroll-indicator">
+        <div class="scroll-indicator-arrow"></div>
+    </div>
+    <script src="my-function.js"></script>
+</body>
+</html> 
+

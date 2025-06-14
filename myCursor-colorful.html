@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>超级七彩流光宇宙鼠标光标</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: radial-gradient(ellipse at center, #0a0e24 0%, #000000 100%);
+            overflow: hidden;
+            cursor: none !important;
+            font-family: 'Arial', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            pointer-events: none; /* 阻止所有鼠标事件，彻底禁用系统光标 */
+        }
+        
+        /* 确保所有元素及其伪元素都没有系统光标 */
+        *,
+        *::before,
+        *::after {
+            cursor: none !important;
+        }
+        
+        .cursor-container {
+            position: absolute;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            will-change: transform;
+        }
+        
+        .cursor-core {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 
+                0 0 10px #fff,
+                0 0 20px #fff,
+                0 0 30px #fff,
+                0 0 40px rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+            animation: pulse-core 1.5s ease-in-out infinite;
+            will-change: transform, box-shadow;
+        }
+        
+        .cursor-inner {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                #ff0000, #ff7f00, #ffff00, #00ff00,
+                #00ffff, #0000ff, #8b00ff, #ff0000
+            );
+            animation: rotate 3s linear infinite;
+            box-shadow: 
+                0 0 15px #fff,
+                inset 0 0 15px rgba(255, 255, 255, 0.8);
+            transform: translate(-50%, -50%);
+            will-change: transform;
+        }
+        
+        .cursor-outer {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            transform: translate(-50%, -50%);
+            animation: pulse 2s ease-out infinite;
+            box-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.8),
+                inset 0 0 15px rgba(255, 255, 255, 0.4);
+            will-change: transform, opacity;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            filter: blur(1px);
+            z-index: 9998;
+            will-change: transform, opacity;
+        }
+        
+        .cosmic-dust {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9995;
+            will-change: transform, opacity;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+        }
+        
+        @keyframes rotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.5; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+        }
+        
+        @keyframes pulse-core {
+            0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px rgba(255, 255, 255, 0.5); }
+            50% { transform: translate(-50%, -50%) scale(1.3); box-shadow: 0 0 15px #fff, 0 0 30px #fff, 0 0 45px #fff, 0 0 60px rgba(255, 255, 255, 0.8); }
+            100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px rgba(255, 255, 255, 0.5); }
+        }
+        
+        @keyframes particle-explode {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0.1); opacity: 0; }
+        }
+        
+        @keyframes cosmic-trail {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; }
+        }
+        
+        @keyframes cosmic-sparkle {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.5); opacity: 0.3; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+        
+        /* 禁用所有输入、可编辑区域的系统光标 */
+        input, textarea, [contenteditable], select {
+            caret-color: transparent !important;
+            cursor: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor-container">
+        <div class="cursor-core"></div>
+        <div class="cursor-inner"></div>
+        <div class="cursor-outer"></div>
+    </div>
+    
+    <script>
+        // 鼠标跟踪
+        const cursorContainer = document.querySelector('.cursor-container');
+        let mouseX = 0, mouseY = 0;
+        let posX = 0, posY = 0;
+        let lastTime = 0;
+        let velocity = { x: 0, y: 0 };
+        const velocityHistory = [];
+        const historyLength = 5;
+        
+        // 平滑跟随效果
+        function updateCursor(timestamp) {
+            if (!lastTime) lastTime = timestamp;
+            const deltaTime = timestamp - lastTime;
+            lastTime = timestamp;
+            
+            // 计算速度
+            const newVelocity = {
+                x: (mouseX - posX) * 0.1,
+                y: (mouseY - posY) * 0.1
+            };
+            
+            // 平滑速度变化
+            velocity.x += (newVelocity.x - velocity.x) * 0.3;
+            velocity.y += (newVelocity.y - velocity.y) * 0.3;
+            
+            // 记录速度历史
+            velocityHistory.push({ x: velocity.x, y: velocity.y });
+            if (velocityHistory.length > historyLength) {
+                velocityHistory.shift();
+            }
+            
+            // 根据帧率调整缓动系数
+            const ease = Math.min(0.15 * (deltaTime / 16), 0.3);
+            
+            posX += (mouseX - posX) * ease;
+            posY += (mouseY - posY) * ease;
+            
+            cursorContainer.style.left = posX + 'px';
+            cursorContainer.style.top = posY + 'px';
+            
+            requestAnimationFrame(updateCursor);
+        }
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // 创建粒子尾迹
+            if (Date.now() - lastTrailTime > 10) {
+                createCosmicTrail(e.clientX, e.clientY);
+                // 新增：创建七彩流光溢出效果
+                createRainbowOverflow(e.clientX, e.clientY);
+                lastTrailTime = Date.now();
+            }
+        });
+        
+        // 启动平滑跟随
+        requestAnimationFrame(updateCursor);
+        
+        let lastTrailTime = 0;
+        let particleCount = 0;
+        const maxParticles = 800;
+        
+        // 创建宇宙粒子尾迹
+        function createCosmicTrail(x, y) {
+            // 计算平均速度
+            let avgVelocity = { x: 0, y: 0 };
+            if (velocityHistory.length > 0) {
+                avgVelocity = velocityHistory.reduce((acc, curr) => {
+                    return {
+                        x: acc.x + curr.x,
+                        y: acc.y + curr.y
+                    };
+                }, { x: 0, y: 0 });
+                
+                avgVelocity.x /= velocityHistory.length;
+                avgVelocity.y /= velocityHistory.length;
+            }
+            
+            // 计算速度大小
+            const speed = Math.sqrt(avgVelocity.x * avgVelocity.x + avgVelocity.y * avgVelocity.y);
+            
+            // 根据速度调整粒子数量
+            const dynamicCount = Math.min(Math.floor(speed / 3), 15);
+            
+            for (let i = 0; i < dynamicCount && particleCount < maxParticles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // 宇宙色调色板 - 星空蓝、星云紫、恒星黄等
+                const cosmicColors = [
+                    'hsla(210, 100%, 70%, 0.9)',  // 天蓝色
+                    'hsla(270, 100%, 70%, 0.9)',  // 紫色
+                    'hsla(50, 100%, 70%, 0.9)',   // 黄色
+                    'hsla(180, 100%, 70%, 0.9)',  // 青色
+                    'hsla(330, 100%, 70%, 0.9)',  // 粉红色
+                    'hsla(30, 100%, 70%, 0.9)'    // 橙色
+                ];
+                
+                // 随机选择宇宙颜色
+                const color = cosmicColors[Math.floor(Math.random() * cosmicColors.length)];
+                particle.style.background = color;
+                
+                // 随机大小 - 更小的粒子更符合宇宙尘埃感
+                const size = Math.random() * 4 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // 基于速度方向的位置偏移 - 形成拖尾效果
+                const angle = Math.atan2(avgVelocity.y, avgVelocity.x) + (Math.random() - 0.5) * Math.PI * 0.3;
+                const offsetDist = Math.random() * 30 + 10;
+                const offsetX = Math.cos(angle) * offsetDist * -1; // 反向形成拖尾
+                const offsetY = Math.sin(angle) * offsetDist * -1;
+                
+                particle.style.left = `${x + offsetX}px`;
+                particle.style.top = `${y + offsetY}px`;
+                
+                // 随机模糊度 - 更自然的宇宙粒子效果
+                particle.style.filter = `blur(${Math.random() * 1.5 + 0.5}px)`;
+                particle.style.boxShadow = `0 0 ${size * 3}px ${color}`;
+                
+                // 添加星光闪烁效果
+                if (Math.random() > 0.7) {
+                    particle.style.animation = `cosmic-sparkle ${Math.random() * 2 + 1}s infinite`;
+                }
+                
+                document.body.appendChild(particle);
+                particleCount++;
+                
+                // 粒子动画参数
+                const duration = Math.random() * 1200 + 600;
+                const spreadAngle = angle + (Math.random() - 0.5) * Math.PI * 0.5;
+                const distance = Math.random() * 80 + 40;
+                
+                // 添加一些随机运动以模拟宇宙尘埃
+                const randomMotionX = (Math.random() - 0.5) * 40;
+                const randomMotionY = (Math.random() - 0.5) * 40;
+                
+                particle.style.setProperty('--tx', `${Math.cos(spreadAngle) * distance + randomMotionX}px`);
+                particle.style.setProperty('--ty', `${Math.sin(spreadAngle) * distance + randomMotionY}px`);
+                
+                // 更流畅的粒子动画
+                const animation = particle.animate([
+                    {
+                        transform: `translate(0, 0) scale(1)`,
+                        opacity: 0.8
+                    },
+                    {
+                        transform: `translate(var(--tx), var(--ty)) scale(0.2)`,
+                        opacity: 0
+                    }
+                ], {
+                    duration: duration,
+                    easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+                });
+                
+                animation.onfinish = () => {
+                    particle.remove();
+                    particleCount--;
+                };
+                
+                // 添加一些流星效果 - 偶尔产生长尾巴的粒子
+                if (Math.random() > 0.9) {
+                    createMeteorParticle(x, y, angle);
+                }
+            }
+        }
+        
+        // 新增：创建七彩流光溢出效果
+        function createRainbowOverflow(x, y) {
+            // 根据鼠标速度调整粒子数量，确保不是静态的溢出
+            const speed = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+            const dynamicCount = Math.min(Math.floor(speed / 5) + 1, 10); // 至少1个，最多10个
+
+            for (let i = 0; i < dynamicCount && particleCount < maxParticles; i++) {
+                const overflowParticle = document.createElement('div');
+                overflowParticle.className = 'particle';
+
+                // 七彩颜色，随时间或粒子序号变化
+                const hue = (Date.now() / 20 + i * 15) % 360;
+                overflowParticle.style.background = `hsla(${hue}, 100%, 75%, 0.8)`;
+
+                // 随机大小，更细小的流光
+                const size = Math.random() * 3 + 1;
+                overflowParticle.style.width = `${size}px`;
+                overflowParticle.style.height = `${size}px`;
+
+                // 从鼠标中心向外扩散的初始位置
+                const initialOffset = Math.random() * 5 - 2.5; // 微小的随机偏移
+                overflowParticle.style.left = `${x + initialOffset}px`;
+                overflowParticle.style.top = `${y + initialOffset}px`;
+
+                // 流光效果，有模糊和发光
+                overflowParticle.style.filter = `blur(${Math.random() * 1 + 0.5}px)`;
+                overflowParticle.style.boxShadow = `0 0 ${size * 2}px hsla(${hue}, 100%, 75%, 0.8)`;
+
+                document.body.appendChild(overflowParticle);
+                particleCount++;
+
+                // 动画参数
+                const duration = Math.random() * 800 + 400; // 快速消失
+                const angle = Math.random() * Math.PI * 2; // 向四周扩散
+                const distance = Math.random() * 60 + 30; // 扩散距离
+
+                overflowParticle.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+                overflowParticle.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+
+                const animation = overflowParticle.animate([
+                    {
+                        transform: `translate(0, 0) scale(1)`,
+                        opacity: 1
+                    },
+                    {
+                        transform: `translate(var(--tx), var(--ty)) scale(0.1)`,
+                        opacity: 0
+                    }
+                ], {
+                    duration: duration,
+                    easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+                });
+
+                animation.onfinish = () => {
+                    overflowParticle.remove();
+                    particleCount--;
+                };
+            }
+        }
+        
+        // 创建流星粒子效果
+        function createMeteorParticle(x, y, angle) {
+            if (particleCount >= maxParticles) return;
+            
+            const meteor = document.createElement('div');
+            meteor.className = 'particle';
+            
+            // 流星颜色 - 偏暖色调
+            const meteorColors = [
+                'hsla(30, 100%, 70%, 0.9)',   // 橙色
+                'hsla(50, 100%, 70%, 0.9)',   // 黄色
+                'hsla(0, 100%, 70%, 0.9)'     // 红色
+            ];
+            const color = meteorColors[Math.floor(Math.random() * meteorColors.length)];
+            meteor.style.background = color;
+            
+            // 流星大小 - 比普通粒子大
+            const size = Math.random() * 6 + 3;
+            meteor.style.width = `${size}px`;
+            meteor.style.height = `${size}px`;
+            
+            // 初始位置 - 在鼠标后方
+            const startOffset = 50 + Math.random() * 50;
+            const startX = x - Math.cos(angle) * startOffset;
+            const startY = y - Math.sin(angle) * startOffset;
+            
+            meteor.style.left = `${startX}px`;
+            meteor.style.top = `${startY}px`;
+            
+            // 流星效果 - 长尾巴
+            meteor.style.boxShadow = `0 0 ${size * 5}px ${color}`;
+            meteor.style.filter = `blur(1px)`;
+            
+            document.body.appendChild(meteor);
+            particleCount++;
+            
+            // 流星动画 - 快速划过
+            const duration = 800 + Math.random() * 400;
+            const distance = 150 + Math.random() * 100;
+            
+            meteor.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+            meteor.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+            
+            const animation = meteor.animate([
+                {
+                    transform: `translate(0, 0) scale(1)`,
+                    opacity: 1
+                },
+                {
+                    transform: `translate(var(--tx), var(--ty)) scale(0.1)`,
+                    opacity: 0
+                }
+            ], {
+                duration: duration,
+                easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+            });
+            
+            animation.onfinish = () => {
+                meteor.remove();
+                particleCount--;
+            };
+            
+            // 添加流星尾迹
+            if (Math.random() > 0.5) {
+                createMeteorTrail(startX, startY, angle, distance, duration, color);
+            }
+        }
+        
+        // 创建流星尾迹
+        function createMeteorTrail(startX, startY, angle, distance, duration, color) {
+            const trailCount = 5 + Math.floor(Math.random() * 5);
+            
+            for (let i = 0; i < trailCount && particleCount < maxParticles; i++) {
+                const trail = document.createElement('div');
+                trail.className = 'particle';
+                
+                trail.style.background = color;
+                const size = Math.random() * 3 + 1;
+                trail.style.width = `${size}px`;
+                trail.style.height = `${size}px`;
+                
+                // 沿流星路径分布
+                const offset = (i / trailCount) * distance * 0.7;
+                const trailX = startX + Math.cos(angle) * offset;
+                const trailY = startY + Math.sin(angle) * offset;
+                
+                trail.style.left = `${trailX}px`;
+                trail.style.top = `${trailY}px`;
+                
+                trail.style.boxShadow = `0 0 ${size * 3}px ${color}`;
+                trail.style.filter = `blur(0.5px)`;
+                
+                document.body.appendChild(trail);
+                particleCount++;
+                
+                // 尾迹动画 - 比流星稍慢消失
+                const trailDuration = duration * (0.5 + Math.random() * 0.5);
+                const trailDistance = distance * 0.2;
+                
+                trail.style.setProperty('--tx', `${Math.cos(angle + (Math.random() - 0.5) * 0.2) * trailDistance}px`);
+                trail.style.setProperty('--ty', `${Math.sin(angle + (Math.random() - 0.5) * 0.2) * trailDistance}px`);
+                
+                const trailAnim = trail.animate([
+                    {
+                        transform: `translate(0, 0) scale(1)`,
+                        opacity: 0.7
+                    },
+                    {
+                        transform: `translate(var(--tx), var(--ty)) scale(0.1)`,
+                        opacity: 0
+                    }
+                ], {
+                    duration: trailDuration,
+                    easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+                });
+                
+                trailAnim.onfinish = () => {
+                    trail.remove();
+                    particleCount--;
+                };
+            }
+        }
+        
+        // 新增：创建金碧辉煌流星效果
+        function createGoldenMeteor(x, y) {
+            if (particleCount >= maxParticles) return;
+
+            const meteor = document.createElement('div');
+            meteor.className = 'particle';
+
+            // 金碧辉煌的颜色 - 金色和亮黄色
+            const goldenColors = [
+                'hsla(45, 100%, 70%, 0.9)',   // 亮金色
+                'hsla(55, 100%, 60%, 0.9)',   // 暖金色
+                'hsla(35, 100%, 75%, 0.9)'    // 浅金色
+            ];
+            const color = goldenColors[Math.floor(Math.random() * goldenColors.length)];
+            meteor.style.background = color;
+
+            // 流星大小 - 比普通粒子大，更有冲击力
+            const size = Math.random() * 10 + 8; // 稍微大一点的流星头部
+            meteor.style.width = `${size}px`;
+            meteor.style.height = `${size}px`;
+
+            // 初始位置 - 从点击位置开始
+            meteor.style.left = `${x}px`;
+            meteor.style.top = `${y}px`;
+
+            // 金色光晕效果
+            meteor.style.boxShadow = `0 0 ${size * 8}px ${color}, 0 0 ${size * 15}px rgba(255, 215, 0, 0.7)`; // 更强烈的金色光晕
+            meteor.style.filter = `blur(3px)`; // 更明显的模糊效果
+
+            document.body.appendChild(meteor);
+            particleCount++;
+
+            // 流星动画 - 从中心向外扩散
+            const duration = 1000 + Math.random() * 500;
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 200 + Math.random() * 100;
+
+            meteor.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+            meteor.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+
+            const animation = meteor.animate([
+                {
+                    transform: `translate(0, 0) scale(1)`, 
+                    opacity: 1
+                },
+                {
+                    transform: `translate(var(--tx), var(--ty)) scale(0.1)`, 
+                    opacity: 0
+                }
+            ], {
+                duration: duration,
+                easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+            });
+
+            animation.onfinish = () => {
+                meteor.remove();
+                particleCount--;
+            };
+
+            // 新增：创建七彩流光尾迹
+            createRainbowGlowTrail(x, y, angle, distance, duration);
+        }
+
+        // 新增：创建七彩流光尾迹
+        function createRainbowGlowTrail(startX, startY, angle, distance, duration) {
+            const trailCount = 40 + Math.floor(Math.random() * 20); // 增加粒子数量，更长的尾迹，从 25+15 调整为 40+20
+            const initialDelay = 20; // 初始延迟减少，从 30 调整为 20
+            const delayIncrement = 10; // 每个粒子之间的延迟增量减少，使粒子更密集，从 15 调整为 10
+
+            for (let i = 0; i < trailCount && particleCount < maxParticles; i++) {
+                const trail = document.createElement('div');
+                trail.className = 'particle';
+
+                // 七彩颜色
+                const hue = (i * 18 + Date.now() / 12) % 360; // 更平滑的动态七彩，变化稍快
+                trail.style.background = `hsla(${hue}, 100%, 78%, 0.95)`; // 更亮，初始不透明度更高
+
+                const baseSize = Math.random() * 6 + 3; // 调整基础大小，从 4+2 调整为 6+3，使粒子更大
+                const width = baseSize * 3; // 使粒子更长，形成更明显的流光效果，从 2.5 调整为 3
+                const height = baseSize * 0.5; // 保持细长，从 0.7 调整为 0.5
+                
+                trail.style.width = `${width}px`;
+                trail.style.height = `${height}px`;
+                
+                // 计算初始位置 - 沿流星路径，但起始点在后面，带随机抖动
+                const offsetFromMeteorStart = (i / trailCount) * (distance * 0.4) + Math.random() * 40 - 20; // 在流星路径后方一定距离，并随机偏移
+                const startXOffset = startX + Math.cos(angle) * (-offsetFromMeteorStart); // 沿反方向偏移
+                const startYOffset = startY + Math.sin(angle) * (-offsetFromMeteorStart);
+
+                trail.style.left = `${startXOffset}px`;
+                trail.style.top = `${startYOffset}px`;
+
+                // 更强的流光效果和更明显的模糊
+                trail.style.boxShadow = `0 0 ${baseSize * 8}px hsla(${hue}, 100%, 78%, 0.9), 0 0 ${baseSize * 18}px hsla(${hue}, 100%, 88%, 0.7)`; // 增强阴影，使光晕更强烈，从 6 和 12 调整为 8 和 18
+                trail.style.filter = `blur(${Math.random() * 3 + 2}px)`; // 更明显的模糊，从 2.5+1.5 调整为 3+2
+
+                // 初始 transform: 中心化并旋转
+                trail.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`;
+
+                document.body.appendChild(trail);
+                particleCount++;
+
+                // 尾迹动画 - 沿流星方向继续移动，比流星稍慢消失
+                const trailTravelDistance = distance * (0.7 + Math.random() * 0.3); // 尾迹移动距离相对长一些
+                const trailTravelAngle = angle + (Math.random() - 0.5) * 0.4; // 保持大致方向，但有轻微随机性，更集中
+                
+                const targetX = Math.cos(trailTravelAngle) * trailTravelDistance;
+                const targetY = Math.sin(trailTravelAngle) * trailTravelDistance;
+
+                const trailDuration = duration * (0.9 + Math.random() * 0.3); // 尾迹持续时间更长
+                const animationDelay = initialDelay + i * delayIncrement; // 应用延迟
+
+                const trailAnim = trail.animate([
+                    {
+                        // 起始状态：保持中心化和初始旋转，不移动
+                        transform: `translate(-50%, -50%) rotate(${angle}rad) scale(1)`,
+                        opacity: 1 // 初始不透明度更高
+                    },
+                    {
+                        // 结束状态：移动到目标位置，保持中心化，旋转到新角度，缩小并消失
+                        transform: `translate(calc(-50% + ${targetX}px), calc(-50% + ${targetY}px)) rotate(${trailTravelAngle}rad) scale(0.1)`,
+                        opacity: 0
+                    }
+                ], {
+                    duration: trailDuration,
+                    easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)',
+                    delay: animationDelay
+                });
+
+                trailAnim.onfinish = () => {
+                    trail.remove();
+                    particleCount--;
+                };
+            }
+        }
+        
+        // 鼠标点击时增加超新星爆炸特效
+        document.addEventListener('click', (e) => {
+            // 检查是否是左键点击
+            if (e.button === 0) {
+                // 新增：创建金碧辉煌的流星效果
+                createGoldenMeteor(e.clientX, e.clientY);
+
+                // 全面优化：超级七彩流星粒子特效
+                const rainbowMeteorCount = 250 + Math.floor(Math.random() * 200); // 增加粒子数量，生成更多粒子
+                for (let i = 0; i < rainbowMeteorCount && particleCount < maxParticles; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = Math.random() * 1500 + 1000; // 飞行距离更远，更长的轨迹
+                    const duration = Math.random() * 8000 + 7000; // 持续时间更长
+                    const baseSize = Math.random() * 40 + 35; // 粒子更大，使其更显眼，基础大小更大
+                    const meteorWidth = baseSize * (1.8 + Math.random() * 0.7); // 更长的流星主体
+                    const meteorHeight = baseSize * (0.07 + Math.random() * 0.05); // 更细长的流星形状
+                    const baseHue = (i * 12 + Date.now() / 8) % 360; // 颜色变化更平滑和动态，变化更快
+
+                    // 主粒子
+                    const meteor = document.createElement('div');
+                    meteor.className = 'particle';
+                    meteor.style.width = `${meteorWidth}px`;
+                    meteor.style.height = `${meteorHeight}px`;
+                    
+                    // 初始位置稍微偏移，模拟爆炸感
+                    const initialOffsetRadius = Math.random() * 15;
+                    const initialOffsetAngle = Math.random() * Math.PI * 2;
+                    const initialX = e.clientX + Math.cos(initialOffsetAngle) * initialOffsetRadius;
+                    const initialY = e.clientY + Math.sin(initialOffsetAngle) * initialOffsetRadius;
+
+                    meteor.style.left = `${initialX}px`;
+                    meteor.style.top = `${initialY}px`;
+                    
+                    meteor.style.borderRadius = '50%';
+                    meteor.style.pointerEvents = 'none';
+                    meteor.style.boxShadow = `
+                        0 0 ${baseSize * 20}px hsla(${baseHue}, 100%, 80%, 0.99), 
+                        0 0 ${baseSize * 40}px hsla(${(baseHue + 60) % 360}, 100%, 90%, 0.95),
+                        0 0 ${baseSize * 60}px hsla(${(baseHue + 120) % 360}, 100%, 95%, 0.9)
+                    `; // 更强的多层光晕
+                    meteor.style.filter = `blur(${6 + Math.random() * 5}px)`; // 更明显的模糊效果
+                    meteor.style.background = `
+                        linear-gradient(90deg, 
+                            hsla(${baseHue},100%,90%,1), 
+                            hsla(${(baseHue+70)%360},100%,95%,0.98), 
+                            hsla(${(baseHue+140)%360},100%,98%,0.85))
+                    `; // 更鲜艳的渐变色，亮度更高，透明度递减
+                    meteor.style.opacity = '1';
+                    meteor.style.zIndex = '9998';
+                    // 初始旋转，使粒子方向与飞行方向一致
+                    meteor.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`;
+                    document.body.appendChild(meteor);
+                    particleCount++;
+
+                    // 动画
+                    meteor.animate([
+                        {
+                            transform: `translate(-50%, -50%) rotate(${angle}rad) scale(1)`,
+                            opacity: 1
+                        },
+                        {
+                            transform: `translate(calc(-50% + ${Math.cos(angle) * distance}px), calc(-50% + ${Math.sin(angle) * distance}px)) rotate(${angle}rad) scale(0.05)`,
+                            opacity: 0
+                        }
+                    ], {
+                        duration: duration,
+                        easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+                    }).onfinish = () => {
+                        meteor.remove();
+                        particleCount--;
+                    };
+
+                    // 动态流光色彩
+                    let frame = 0;
+                    const colorInterval = setInterval(() => {
+                        if (!meteor.parentNode) { clearInterval(colorInterval); return; }
+                        const dynamicHue = (baseHue + frame * 20) % 360; // 颜色变化稍快
+                        meteor.style.background = `linear-gradient(90deg, hsla(${dynamicHue},100%,90%,1), hsla(${(dynamicHue+70)%360},100%,95%,0.98), hsla(${(dynamicHue+140)%360},100%,98%,0.85))`;
+                        meteor.style.boxShadow = `
+                            0 0 ${baseSize * 20}px hsla(${dynamicHue}, 100%, 80%, 0.99), 
+                            0 0 ${baseSize * 40}px hsla(${(dynamicHue + 60) % 360}, 100%, 90%, 0.95),
+                            0 0 ${baseSize * 60}px hsla(${(dynamicHue + 120) % 360}, 100%, 95%, 0.9)
+                        `;
+                        frame++;
+                    }, 8); // 更新频率稍快
+
+                    // 七彩流光流星尾迹
+                    createRainbowMeteorTrail(initialX, initialY, angle, distance, duration, baseHue, baseSize);
+                }
+                // 创建超新星冲击波效果
+                createSupernovaShockwave(e.clientX, e.clientY, 1);
+                setTimeout(() => createSupernovaShockwave(e.clientX, e.clientY, 1.5), 200);
+                setTimeout(() => createSupernovaShockwave(e.clientX, e.clientY, 2), 400);
+            }
+        });
+        
+        // 新增：超级七彩流星尾迹
+        function createRainbowMeteorTrail(startX, startY, angle, distance, duration, baseHue, baseSize) {
+            const trailCount = 300 + Math.floor(Math.random() * 200); // 尾迹数量更多，更密集
+            const initialDelay = 8; // 初始延迟减少
+            const delayIncrement = 4; // 每个粒子之间的延迟增量减少，使粒子更密集
+
+            for (let i = 0; i < trailCount && particleCount < maxParticles; i++) {
+                const trail = document.createElement('div');
+                trail.className = 'particle';
+                
+                const hue = (baseHue + i * 6 + Date.now() / 8) % 360; // 颜色变化更平滑，且随时间动态
+                const size = baseSize * (0.12 + Math.random() * 0.1); // 粒子大小调整，更精细
+                
+                // 尾迹粒子形状和大小变化
+                const trailWidth = size * (15 + Math.random() * 12); // 更长，形成流光效果
+                const trailHeight = size * (0.06 + Math.random() * 0.04); // 更细
+                
+                trail.style.width = `${trailWidth}px`;
+                trail.style.height = `${trailHeight}px`;
+                
+                // 初始位置：从流星主体后方开始，带随机抖动
+                const offsetFromMeteorStart = (i / trailCount) * (distance * 0.7) + Math.random() * 60 - 30; 
+                const startXOffset = startX - Math.cos(angle) * offsetFromMeteorStart; 
+                const startYOffset = startY - Math.sin(angle) * offsetFromMeteorStart;
+
+                trail.style.left = `${startXOffset}px`;
+                trail.style.top = `${startYOffset}px`;
+                
+                trail.style.borderRadius = '50%'; 
+                trail.style.pointerEvents = 'none';
+                trail.style.boxShadow = `
+                    0 0 ${size * 20}px hsla(${hue}, 100%, 95%, 0.99), 
+                    0 0 ${size * 40}px hsla(${(hue + 60) % 360}, 100%, 98%, 0.95),
+                    0 0 ${size * 60}px hsla(${(hue + 120) % 360}, 100%, 99%, 0.9)
+                `; // 更强的多层光晕，亮度更高
+                trail.style.filter = `blur(${6 + Math.random() * 5}px)`; // 更明显的模糊
+                trail.style.background = `
+                    linear-gradient(90deg, 
+                        hsla(${hue},100%,98%,0.99), 
+                        hsla(${(hue+70)%360},100%,99%,0.9), 
+                        hsla(${(hue+140)%360},100%,99%,0.7))
+                `; // 更鲜艳的渐变色，亮度更高，不透明度更高
+                trail.style.opacity = '0.99'; // 初始不透明度更高
+                trail.style.zIndex = '9997';
+                // 初始旋转，使粒子方向与飞行方向一致
+                trail.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`;
+                document.body.appendChild(trail);
+                particleCount++;
+
+                // 尾迹动画
+                const trailTravelDistance = distance * (0.5 + 0.8 * (i / trailCount)) * (1 + Math.random() * 1); // 尾迹移动距离相对更长，起始点更靠前，随机性更大
+                const trailTravelAngle = angle + (Math.random() - 0.5) * 0.8; // 保持大致方向，但有轻微随机性，更集中
+                
+                const targetX = Math.cos(trailTravelAngle) * trailTravelDistance;
+                const targetY = Math.sin(trailTravelAngle) * trailTravelDistance;
+
+                const trailDuration = duration * (2 + Math.random() * 1.5); // 持续时间更长
+                const animationDelay = initialDelay + i * delayIncrement + Math.random() * 25; // 应用延迟，增加随机性
+
+                const trailAnim = trail.animate([
+                    {
+                        transform: `translate(-50%, -50%) rotate(${angle}rad) scale(1)`,
+                        opacity: 0.99
+                    },
+                    {
+                        transform: `translate(calc(-50% + ${targetX}px), calc(-50% + ${targetY}px)) rotate(${trailTravelAngle}rad) scale(0.03)`,
+                        opacity: 0
+                    }
+                ], {
+                    duration: trailDuration,
+                    delay: animationDelay,
+                    easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+                }).onfinish = () => {
+                    trail.remove();
+                    particleCount--;
+                };
+
+                // 尾迹流光色彩动态变化
+                let frame = 0;
+                const colorInterval = setInterval(() => {
+                    if (!trail.parentNode) { clearInterval(colorInterval); return; }
+                    const dynamicHue = (hue + frame * 20) % 360; 
+                    trail.style.background = `linear-gradient(90deg, hsla(${dynamicHue},100%,98%,0.99), hsla(${(dynamicHue+70)%360},100%,99%,0.9), hsla(${(dynamicHue+140)%360},100%,99%,0.7))`;
+                    trail.style.boxShadow = `
+                        0 0 ${size * 20}px hsla(${dynamicHue}, 100%, 95%, 0.99), 
+                        0 0 ${size * 40}px hsla(${(dynamicHue + 60) % 360}, 100%, 98%, 0.95),
+                        0 0 ${size * 60}px hsla(${(dynamicHue + 120) % 360}, 100%, 99%, 0.9)
+                    `;
+                    frame++;
+                }, 8); 
+            }
+        }
+        
+        function createSupernovaShockwave(x, y, scale) {
+            const shockwave = document.createElement('div');
+            shockwave.style.position = 'absolute';
+            shockwave.style.borderRadius = '50%';
+            shockwave.style.border = '1px solid rgba(255, 255, 255, 0.8)';
+            shockwave.style.transform = 'translate(-50%, -50%)';
+            shockwave.style.left = `${x}px`;
+            shockwave.style.top = `${y}px`;
+            shockwave.style.width = '10px';
+            shockwave.style.height = '10px';
+            shockwave.style.pointerEvents = 'none';
+            shockwave.style.boxShadow = '0 0 20px 10px rgba(255, 255, 255, 0.8)';
+            shockwave.style.zIndex = '9996';
+            shockwave.style.willChange = 'transform, opacity';
+            
+            document.body.appendChild(shockwave);
+            
+            const shockwaveAnim = shockwave.animate([
+                {
+                    width: '10px',
+                    height: '10px',
+                    opacity: 1,
+                    transform: 'translate(-50%, -50%) scale(1)'
+                },
+                {
+                    width: `${300 * scale}px`,
+                    height: `${300 * scale}px`,
+                    opacity: 0,
+                    transform: 'translate(-50%, -50%) scale(1.2)'
+                }
+            ], {
+                duration: 1000 * scale,
+                easing: 'cubic-bezier(0, 0.2, 0.8, 1)'
+            });
+            
+            shockwaveAnim.onfinish = () => {
+                shockwave.remove();
+            };
+        }
+        
+        // 自动生成随机宇宙尘埃
+        function createCosmicDust() {
+            function generateDust() {
+                if (particleCount >= maxParticles * 0.8) return;
+                
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                
+                if (Math.random() > 0.3) {
+                    const dust = document.createElement('div');
+                    dust.className = 'cosmic-dust';
+                    
+                    // 宇宙尘埃大小 - 非常细小
+                    const size = Math.random() * 2 + 0.5;
+                    dust.style.width = `${size}px`;
+                    dust.style.height = `${size}px`;
+                    dust.style.left = `${x}px`;
+                    dust.style.top = `${y}px`;
+                    dust.style.opacity = '0.3';
+                    
+                    // 随机选择尘埃类型
+                    const dustType = Math.random();
+                    if (dustType > 0.7) {
+                        // 星云尘埃 - 彩色
+                        const hue = Math.random() * 360;
+                        dust.style.background = `radial-gradient(circle, hsla(${hue}, 80%, 60%, 0.5) 0%, hsla(${hue}, 80%, 60%, 0) 70%)`;
+                    } else if (dustType > 0.4) {
+                        // 恒星尘埃 - 亮白色
+                        dust.style.background = `radial-gradient(circle, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 70%)`;
+                    } else {
+                        // 普通宇宙尘埃 - 暗色
+                        dust.style.background = `radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%)`;
+                    }
+                    
+                    dust.style.filter = `blur(${Math.random() + 0.5}px)`;
+                    
+                    document.body.appendChild(dust);
+                    particleCount++;
+                    
+                    // 尘埃漂浮动画 - 更缓慢自然
+                    const duration = Math.random() * 15000 + 10000;
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = Math.random() * 200 + 100;
+                    
+                    dust.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+                    dust.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+                    
+                    const animation = dust.animate([
+                        {
+                            transform: 'translate(0, 0)',
+                            opacity: 0.3
+                        },
+                        {
+                            transform: 'translate(var(--tx), var(--ty))',
+                            opacity: 0
+                        }
+                    ], {
+                        duration: duration,
+                        easing: 'linear'
+                    });
+                    
+                    animation.onfinish = () => {
+                        dust.remove();
+                        particleCount--;
+                    };
+                }
+            }
+            
+            // 根据性能调整生成频率
+            const interval = window.matchMedia('(max-width: 768px)').matches ? 1500 : 800;
+            setInterval(generateDust, interval);
+        }
+        
+        // 启动宇宙尘埃生成
+        createCosmicDust();
+        
+        // 阻止默认的鼠标点击行为，以防止出现系统光标
+        document.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+        });
+
+        // 阻止默认的文本选择行为
+        document.addEventListener('selectstart', (e) => {
+            e.preventDefault();
+        });
+
+        // 窗口大小变化时重新定位光标
+        window.addEventListener('resize', () => {
+            cursorContainer.style.left = posX + 'px';
+            cursorContainer.style.top = posY + 'px';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,558 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+.mind-map-container {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    background-image: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: move; /* 指示可平移 */
+    transition: background-color 0.3s ease;
+    z-index: 1;  /* 确保容器位于适当的层 */
+}
+
+.mind-map {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* 基础节点样式 */
+.node {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.92);
+    border: 2px solid #4a89dc;
+    border-radius: 12px;
+    padding: 14px 18px;
+    min-width: 120px;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    animation: scaleIn 0.3s ease-out;
+    transform-origin: center center;
+    text-align: center;
+}
+
+.node:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px) scale(1.03);
+}
+
+/* 选中状态 */
+.node.selected {
+    box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.7), 0 8px 20px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    animation: pulse 1s infinite;
+}
+
+/* 拖动状态 */
+.node.dragging {
+    opacity: 0.85;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+    z-index: 1000;
+    cursor: grabbing;
+    transform: scale(1.08);
+    transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    border-color: rgba(101, 219, 255, 0.8);
+}
+
+/* 拖动指示器 */
+.drag-indicator {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 18px;
+    height: 18px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.5);
+    cursor: grab;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.node:hover .drag-indicator {
+    opacity: 0.8;
+}
+
+.node-text {
+    outline: none;
+    min-height: 20px;
+    width: 100%;
+    word-break: break-word;
+    font-size: 15px;
+    line-height: 1.5;
+    pointer-events: none; /* 防止文本干扰拖拽 */
+}
+
+.node.root .node-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+/* 连接线基础样式优化 - 更精致的效果 */
+.connector {
+    position: absolute;
+    height: 2px; /* 更细的线条 */
+    transform-origin: 0 0;
+    z-index: 5;
+    transition: all 0.12s cubic-bezier(0.23, 1, 0.32, 1);
+    border-radius: 5px;
+    will-change: transform, width, left, top;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1px);
+}
+
+/* 连接线端点样式优化 */
+.connector::before,
+.connector::after {
+    content: '';
+    position: absolute;
+    width: 6px; /* 更小的端点 */
+    height: 6px;
+    border-radius: 50%;
+    top: -2px;
+    z-index: 6;
+    transition: all 0.12s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+}
+
+.connector::before {
+    left: -1px;
+}
+
+.connector::after {
+    right: -1px;
+    transform: translateX(100%);
+}
+
+/* 连接线高亮样式增强 */
+.connector.highlighted,
+.node.selected + .connector,
+.connector[data-parent*="selected"],
+.connector[data-child*="selected"] {
+    height: 3px;
+    z-index: 8;
+    filter: brightness(1.3) contrast(1.1);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+    animation: connecterPulse 1.5s infinite;
+}
+
+.connector.highlighted::before,
+.connector.highlighted::after,
+.node.selected + .connector::before,
+.node.selected + .connector::after,
+.connector[data-parent*="selected"]::before,
+.connector[data-parent*="selected"]::after,
+.connector[data-child*="selected"]::before,
+.connector[data-child*="selected"]::after {
+    background: #fff;
+    width: 8px;
+    height: 8px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+/* 连接线悬停效果 */
+.connector:hover {
+    filter: brightness(1.2);
+    height: 2.5px;
+}
+
+.connector:hover::before,
+.connector:hover::after {
+    transform: scale(1.3);
+}
+
+/* 连接线脉动动画 */
+@keyframes connecterPulse {
+    0% {
+        filter: brightness(1.3) contrast(1.1);
+    }
+    50% {
+        filter: brightness(1.5) contrast(1.2);
+    }
+    100% {
+        filter: brightness(1.3) contrast(1.1);
+    }
+
+}
+
+/* 连接线跟随优化 - 提高拖动流畅度 */
+.node.dragging + .connector,
+.connector[data-child*="dragging"] {
+    transition: all 0.08s linear !important; /* 拖动时使用更快的过渡 */
+}
+
+/* 平滑拖动效果增强 */
+.smooth-drag {
+    transition: transform 0.05s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.node.dragging {
+    transition: none !important; /* 拖动时禁用过渡效果，获得最大响应速度 */
+}
+
+/* 编辑框样式 */
+.node-edit-box {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(255, 165, 0, 0.8);
+    padding: 15px 20px;
+    border-radius: 12px;
+    z-index: 200;
+    outline: none;
+    min-width: 180px;
+    min-height: 40px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    word-break: break-word;
+    white-space: pre-wrap;
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #333;
+    transition: box-shadow 0.3s ease;
+    animation: fadeIn 0.5s ease-out;
+    backdrop-filter: blur(12px);
+}
+
+.node-edit-box:focus {
+    box-shadow: 0 0 0 3px rgba(74, 137, 220, 0.3), 0 8px 25px rgba(0, 0, 0, 0.18);
+}
+
+/* 自定义动画 */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.6), 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 165, 0, 0), 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 165, 0, 0), 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+}
+
+/* 响应式样式 */
+@media (max-width: 768px) {
+    .node {
+        padding: 10px 14px;
+        min-width: 100px;
+        font-size: 13px;
+    }
+    
+    .node.root {
+        padding: 12px 18px;
+        font-size: 16px;
+    }
+}
+
+/* 深色模式 */
+body.dark-mode .mind-map-container {
+    background-color: transparent;
+    background-image: none;
+}
+
+body.dark-mode .node {
+    background-color: rgba(45, 45, 45, 0.92);
+    border-color: #4a89dc;
+    color: #e0e0e0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .node.root {
+    background: linear-gradient(135deg, rgba(0, 30, 60, 0.9), rgba(0, 50, 100, 0.9));
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 80, 155, 0.3);
+    color: #f0f0f0;
+}
+
+body.dark-mode .node-edit-box {
+    background: rgba(45, 45, 45, 0.95);
+    color: #e0e0e0;
+    border-color: rgba(255, 165, 0, 0.6);
+}
+
+/* 添加动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* 新增节点高亮效果 */
+@keyframes nodeHighlight {
+    0% {
+        box-shadow: 0 0 0 0 rgba(74, 137, 220, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(74, 137, 220, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(74, 137, 220, 0);
+    }
+}
+
+.node.newly-added {
+    animation: nodeHighlight 1.5s ease-out;
+}
+
+/* 连接线动画 - 已移除 */
+@keyframes dashedFlow {
+    0% {
+        stroke-dashoffset: 0;
+    }
+    100% {
+        stroke-dashoffset: 20;
+    }
+}
+
+/* 流体连接线效果 - 已修改，移除动画 */
+.connector.flow-line {
+    background: rgba(74, 137, 220, 0.7);
+    height: 2.5px;
+}
+
+.connector.flow-line::before,
+.connector.flow-line::after {
+    background: rgba(74, 137, 220, 0.9);
+}
+
+/* 平滑拖动效果 */
+.smooth-drag {
+    transition: transform 0.05s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* 高级连接线效果 - 已修改，移除动画 */
+.connector.gradient {
+    background: rgba(74, 137, 220, 0.7);
+}
+
+/* 节点悬浮特效 */
+.node:hover::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 15px;
+    background: transparent;
+    border: 1px solid rgba(74, 137, 220, 0.3);
+    opacity: 0;
+    animation: expandRing 1s ease-out forwards;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes expandRing {
+    0% {
+        opacity: 0.8;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.1);
+    }
+}
+
+/* 流体背景效果 */
+.background-effects {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: -1;
+    display: none; /* 隐藏整个背景效果容器 */
+}
+
+.floating-particle {
+    display: none; /* 隐藏所有浮动粒子 */
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background-color: rgba(74, 137, 220, 0.1);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+    filter: blur(8px);
+    animation: floatAround 60s linear infinite;
+}
+
+@keyframes floatAround {
+    0% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+    }
+    25% {
+        transform: translate(10%, 15%) rotate(90deg) scale(1.1);
+    }
+    50% {
+        transform: translate(-5%, -10%) rotate(180deg) scale(0.9);
+    }
+    75% {
+        transform: translate(-15%, 5%) rotate(270deg) scale(1.2);
+    }
+    100% {
+        transform: translate(0, 0) rotate(360deg) scale(1);
+    }
+}
+
+/* 深色模式下的背景粒子 */
+body.dark-mode .floating-particle {
+    filter: blur(10px);
+    opacity: 0.15 !important;
+}
+
+/* 页面加载动画 */
+body {
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+}
+
+body.loaded {
+    opacity: 1;
+}
+
+/* 移动端优化 */
+@media (max-width: 600px) {
+    .floating-particle {
+        opacity: 0.05 !important;
+    }
+    
+    .node {
+        min-width: 80px;
+        padding: 8px 12px;
+    }
+}
+
+/* 打印样式优化 */
+@media print {
+    .tooltip, 
+    .background-effects {
+        display: none !important;
+    }
+    
+    .mind-map-container {
+        background: white;
+        background-image: none;
+    }
+    
+    .node {
+        box-shadow: none;
+        border: 1px solid #333;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+    
+    .connector {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+}
+
+.tooltip {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+.tooltip.show {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* 节点隐藏样式 - 确保隐藏时真的不可见 */
+.node[style*="display: none"],
+.node[style*="visibility: hidden"],
+.connector[style*="display: none"],
+.connector[style*="visibility: hidden"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* 确保被隐藏的节点不会显示 */
+.node.hidden-node {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* 确保被隐藏的连接线不会显示 */
+.connector.hidden-connector {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
