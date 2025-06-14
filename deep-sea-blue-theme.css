@@ -1,0 +1,856 @@
+/* 深海蓝主题 - 神秘深邃的海洋视觉效果 */
+:root {
+  /* 深海蓝主题基础变量 */
+  --deepsea-primary: #003459;
+  --deepsea-secondary: #00283c;
+  --deepsea-tertiary: #00171f;
+  --deepsea-quaternary: #000e18;
+  --deepsea-dark: #000c14;
+  --deepsea-darkest: #00080e;
+  
+  /* 强调色 */
+  --deepsea-accent: #0077b6;
+  --deepsea-bright: #00a8e8;
+  --deepsea-glow: #48cae4;
+  --deepsea-light: #90e0ef;
+  
+  /* 辉光效果 */
+  --deepsea-primary-glow: rgba(0, 168, 232, 0.95);
+  --deepsea-secondary-glow: rgba(0, 119, 182, 0.7);
+  --deepsea-tertiary-glow: rgba(0, 40, 60, 0.15);
+  --deepsea-border-glow: rgba(144, 224, 239, 0.22);
+  
+  /* 文本颜色 */
+  --deepsea-text-primary: rgba(255, 255, 255, 0.95);
+  --deepsea-text-secondary: rgba(255, 255, 255, 0.85);
+  --deepsea-text-tertiary: rgba(144, 224, 239, 0.9);
+  
+  /* 边框 */
+  --deepsea-border-light: rgba(144, 224, 239, 0.3);
+  --deepsea-border-medium: rgba(144, 224, 239, 0.5);
+  --deepsea-border-dark: rgba(0, 119, 182, 0.7);
+  
+  /* 动画 */
+  --deepsea-hover-transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+  --deepsea-pulse-animation: deepseaPulse 5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  --deepsea-wave-animation: deepseaWave 8s ease-in-out infinite;
+  
+  /* 滤镜 */
+  --deepsea-glow-filter: drop-shadow(0 0 12px rgba(0, 168, 232, 0.7));
+  --deepsea-blur-filter: blur(20px);
+}
+
+/* 深海蓝主题背景 */
+.deepsea-theme body {
+  background-color: var(--deepsea-darkest);
+  color: var(--deepsea-text-primary);
+  background-image: radial-gradient(circle at 50% 50%, var(--deepsea-tertiary) 0%, var(--deepsea-darkest) 100%);
+}
+
+/* 深海蓝主题连接线 */
+.deepsea-theme .connection-path {
+  stroke-width: 2.5;
+  filter: var(--deepsea-glow-filter);
+  opacity: 0.85;
+}
+
+/* 深海蓝主题连接线渐变 */
+.deepsea-theme #blueWhiteGradient stop:nth-child(odd) {
+  stop-color: rgba(0, 168, 232, 0.1);
+}
+
+.deepsea-theme #blueWhiteGradient stop:nth-child(even) {
+  stop-color: rgba(0, 119, 182, 0.85);
+}
+
+/* 控制面板深海蓝主题 */
+.deepsea-theme .control-panel {
+  background: linear-gradient(135deg, rgba(0, 40, 60, 0.85), rgba(0, 14, 24, 0.9));
+  border: 1px solid var(--deepsea-border-light);
+  box-shadow: 0 8px 32px rgba(0, 8, 14, 0.5), inset 0 2px 16px rgba(144, 224, 239, 0.1);
+  backdrop-filter: var(--deepsea-blur-filter);
+  -webkit-backdrop-filter: var(--deepsea-blur-filter);
+}
+
+.deepsea-theme .controls button {
+  background: linear-gradient(135deg, var(--deepsea-tertiary), var(--deepsea-quaternary));
+  color: var(--deepsea-text-primary);
+  border: 1px solid var(--deepsea-border-light);
+  box-shadow: 0 4px 12px rgba(0, 8, 14, 0.4), 0 0 8px rgba(0, 119, 182, 0.2);
+  transition: var(--deepsea-hover-transition);
+}
+
+.deepsea-theme .controls button:hover {
+  background: linear-gradient(135deg, var(--deepsea-secondary), var(--deepsea-tertiary));
+  border-color: var(--deepsea-border-medium);
+  box-shadow: 0 4px 16px rgba(0, 168, 232, 0.5), 0 0 12px rgba(0, 119, 182, 0.4);
+  transform: translateY(-2px) scale(1.05);
+}
+
+.deepsea-theme .controls button:active {
+  background: linear-gradient(135deg, var(--deepsea-tertiary), var(--deepsea-secondary));
+  transform: translateY(1px) scale(0.98);
+}
+
+.deepsea-theme .instructions {
+  background: rgba(0, 14, 24, 0.6);
+  border-left: 2px solid var(--deepsea-border-medium);
+  color: var(--deepsea-text-secondary);
+  padding: 18px;
+  border-radius: 12px;
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+
+/* 深海蓝主题思维导图节点 */
+.deepsea-theme .mind-map .node {
+  transition: var(--deepsea-hover-transition);
+  color: var(--deepsea-text-primary) !important;
+}
+
+/* 根节点 */
+.deepsea-theme .root {
+  background: linear-gradient(135deg, var(--deepsea-tertiary), var(--deepsea-quaternary));
+  color: var(--deepsea-text-primary) !important;
+  border: none;
+  box-shadow: 0 12px 28px rgba(0, 8, 14, 0.4), 0 0 20px rgba(0, 119, 182, 0.3), inset 0 2px 16px rgba(144, 224, 239, 0.1);
+  text-shadow: 0 0 12px rgba(144, 224, 239, 0.8);
+  position: relative;
+  overflow: hidden;
+  padding: 18px 25px;
+  border-radius: 18px;
+  font-weight: bold;
+  font-size: 1.3em;
+  min-width: 180px;
+}
+
+.deepsea-theme .root::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(144, 224, 239, 0.2), transparent);
+  transform: skewX(-25deg);
+  animation: deepseaShimmer 7s infinite;
+}
+
+/* 一级节点 */
+.deepsea-theme .node-level-1 {
+  background: linear-gradient(135deg, rgba(0, 52, 89, 0.8), rgba(0, 40, 60, 0.75));
+  color: var(--deepsea-text-primary) !important;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 8, 14, 0.35), 0 0 15px rgba(0, 119, 182, 0.25);
+  text-shadow: 0 0 8px rgba(144, 224, 239, 0.7);
+}
+
+.deepsea-theme .node-level-1:hover {
+  background: linear-gradient(135deg, rgba(0, 52, 89, 0.9), rgba(0, 40, 60, 0.85));
+  box-shadow: 0 8px 24px rgba(0, 8, 14, 0.4), 0 0 20px rgba(0, 168, 232, 0.35);
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* 二级节点 */
+.deepsea-theme .node-level-2 {
+  background: linear-gradient(135deg, rgba(0, 40, 60, 0.7), rgba(0, 23, 31, 0.65));
+  color: var(--deepsea-text-primary) !important;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0, 8, 14, 0.3), 0 0 12px rgba(0, 119, 182, 0.2);
+  text-shadow: 0 0 6px rgba(144, 224, 239, 0.6);
+}
+
+.deepsea-theme .node-level-2:hover {
+  background: linear-gradient(135deg, rgba(0, 40, 60, 0.8), rgba(0, 23, 31, 0.75));
+  box-shadow: 0 6px 20px rgba(0, 8, 14, 0.35), 0 0 16px rgba(0, 168, 232, 0.3);
+  transform: translateY(-1px) scale(1.01);
+}
+
+/* 三级及以下节点 */
+.deepsea-theme .node-level-3,
+.deepsea-theme .node-level-4,
+.deepsea-theme .node-level-5 {
+  background: linear-gradient(135deg, rgba(0, 23, 31, 0.6), rgba(0, 14, 24, 0.55));
+  color: var(--deepsea-text-primary) !important;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 8, 14, 0.25), 0 0 8px rgba(0, 119, 182, 0.15);
+}
+
+.deepsea-theme .node-level-3:hover,
+.deepsea-theme .node-level-4:hover,
+.deepsea-theme .node-level-5:hover {
+  background: linear-gradient(135deg, rgba(0, 23, 31, 0.7), rgba(0, 14, 24, 0.65));
+  box-shadow: 0 4px 16px rgba(0, 8, 14, 0.3), 0 0 12px rgba(0, 119, 182, 0.25);
+  transform: translateY(-1px) scale(1.01);
+}
+
+/* 确保节点文本元素也是白色 */
+.deepsea-theme .node-text {
+  color: var(--deepsea-text-primary) !important;
+}
+
+/* 编辑状态下也保持白色文本 */
+.deepsea-theme .node-editing {
+  color: var(--deepsea-text-primary) !important;
+}
+
+.deepsea-theme .edit-textarea {
+  color: var(--deepsea-text-primary) !important;
+}
+
+/* 浮动气泡效果 */
+.deepsea-theme .bubble {
+  position: absolute;
+  background: radial-gradient(circle at center, rgba(144, 224, 239, 0.3), rgba(0, 119, 182, 0.05));
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(144, 224, 239, 0.2), inset 0 0 8px rgba(255, 255, 255, 0.1);
+  animation: deepseaFloat 8s ease-in-out infinite;
+  z-index: -1;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* 水波纹效果 */
+.deepsea-theme .water-ripple {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(144, 224, 239, 0.2);
+  box-shadow: 0 0 10px rgba(0, 168, 232, 0.3);
+  animation: deepseaRipple 4s ease-out;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* 深海光束 */
+.deepsea-theme .light-beam {
+  position: absolute;
+  background: linear-gradient(to bottom, 
+    rgba(144, 224, 239, 0.1) 0%, 
+    rgba(0, 168, 232, 0.05) 50%, 
+    rgba(0, 119, 182, 0.01) 100%
+  );
+  transform-origin: top center;
+  transform: rotate(var(--beam-rotate, 45deg));
+  width: 20px;
+  height: 200px;
+  filter: blur(15px);
+  opacity: 0.2;
+  animation: deepseaBeam 12s infinite;
+}
+
+/* 动画定义 */
+@keyframes deepseaShimmer {
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: -100%;
+  }
+}
+
+@keyframes deepseaPulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes deepseaFloat {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-15px) translateX(5px);
+  }
+  50% {
+    transform: translateY(-25px) translateX(-8px);
+  }
+  75% {
+    transform: translateY(-10px) translateX(8px);
+  }
+}
+
+@keyframes deepseaRipple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.8;
+  }
+  100% {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+  }
+}
+
+@keyframes deepseaBeam {
+  0%, 100% {
+    opacity: 0.1;
+    transform: rotate(var(--beam-rotate, 45deg)) translateY(20px);
+  }
+  50% {
+    opacity: 0.3;
+    transform: rotate(calc(var(--beam-rotate, 45deg) - 5deg)) translateY(0);
+  }
+}
+
+@keyframes deepseaWave {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* 主题选择器样式 - 完全重新优化 */
+.deepsea-theme .theme-selector {
+  background: linear-gradient(135deg, 
+    rgba(0, 32, 48, 0.92) 0%, 
+    rgba(0, 14, 30, 0.96) 50%,
+    rgba(0, 8, 14, 0.98) 100%
+  );
+  border: 2px solid transparent;
+  border-image: linear-gradient(
+    to bottom,
+    rgba(0, 168, 232, 0.9) 0%,
+    rgba(144, 224, 239, 0.4) 50%,
+    rgba(0, 119, 182, 0.6) 100%
+  ) 1;
+  box-shadow: 
+    0 0 40px rgba(0, 8, 14, 0.7), 
+    0 0 25px rgba(0, 168, 232, 0.3),
+    inset 0 0 25px rgba(0, 23, 31, 0.8),
+    inset 0 0 5px rgba(144, 224, 239, 0.2);
+  border-radius: 16px;
+  padding: 28px;
+  color: var(--deepsea-text-primary);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* 添加海底纹理背景 */
+.deepsea-theme .theme-selector::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 35%, rgba(0, 168, 232, 0.09) 0%, transparent 55%),
+    radial-gradient(circle at 80% 70%, rgba(0, 119, 182, 0.07) 0%, transparent 45%),
+    url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%230066aa' fill-opacity='0.04' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.7;
+  z-index: -1;
+  animation: deepseaBackgroundShift 30s ease-in-out infinite alternate;
+}
+
+/* 添加深海光效 */
+.deepsea-theme .theme-selector::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -20%;
+  height: 60%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(72, 202, 228, 0.15) 0%,
+    rgba(0, 168, 232, 0.07) 40%,
+    transparent 70%
+  );
+  filter: blur(15px);
+  transform: translateY(-10%);
+  animation: deepseaLightSwell 12s ease-in-out infinite;
+  z-index: -1;
+}
+
+/* 海底光束动画 */
+@keyframes deepseaLightSwell {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translateY(-10%) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateY(-15%) scale(1.2);
+  }
+}
+
+/* 背景纹理动画 */
+@keyframes deepseaBackgroundShift {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 10% 20%;
+  }
+}
+
+.deepsea-theme .theme-selector h3 {
+  color: var(--deepsea-text-primary);
+  text-shadow: 0 0 15px rgba(72, 202, 228, 0.9), 0 0 30px rgba(0, 168, 232, 0.6);
+  font-size: 1.6em;
+  margin-bottom: 25px;
+  text-align: center;
+  letter-spacing: 1.2px;
+  font-weight: 600;
+  position: relative;
+  z-index: 5;
+}
+
+/* 添加装饰线 */
+.deepsea-theme .theme-selector h3::after {
+  content: '';
+  display: block;
+  width: 80%;
+  height: 2px;
+  margin: 12px auto 0;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(144, 224, 239, 0.3) 20%,
+    rgba(0, 168, 232, 0.7) 50%,
+    rgba(144, 224, 239, 0.3) 80%,
+    transparent 100%
+  );
+  box-shadow: 0 0 10px rgba(72, 202, 228, 0.7);
+}
+
+.deepsea-theme .theme-options-menu {
+  border-radius: 16px;
+  box-shadow: 
+    0 10px 40px rgba(0, 8, 14, 0.8),
+    0 0 30px rgba(0, 23, 31, 0.6),
+    0 0 20px rgba(0, 168, 232, 0.3),
+    inset 0 0 40px rgba(0, 40, 60, 0.5);
+  border: 2px solid transparent;
+  border-image: linear-gradient(
+    to bottom,
+    rgba(0, 168, 232, 0.9) 0%,
+    rgba(144, 224, 239, 0.4) 50%,
+    rgba(0, 119, 182, 0.6) 100%
+  ) 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 添加水下光线效果 */
+.deepsea-theme .theme-options-menu::before {
+  content: '';
+  position: absolute;
+  width: 150%;
+  height: 200px;
+  background: linear-gradient(to bottom, rgba(72, 202, 228, 0.05), transparent);
+  top: -120px;
+  left: -25%;
+  transform: rotate(15deg);
+  filter: blur(20px);
+  animation: deepseaLightBeam 15s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes deepseaLightBeam {
+  0% {
+    transform: rotate(15deg) translateY(0);
+    opacity: 0.3;
+  }
+  100% {
+    transform: rotate(25deg) translateY(50px);
+    opacity: 0.6;
+  }
+}
+
+/* 增强主题选项 */
+.deepsea-theme .theme-option {
+  background: linear-gradient(135deg, 
+    rgba(0, 23, 31, 0.75) 0%,
+    rgba(0, 14, 24, 0.85) 100%
+  );
+  border-left: 4px solid rgba(0, 168, 232, 0.4);
+  border-radius: 10px;
+  margin: 12px 0;
+  padding: 16px 18px;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 4px 15px rgba(0, 8, 14, 0.3),
+    0 0 8px rgba(0, 40, 60, 0.2),
+    inset 0 1px 3px rgba(144, 224, 239, 0.15);
+}
+
+/* 添加水波纹边缘效果 */
+.deepsea-theme .theme-option::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(144, 224, 239, 0.15) 20%,
+    rgba(0, 168, 232, 0.35) 50%,
+    rgba(144, 224, 239, 0.15) 80%,
+    transparent 100%
+  );
+  box-shadow: 0 0 8px rgba(0, 168, 232, 0.2);
+}
+
+/* 添加底部波纹边缘效果 */
+.deepsea-theme .theme-option::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 40, 60, 0.3) 20%,
+    rgba(0, 119, 182, 0.25) 50%,
+    rgba(0, 40, 60, 0.3) 80%,
+    transparent 100%
+  );
+}
+
+.deepsea-theme .theme-option:hover {
+  background: linear-gradient(135deg, 
+    rgba(0, 40, 60, 0.8) 0%,
+    rgba(0, 23, 31, 0.7) 100%
+  );
+  border-left: 4px solid rgba(0, 168, 232, 0.9);
+  box-shadow: 
+    0 6px 20px rgba(0, 8, 14, 0.4),
+    0 0 15px rgba(0, 168, 232, 0.3),
+    inset 0 1px 5px rgba(144, 224, 239, 0.2);
+  transform: translateX(5px) translateY(-2px);
+}
+
+/* 闪光波动效果 */
+.deepsea-theme .theme-option:hover::before {
+  animation: deepseaOptionTopGlow 2s ease-in-out infinite;
+}
+
+@keyframes deepseaOptionTopGlow {
+  0%, 100% {
+    opacity: 0.5;
+    box-shadow: 0 0 5px rgba(72, 202, 228, 0.3);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(72, 202, 228, 0.6);
+  }
+}
+
+.deepsea-theme .theme-option.selected {
+  background: linear-gradient(135deg, 
+    rgba(0, 52, 89, 0.65) 0%,
+    rgba(0, 40, 60, 0.5) 100%
+  );
+  border-left: 4px solid rgba(72, 202, 228, 1);
+  box-shadow: 
+    0 6px 20px rgba(0, 8, 14, 0.4),
+    0 0 18px rgba(0, 168, 232, 0.4),
+    inset 0 0 15px rgba(0, 119, 182, 0.2);
+  transform: translateX(8px);
+}
+
+/* 为选中项添加光效 */
+.deepsea-theme .theme-option.selected::before {
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(144, 224, 239, 0.2) 20%,
+    rgba(72, 202, 228, 0.5) 50%,
+    rgba(144, 224, 239, 0.2) 80%,
+    transparent 100%
+  );
+  box-shadow: 0 0 10px rgba(72, 202, 228, 0.5);
+}
+
+/* 选项内部文本 */
+.deepsea-theme .theme-option div:first-child {
+  font-weight: 600;
+  font-size: 1.05em;
+  margin-bottom: 5px;
+  color: rgba(144, 224, 239, 0.95);
+  text-shadow: 0 0 8px rgba(0, 168, 232, 0.6);
+  position: relative;
+}
+
+/* 添加小图标装饰 */
+.deepsea-theme .theme-option div:first-child::before {
+  content: '•';
+  color: rgba(72, 202, 228, 0.9);
+  margin-right: 8px;
+  font-size: 1.2em;
+  text-shadow: 0 0 10px rgba(72, 202, 228, 0.8);
+  animation: deepseaIconPulse 3s infinite;
+}
+
+@keyframes deepseaIconPulse {
+  0%, 100% {
+    opacity: 0.8;
+    text-shadow: 0 0 10px rgba(72, 202, 228, 0.8);
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 0 0 15px rgba(72, 202, 228, 1);
+  }
+}
+
+.deepsea-theme .theme-option div:last-child {
+  font-size: 0.9em;
+  opacity: 0.85;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.85);
+  padding-left: 18px;
+}
+
+/* 水下粒子效果 */
+.deepsea-theme .particle {
+  position: absolute;
+  background-color: rgba(144, 224, 239, 0.4);
+  border-radius: 50%;
+  filter: blur(2px);
+  pointer-events: none;
+  animation: deepseaFloat var(--particle-duration, 20s) infinite;
+  opacity: 0.6;
+  box-shadow: 0 0 5px rgba(144, 224, 239, 0.3);
+}
+
+/* 主题选择器内的特效开关样式 */
+.deepsea-theme .theme-options-menu div:has(> span) + div {
+  border-top: 1px solid rgba(144, 224, 239, 0.2);
+  margin-top: 20px;
+  padding-top: 18px;
+  position: relative;
+}
+
+/* 添加水波分隔线效果 */
+.deepsea-theme .theme-options-menu div:has(> span) + div::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 168, 232, 0.4) 50%,
+    transparent 100%
+  );
+  animation: deepseaBorderPulse 4s ease-in-out infinite;
+}
+
+@keyframes deepseaBorderPulse {
+  0%, 100% {
+    opacity: 0.4;
+    box-shadow: 0 0 5px rgba(72, 202, 228, 0.2);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 0 10px rgba(72, 202, 228, 0.5);
+  }
+}
+
+/* 开关标签文字 */
+.deepsea-theme .theme-options-menu span {
+  color: var(--deepsea-text-secondary);
+  font-size: 0.95em;
+  padding-left: 2px;
+  text-shadow: 0 0 5px rgba(0, 168, 232, 0.3);
+}
+
+/* 自定义开关容器 */
+.deepsea-theme .theme-options-menu div[style*="position: relative"] {
+  background: rgba(0, 14, 24, 0.6);
+  border-radius: 15px; 
+  overflow: hidden;
+  transition: var(--deepsea-hover-transition);
+  box-shadow: 0 2px 6px rgba(0, 8, 14, 0.4), inset 0 0 4px rgba(0, 40, 60, 0.8);
+}
+
+/* 自定义开关手柄 */
+.deepsea-theme .theme-options-menu div[style*="position: relative"] div {
+  background: linear-gradient(135deg, #ffffff, #e0f2ff) !important;
+  box-shadow: 
+    0 2px 5px rgba(0, 8, 14, 0.5),
+    0 0 5px rgba(0, 168, 232, 0.4);
+}
+
+/* 开关激活状态 */
+.deepsea-theme .theme-options-menu div[style*="background-color: rgba(0, 168, 232, 0.5)"] {
+  background: linear-gradient(90deg, rgba(0, 119, 182, 0.7), rgba(0, 168, 232, 0.8)) !important;
+  box-shadow: 
+    0 2px 6px rgba(0, 8, 14, 0.3),
+    inset 0 0 10px rgba(72, 202, 228, 0.4);
+}
+
+/* 开关未激活状态 */
+.deepsea-theme .theme-options-menu div[style*="background-color: rgba(0, 23, 31, 0.5)"] {
+  background: linear-gradient(90deg, rgba(0, 14, 24, 0.8), rgba(0, 23, 31, 0.7)) !important;
+}
+
+/* 关闭按钮样式 */
+.deepsea-theme .theme-options-menu button {
+  background: linear-gradient(135deg, rgba(0, 40, 60, 0.8), rgba(0, 23, 31, 0.9)) !important;
+  border: 1px solid rgba(144, 224, 239, 0.3) !important;
+  box-shadow: 
+    0 4px 12px rgba(0, 8, 14, 0.4), 
+    0 0 10px rgba(0, 119, 182, 0.2),
+    inset 0 1px 1px rgba(144, 224, 239, 0.1);
+  color: var(--deepsea-text-primary) !important;
+  border-radius: 8px !important;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* 按钮悬停效果 */
+.deepsea-theme .theme-options-menu button:hover {
+  background: linear-gradient(135deg, rgba(0, 52, 89, 0.85), rgba(0, 40, 60, 0.95)) !important;
+  border-color: rgba(144, 224, 239, 0.5) !important;
+  box-shadow: 
+    0 6px 16px rgba(0, 8, 14, 0.5), 
+    0 0 15px rgba(0, 168, 232, 0.3),
+    inset 0 1px 3px rgba(144, 224, 239, 0.2);
+  transform: translateY(-2px);
+}
+
+/* 按钮闪光效果 */
+.deepsea-theme .theme-options-menu button::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    rgba(144, 224, 239, 0.1) 0%,
+    rgba(0, 168, 232, 0.05) 30%,
+    transparent 70%
+  );
+  transform: rotate(30deg);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.deepsea-theme .theme-options-menu button:hover::before {
+  opacity: 1;
+  animation: deepseaButtonGlow 2s infinite;
+}
+
+@keyframes deepseaButtonGlow {
+  0%, 100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* 主题选择器覆盖层 */
+.deepsea-theme-overlay {
+  background: radial-gradient(circle at center, rgba(0, 23, 31, 0.7), rgba(0, 8, 14, 0.85));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: deepseaOverlayPulse 10s ease-in-out infinite;
+}
+
+@keyframes deepseaOverlayPulse {
+  0%, 100% {
+    background: radial-gradient(circle at center, rgba(0, 23, 31, 0.7), rgba(0, 8, 14, 0.85));
+  }
+  50% {
+    background: radial-gradient(circle at center, rgba(0, 40, 60, 0.65), rgba(0, 8, 14, 0.8));
+  }
+}
+
+/* 菜单气泡效果 */
+.deepsea-theme .deepsea-menu-bubbles .bubble {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), rgba(0, 168, 232, 0.1));
+  box-shadow: 0 0 10px rgba(144, 224, 239, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+/* 菜单波纹效果 */
+.deepsea-theme .deepsea-menu-ripple {
+  border: 1px solid rgba(144, 224, 239, 0.25);
+  box-shadow: 0 0 15px rgba(0, 168, 232, 0.15);
+}
+
+/* 菜单粒子效果 */
+.deepsea-theme .deepsea-particle {
+  box-shadow: 0 0 8px rgba(144, 224, 239, 0.4);
+  filter: blur(1px);
+}
+
+/* 菜单边框发光效果 */
+.deepsea-theme .deepsea-menu-glow-border {
+  box-shadow: inset 0 0 20px rgba(0, 168, 232, 0.2);
+  border: 1px solid rgba(144, 224, 239, 0.15);
+  animation: deepseaBorderGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes deepseaBorderGlow {
+  0%, 100% {
+    box-shadow: inset 0 0 20px rgba(0, 168, 232, 0.15);
+    border-color: rgba(144, 224, 239, 0.1);
+  }
+  50% {
+    box-shadow: inset 0 0 30px rgba(0, 168, 232, 0.25);
+    border-color: rgba(144, 224, 239, 0.2);
+  }
+}
+
+/* 鼠标气泡效果 */
+.deepsea-theme .mouse-bubble {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.5), rgba(72, 202, 228, 0.2));
+  box-shadow: 0 0 8px rgba(72, 202, 228, 0.5);
+}
+
+.deepsea-theme .small-mouse-bubble {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6), rgba(144, 224, 239, 0.2));
+  box-shadow: 0 0 5px rgba(144, 224, 239, 0.4);
+}
+
+/* 自适应布局 */
+@media (max-width: 768px) {
+  .deepsea-theme .control-panel {
+    padding: 15px;
+  }
+  
+  .deepsea-theme .instructions {
+    padding: 12px;
+    font-size: 13px;
+  }
+  
+  .deepsea-theme .theme-selector {
+    padding: 20px;
+  }
+  
+  .deepsea-theme .theme-option {
+    padding: 12px 15px;
+  }
+} 

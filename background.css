@@ -1,0 +1,132 @@
+/* 自定义背景样式 */
+.custom-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw; /* 使用视口宽度单位 */
+    height: 100vh; /* 使用视口高度单位 */
+    z-index: -1;
+    background-color: #000; /* 添加黑色背景，防止透明区域 */
+    overflow: hidden; /* 防止内容溢出 */
+}
+
+/* 超强力视频填充样式 */
+.custom-background video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.05); /* 居中定位并稍微放大 */
+    width: 100vw; /* 强制使用视口宽度 */
+    height: 100vh; /* 强制使用视口高度 */
+    object-fit: cover !important; /* 强制使用cover填充 */
+    object-position: center center;
+    min-width: 105vw; /* 超出视口宽度 */
+    min-height: 105vh; /* 超出视口高度 */
+    margin: 0;
+    padding: 0;
+    border: none;
+    display: block;
+    /* 隐藏视频控件 */
+    -webkit-controls: none !important;
+    -moz-controls: none !important;
+    -ms-controls: none !important;
+    -o-controls: none !important;
+    -controls: none !important;
+    /* 无缝循环相关优化 */
+    transition: opacity 0.15s ease;
+    will-change: transform, opacity;
+}
+
+/* 缓冲视频特殊样式 */
+.buffer-video-element {
+    opacity: 0;
+    z-index: -2;
+    transition: opacity 0.15s ease-in;
+}
+
+/* 全局隐藏视频控件样式 */
+video::-webkit-media-controls-enclosure,
+video::-webkit-media-controls-panel,
+video::-webkit-media-controls,
+video::-webkit-media-controls-overlay-enclosure,
+video::-webkit-media-controls-play-button,
+video::-webkit-media-controls-timeline,
+video::-webkit-media-controls-current-time-display,
+video::-webkit-media-controls-time-remaining-display,
+video::-webkit-media-controls-time-remaining-display,
+video::-webkit-media-controls-mute-button,
+video::-webkit-media-controls-toggle-closed-captions-button,
+video::-webkit-media-controls-volume-slider,
+video::-webkit-media-controls-fullscreen-button {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* 针对图片的样式保持不变 */
+.custom-background img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 居中定位 */
+    min-width: 100vw;
+    min-height: 100vh;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+}
+
+/* 针对标准比例图片使用cover模式，填满屏幕 */
+.custom-background img.normal-image {
+    object-fit: cover;
+}
+
+/* 覆盖原有的背景样式 */
+body {
+    background: transparent !important;
+    overflow: hidden; /* 防止滚动条出现 */
+    margin: 0;
+    padding: 0;
+}
+
+body.dark-mode {
+    background: transparent !important;
+}
+
+.background-effects {
+    display: none !important;
+}
+
+.floating-particle {
+    display: none !important;
+}
+
+/* 确保整个页面不受滚动影响 */
+html {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* 添加平滑过渡效果 */
+.custom-background img,
+.custom-background video {
+    transition: opacity 0.3s ease;
+}
+
+/* 优化视频性能 */
+.custom-background video {
+    will-change: transform;
+    backface-visibility: hidden;
+    perspective: 1000;
+    transform-style: preserve-3d;
+    /* 视频优化 - 强制硬件加速 */
+    -webkit-transform: translate3d(-50%, -50%, 0) scale(1.05);
+    transform: translate3d(-50%, -50%, 0) scale(1.05);
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}

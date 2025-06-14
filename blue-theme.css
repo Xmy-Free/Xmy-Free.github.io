@@ -1,0 +1,994 @@
+/* 蓝色主题 - 超级无敌高级视觉效果 */
+:root {
+  /* 蓝色主题基础变量 */
+  --blue-primary: #0466c8;
+  --blue-secondary: #0353a4;
+  --blue-tertiary: #023e7d;
+  --blue-quaternary: #002855;
+  --blue-dark: #001845;
+  --blue-darkest: #001233;
+  
+  /* 强调色 */
+  --blue-accent: #33a1fd;
+  --blue-bright: #48cae4;
+  --blue-glow: #90e0ef;
+  --blue-light: #ade8f4;
+  
+  /* 辉光效果 */
+  --primary-glow: rgba(72, 202, 228, 0.95);
+  --secondary-glow: rgba(51, 161, 253, 0.7);
+  --tertiary-glow: rgba(3, 83, 164, 0.15);
+  --border-glow: rgba(144, 224, 239, 0.22);
+  
+  /* 文本颜色 */
+  --text-primary: rgba(255, 255, 255, 0.95);
+  --text-secondary: rgba(255, 255, 255, 0.85);
+  --text-tertiary: rgba(174, 232, 244, 0.9);
+  
+  /* 边框 */
+  --border-light: rgba(144, 224, 239, 0.3);
+  --border-medium: rgba(144, 224, 239, 0.5);
+  --border-dark: rgba(51, 161, 253, 0.7);
+  
+  /* 动画 */
+  --hover-transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+  --pulse-animation: pulse 4s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  
+  /* 滤镜 */
+  --glow-filter: drop-shadow(0 0 12px rgba(72, 202, 228, 0.7));
+  --soft-filter: blur(20px);
+  
+  /* 科幻主题变量 */
+  --sci-fi-primary: #0b132b;
+  --sci-fi-secondary: #1c2541;
+  --sci-fi-accent: #00bfff;
+  --sci-fi-glow: #5bc0eb;
+  --sci-fi-highlight: #00ffff;
+  --sci-fi-grid: rgba(0, 191, 255, 0.15);
+}
+
+/* 蓝色主题背景 */
+.blue-theme body {
+  background-color: var(--blue-darkest);
+  color: var(--text-primary);
+  --primary-glow: rgba(72, 202, 228, 0.95);
+  --secondary-glow: rgba(51, 161, 253, 0.7);
+  --tertiary-glow: rgba(3, 83, 164, 0.15);
+  --border-glow: rgba(144, 224, 239, 0.22);
+}
+
+/* 蓝色主题连接线 */
+.blue-theme .connection-path {
+  stroke-width: 2.5;
+  filter: var(--glow-filter);
+  opacity: 0.85;
+}
+
+/* 蓝色主题连接线渐变 */
+.blue-theme #blueWhiteGradient stop:nth-child(odd) {
+  stop-color: rgba(72, 202, 228, 0.1);
+}
+
+.blue-theme #blueWhiteGradient stop:nth-child(even) {
+  stop-color: rgba(51, 161, 253, 0.85);
+}
+
+/* 控制面板蓝色主题 */
+.blue-theme .control-panel {
+  background: linear-gradient(135deg, rgba(2, 62, 125, 0.85), rgba(0, 40, 85, 0.9));
+  border: 1px solid var(--border-light);
+  box-shadow: 0 8px 32px rgba(0, 18, 51, 0.5), inset 0 2px 16px rgba(144, 224, 239, 0.1);
+  backdrop-filter: var(--soft-filter);
+  -webkit-backdrop-filter: var(--soft-filter);
+}
+
+.blue-theme .controls button {
+  background: linear-gradient(135deg, var(--blue-tertiary), var(--blue-quaternary));
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 12px rgba(0, 18, 51, 0.4), 0 0 8px rgba(51, 161, 253, 0.2);
+  transition: var(--hover-transition);
+}
+
+.blue-theme .controls button:hover {
+  background: linear-gradient(135deg, var(--blue-secondary), var(--blue-tertiary));
+  border-color: var(--border-medium);
+  box-shadow: 0 4px 16px rgba(72, 202, 228, 0.5), 0 0 12px rgba(51, 161, 253, 0.4);
+  transform: translateY(-2px) scale(1.05);
+}
+
+.blue-theme .controls button:active {
+  background: linear-gradient(135deg, var(--blue-tertiary), var(--blue-secondary));
+  transform: translateY(1px) scale(0.98);
+}
+
+.blue-theme .instructions {
+  background: rgba(0, 24, 69, 0.6);
+  border-left: 2px solid var(--border-medium);
+  color: var(--text-secondary);
+  padding: 18px;
+  border-radius: 12px;
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+
+.blue-theme .instructions p {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.blue-theme .instructions b {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* 蓝色主题思维导图节点 */
+.blue-theme .mind-map .node {
+  transition: var(--hover-transition);
+  color: var(--text-primary) !important;
+}
+
+/* 根节点 */
+.blue-theme .root {
+  background: linear-gradient(135deg, var(--blue-tertiary), var(--blue-quaternary));
+  color: var(--text-primary) !important;
+  border: none;
+  box-shadow: 0 12px 28px rgba(0, 18, 51, 0.4), 0 0 20px rgba(51, 161, 253, 0.3), inset 0 2px 16px rgba(144, 224, 239, 0.1);
+  text-shadow: 0 0 12px rgba(144, 224, 239, 0.8);
+  position: relative;
+  overflow: hidden;
+  padding: 18px 25px;
+  border-radius: 18px;
+  font-weight: bold;
+  font-size: 1.3em;
+  min-width: 180px;
+}
+
+.blue-theme .root::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(144, 224, 239, 0.2), transparent);
+  transform: skewX(-25deg);
+  animation: shimmer 5s infinite;
+}
+
+/* 一级节点 */
+.blue-theme .node-level-1 {
+  background: linear-gradient(135deg, rgba(4, 102, 200, 0.8), rgba(3, 83, 164, 0.75));
+  color: var(--text-primary) !important;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 18, 51, 0.35), 0 0 15px rgba(51, 161, 253, 0.25);
+  text-shadow: 0 0 8px rgba(144, 224, 239, 0.7);
+}
+
+.blue-theme .node-level-1:hover {
+  background: linear-gradient(135deg, rgba(4, 102, 200, 0.9), rgba(3, 83, 164, 0.85));
+  box-shadow: 0 8px 24px rgba(0, 18, 51, 0.4), 0 0 20px rgba(72, 202, 228, 0.35);
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* 二级节点 */
+.blue-theme .node-level-2 {
+  background: linear-gradient(135deg, rgba(3, 83, 164, 0.7), rgba(2, 62, 125, 0.65));
+  color: var(--text-primary) !important;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0, 18, 51, 0.3), 0 0 12px rgba(51, 161, 253, 0.2);
+  text-shadow: 0 0 6px rgba(144, 224, 239, 0.6);
+}
+
+.blue-theme .node-level-2:hover {
+  background: linear-gradient(135deg, rgba(3, 83, 164, 0.8), rgba(2, 62, 125, 0.75));
+  box-shadow: 0 6px 20px rgba(0, 18, 51, 0.35), 0 0 16px rgba(72, 202, 228, 0.3);
+  transform: translateY(-1px) scale(1.01);
+}
+
+/* 三级及以下节点 */
+.blue-theme .node-level-3,
+.blue-theme .node-level-4,
+.blue-theme .node-level-5 {
+  background: linear-gradient(135deg, rgba(2, 62, 125, 0.6), rgba(0, 40, 85, 0.55));
+  color: var(--text-primary) !important;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 18, 51, 0.25), 0 0 8px rgba(51, 161, 253, 0.15);
+  text-shadow: 0 0 4px rgba(144, 224, 239, 0.5);
+}
+
+.blue-theme .node-level-3:hover,
+.blue-theme .node-level-4:hover,
+.blue-theme .node-level-5:hover {
+  background: linear-gradient(135deg, rgba(2, 62, 125, 0.7), rgba(0, 40, 85, 0.65));
+  box-shadow: 0 4px 16px rgba(0, 18, 51, 0.3), 0 0 12px rgba(72, 202, 228, 0.25);
+  transform: translateY(-1px);
+}
+
+/* 连接线颜色 */
+.blue-theme .connector {
+  stroke: var(--blue-accent);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 3px var(--blue-glow));
+}
+
+.blue-theme .connector-primary {
+  stroke: var(--blue-bright);
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 5px var(--blue-accent));
+}
+
+/* 工具提示 */
+.blue-theme .tooltip {
+  background: linear-gradient(135deg, var(--blue-tertiary), var(--blue-quaternary));
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 12px rgba(0, 18, 51, 0.5), 0 0 10px rgba(72, 202, 228, 0.25);
+  backdrop-filter: var(--soft-filter);
+  -webkit-backdrop-filter: var(--soft-filter);
+}
+
+/* 折叠/展开图标 */
+.blue-theme .toggle-btn {
+  background: rgba(3, 83, 164, 0.7);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 2px 8px rgba(0, 18, 51, 0.3), 0 0 6px rgba(72, 202, 228, 0.2);
+}
+
+.blue-theme .toggle-btn:hover {
+  background: rgba(4, 102, 200, 0.8);
+  box-shadow: 0 2px 10px rgba(0, 18, 51, 0.4), 0 0 8px rgba(72, 202, 228, 0.3);
+}
+
+/* 子节点连接线 */
+.blue-theme .children {
+  border-left: 2px solid var(--blue-secondary) !important;
+}
+
+.blue-theme .node-content.open + .children {
+  border-left: 2px solid var(--blue-accent) !important;
+  box-shadow: -3px 0 10px -5px var(--blue-glow);
+}
+
+/* 动画效果 */
+@keyframes shimmer {
+  0% {
+    left: -100%;
+    opacity: 0.7;
+  }
+  20% {
+    left: 100%;
+    opacity: 0.7;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.9;
+    filter: brightness(1) saturate(1);
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1.1) saturate(1.1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* 节点悬浮时的发光效果 */
+.blue-theme .root:hover,
+.blue-theme .node:hover > .node-content {
+  border-color: var(--border-dark);
+  box-shadow: 0 8px 28px rgba(0, 18, 51, 0.5), 0 0 20px var(--secondary-glow), inset 0 0 8px var(--tertiary-glow);
+  animation: var(--pulse-animation);
+}
+
+/* 主题切换按钮特殊样式 */
+.blue-theme #darkModeBtn {
+  background: linear-gradient(135deg, var(--blue-bright), var(--blue-accent));
+  color: var(--blue-dark);
+  border: 1px solid var(--border-medium);
+  font-weight: bold;
+  box-shadow: 0 4px 16px rgba(0, 18, 51, 0.4), 0 0 12px rgba(72, 202, 228, 0.5);
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+}
+
+.blue-theme #darkModeBtn:hover {
+  background: linear-gradient(135deg, var(--blue-glow), var(--blue-bright));
+  box-shadow: 0 4px 20px rgba(0, 18, 51, 0.5), 0 0 16px rgba(72, 202, 228, 0.7);
+  transform: translateY(-3px) scale(1.08);
+}
+
+/* 主题按钮特殊样式 */
+.blue-theme #themeBtn {
+  background: linear-gradient(135deg, var(--blue-accent), var(--blue-bright));
+  color: var(--blue-dark);
+  border: 1px solid var(--border-medium);
+  font-weight: bold;
+  box-shadow: 0 4px 16px rgba(0, 18, 51, 0.4), 0 0 12px rgba(72, 202, 228, 0.5);
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+}
+
+.blue-theme #themeBtn:hover {
+  background: linear-gradient(135deg, var(--blue-bright), var(--blue-glow));
+  box-shadow: 0 4px 20px rgba(0, 18, 51, 0.5), 0 0 16px rgba(72, 202, 228, 0.7);
+  transform: translateY(-3px) scale(1.08);
+}
+
+/* 导出按钮特殊样式 */
+.blue-theme #exportBtn {
+  background: linear-gradient(135deg, var(--blue-accent), var(--blue-secondary));
+  border: 1px solid var(--border-medium);
+}
+
+.blue-theme #exportBtn:hover {
+  background: linear-gradient(135deg, var(--blue-bright), var(--blue-accent));
+}
+
+/* 添加子节点图标特殊样式 */
+.blue-theme .add-child-icon {
+  color: var(--blue-bright);
+  text-shadow: 0 0 8px var(--blue-glow);
+  transition: var(--hover-transition);
+}
+
+.blue-theme .add-child-icon:hover {
+  color: var(--blue-light);
+  transform: scale(1.2) rotate(90deg);
+}
+
+/* 节点编辑状态 */
+.blue-theme .node-editing {
+  background: rgba(0, 18, 45, 0.9) !important;
+  border: 2px dashed var(--border-medium) !important;
+  box-shadow: 0 0 20px var(--secondary-glow) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 编辑框样式 */
+.blue-theme .edit-textarea {
+  background: rgba(0, 24, 69, 0.95);
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-medium);
+  box-shadow: inset 0 0 10px rgba(0, 18, 51, 0.6), 0 0 15px rgba(72, 202, 228, 0.3);
+}
+
+.blue-theme .edit-textarea:focus {
+  border-color: var(--border-dark);
+  box-shadow: inset 0 0 12px rgba(0, 18, 51, 0.7), 0 0 20px rgba(72, 202, 228, 0.4);
+}
+
+/* 水晶效果节点 - 特殊节点 */
+.blue-theme .crystal-node {
+  background: linear-gradient(135deg, rgba(72, 202, 228, 0.3), rgba(51, 161, 253, 0.2));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(144, 224, 239, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 18, 51, 0.4), 0 0 16px rgba(72, 202, 228, 0.3);
+}
+
+.blue-theme .crystal-node::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: linear-gradient(45deg, rgba(72, 202, 228, 0.1), rgba(51, 161, 253, 0.1), rgba(4, 102, 200, 0.1));
+  z-index: -1;
+  border-radius: 16px;
+  filter: blur(10px);
+  animation: pulse 8s infinite;
+}
+
+/* 深海主题模式 (深色变体) */
+.blue-theme.deep-sea .root {
+  background: linear-gradient(135deg, #003366, #001e3c);
+  border: none;
+  box-shadow: 0 12px 28px rgba(0, 18, 51, 0.5), 0 0 25px rgba(3, 83, 164, 0.3);
+}
+
+.blue-theme.deep-sea .node-level-1 {
+  background: linear-gradient(135deg, rgba(0, 51, 102, 0.8), rgba(0, 30, 60, 0.75));
+  border: none;
+}
+
+.blue-theme.deep-sea .node-level-2 {
+  background: linear-gradient(135deg, rgba(0, 30, 60, 0.7), rgba(0, 18, 36, 0.65));
+  border: none;
+}
+
+.blue-theme.deep-sea .node-level-3,
+.blue-theme.deep-sea .node-level-4,
+.blue-theme.deep-sea .node-level-5 {
+  background: linear-gradient(135deg, rgba(0, 18, 36, 0.6), rgba(0, 12, 24, 0.55));
+  border: none;
+}
+
+.blue-theme.deep-sea .control-panel {
+  background: linear-gradient(135deg, rgba(0, 40, 85, 0.85), rgba(0, 18, 51, 0.9));
+}
+
+/* 霓虹主题模式 (明亮变体) */
+.blue-theme.neon {
+  --neon-primary: #00e5ff;
+  --neon-secondary: #00b8d4;
+  --neon-glow: rgba(0, 229, 255, 0.8);
+  --neon-text-glow: 0 0 10px rgba(0, 229, 255, 0.9), 0 0 20px rgba(0, 229, 255, 0.5);
+  --neon-box-glow: 0 0 15px rgba(0, 229, 255, 0.7), 0 0 30px rgba(0, 229, 255, 0.3);
+}
+
+.blue-theme.neon .root,
+.blue-theme.neon .node-level-1 {
+  border: none;
+  text-shadow: var(--neon-text-glow);
+  box-shadow: var(--neon-box-glow), 0 10px 20px rgba(0, 18, 51, 0.4);
+}
+
+.blue-theme.neon .connection-path {
+  stroke: var(--neon-primary);
+  filter: drop-shadow(0 0 8px var(--neon-glow));
+  animation: neonPulse 2s infinite alternate;
+}
+
+/* 主题选择器样式 */
+.blue-theme .theme-selector {
+  background: rgba(0, 24, 69, 0.95) !important;
+  border: 1px solid var(--border-medium) !important;
+  box-shadow: 0 12px 32px rgba(0, 18, 51, 0.6), 0 0 20px rgba(72, 202, 228, 0.3) !important;
+  color: var(--text-primary) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+}
+
+.blue-theme .theme-selector h3 {
+  color: var(--blue-bright) !important;
+  text-shadow: 0 0 8px rgba(72, 202, 228, 0.6) !important;
+  border-bottom: 1px solid var(--border-light) !important;
+  padding-bottom: 10px !important;
+}
+
+.blue-theme .theme-option:hover {
+  background: rgba(51, 161, 253, 0.15) !important;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .blue-theme .control-panel {
+    background: rgba(0, 24, 69, 0.95);
+  }
+  
+  .blue-theme .instructions {
+    font-size: 0.85em;
+  }
+}
+
+/* 霓虹蓝主题 - 二级和三级节点 */
+.blue-theme.neon .node-level-2,
+.blue-theme.neon .node-level-3,
+.blue-theme.neon .node-level-4,
+.blue-theme.neon .node-level-5 {
+  border: none;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.7);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.4), 0 8px 20px rgba(0, 18, 51, 0.3);
+}
+
+/* 霓虹脉冲动画 */
+@keyframes neonPulse {
+  from {
+    filter: drop-shadow(0 0 6px var(--neon-glow));
+    opacity: 0.8;
+  }
+  to {
+    filter: drop-shadow(0 0 12px var(--neon-glow));
+    opacity: 1;
+  }
+}
+
+/* 科幻主题风格 - 增强版 */
+.blue-theme.sci-fi {
+  --primary-glow: rgba(0, 255, 255, 0.7);
+  --secondary-glow: rgba(0, 191, 255, 0.5);
+  --tertiary-glow: rgba(11, 19, 43, 0.3);
+  --border-glow: rgba(0, 255, 255, 0.3);
+  --sci-fi-neon: #00f2ff;
+  --sci-fi-energy: #6efffa;
+  --sci-fi-dark: #05001a;
+  --sci-fi-lines: rgba(0, 217, 255, 0.3);
+}
+
+.blue-theme.sci-fi body {
+  background-color: var(--sci-fi-dark);
+  background-image: 
+    linear-gradient(0deg, rgba(5, 0, 26, 0.98), rgba(11, 19, 60, 0.97)),
+    repeating-linear-gradient(0deg, transparent, transparent 30px, var(--sci-fi-grid) 30px, var(--sci-fi-grid) 31px),
+    repeating-linear-gradient(90deg, transparent, transparent 30px, var(--sci-fi-grid) 30px, var(--sci-fi-grid) 31px);
+  background-attachment: fixed;
+}
+
+/* 科幻主题根节点 - 完全重新设计 */
+.blue-theme.sci-fi .root {
+  background: linear-gradient(135deg, rgba(5, 0, 26, 0.8), rgba(11, 19, 60, 0.8));
+  border: 2px solid var(--sci-fi-neon);
+  box-shadow: 
+    0 0 30px rgba(0, 242, 255, 0.6),
+    inset 0 0 15px rgba(0, 242, 255, 0.3);
+  text-shadow: 0 0 15px var(--sci-fi-neon);
+  backdrop-filter: blur(8px);
+  color: white;
+  padding: 22px 28px;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  letter-spacing: 1px;
+  clip-path: polygon(0 10%, 10% 0, 90% 0, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0 90%);
+}
+
+.blue-theme.sci-fi .root::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--sci-fi-neon), transparent);
+  animation: scanline 2s linear infinite;
+}
+
+.blue-theme.sci-fi .root::after {
+  content: attr(data-id);
+  position: absolute;
+  bottom: 5px;
+  right: 10px;
+  font-size: 10px;
+  color: var(--sci-fi-neon);
+  opacity: 0.8;
+  font-family: 'Consolas', monospace;
+  letter-spacing: 1px;
+}
+
+/* 科幻主题节点统一改造 */
+.blue-theme.sci-fi .node {
+  background-color: rgba(11, 19, 43, 0.7) !important;
+  border: 1px solid var(--sci-fi-neon);
+  box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+  color: white;
+  backdrop-filter: blur(10px);
+  font-family: 'Rajdhani', 'Orbitron', sans-serif;
+  letter-spacing: 0.5px;
+  transition: all 0.4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+  clip-path: polygon(0 5%, 5% 0, 95% 0, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0 95%);
+}
+
+/* 科幻主题一级节点 */
+.blue-theme.sci-fi .node-level-1 {
+  background: linear-gradient(135deg, rgba(11, 25, 70, 0.8), rgba(11, 19, 43, 0.8)) !important;
+  border: 1px solid var(--sci-fi-neon);
+  box-shadow: 0 0 25px rgba(0, 242, 255, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.blue-theme.sci-fi .node-level-1::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(90deg, transparent 50%, rgba(0, 242, 255, 0.08) 50%),
+    linear-gradient(0deg, transparent 50%, rgba(0, 242, 255, 0.08) 50%);
+  background-size: 10px 10px;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 科幻主题二级和三级节点 */
+.blue-theme.sci-fi .node-level-2,
+.blue-theme.sci-fi .node-level-3,
+.blue-theme.sci-fi .node-level-4,
+.blue-theme.sci-fi .node-level-5 {
+  background: rgba(11, 19, 43, 0.7) !important;
+  border: 1px solid rgba(0, 242, 255, 0.6);
+}
+
+/* 科幻主题节点悬停效果 */
+.blue-theme.sci-fi .node:hover {
+  border-color: var(--sci-fi-energy);
+  box-shadow: 
+    0 0 30px rgba(0, 242, 255, 0.7),
+    0 0 50px rgba(110, 255, 250, 0.4);
+  transform: translateY(-3px) scale(1.05);
+  background-color: rgba(15, 25, 60, 0.8) !important;
+}
+
+/* 科幻主题节点选中状态 */
+.blue-theme.sci-fi .node.selected {
+  border: 2px solid var(--sci-fi-energy);
+  box-shadow: 
+    0 0 30px rgba(0, 242, 255, 0.8),
+    0 0 60px rgba(110, 255, 250, 0.6);
+  animation: sciPulse 1.5s infinite;
+  z-index: 100;
+}
+
+@keyframes sciPulse {
+  0% {
+    box-shadow: 
+      0 0 30px rgba(0, 242, 255, 0.8),
+      0 0 60px rgba(110, 255, 250, 0.6);
+    border-color: var(--sci-fi-neon);
+  }
+  50% {
+    box-shadow: 
+      0 0 40px rgba(0, 242, 255, 1),
+      0 0 80px rgba(110, 255, 250, 0.8);
+    border-color: var(--sci-fi-energy);
+  }
+  100% {
+    box-shadow: 
+      0 0 30px rgba(0, 242, 255, 0.8),
+      0 0 60px rgba(110, 255, 250, 0.6);
+    border-color: var(--sci-fi-neon);
+  }
+}
+
+/* 科幻主题连接线 */
+.blue-theme.sci-fi .connection-path {
+  stroke: var(--sci-fi-neon);
+  stroke-dasharray: 8, 4;
+  stroke-linecap: round;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 8px var(--sci-fi-neon));
+  animation: dashFlow 20s linear infinite;
+  opacity: 0.9;
+}
+
+/* 科幻主题控制面板 */
+.blue-theme.sci-fi .control-panel {
+  background: linear-gradient(135deg, rgba(5, 0, 26, 0.85), rgba(11, 19, 60, 0.85));
+  border: 1px solid var(--sci-fi-neon);
+  box-shadow: 0 0 30px rgba(0, 242, 255, 0.4);
+  backdrop-filter: blur(15px);
+  clip-path: polygon(0 3%, 3% 0, 97% 0, 100% 3%, 100% 97%, 97% 100%, 3% 100%, 0 97%);
+  border-radius: 0;
+}
+
+.blue-theme.sci-fi .controls button {
+  background: rgba(11, 19, 43, 0.8);
+  border: 1px solid var(--sci-fi-neon);
+  color: white;
+  text-shadow: 0 0 8px var(--sci-fi-neon);
+  clip-path: polygon(0 10%, 10% 0, 90% 0, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0 90%);
+  border-radius: 0;
+  font-family: 'Rajdhani', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.blue-theme.sci-fi .controls button:hover {
+  background: rgba(0, 242, 255, 0.3);
+  border-color: var(--sci-fi-energy);
+  box-shadow: 0 0 20px rgba(110, 255, 250, 0.5);
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* 全息投影效果 */
+.blue-theme.sci-fi .node::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, 
+    transparent 0%, 
+    rgba(0, 242, 255, 0.05) 30%, 
+    rgba(0, 242, 255, 0.1) 50%, 
+    rgba(0, 242, 255, 0.05) 70%, 
+    transparent 100%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.blue-theme.sci-fi .node:hover::before {
+  opacity: 1;
+  animation: hologramScan 3s ease-in-out infinite;
+}
+
+@keyframes hologramScan {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* 科技边缘线效果 */
+.blue-theme.sci-fi .node::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(90deg, var(--sci-fi-lines) 1px, transparent 1px) 0 0 / 20px 20px,
+    linear-gradient(0deg, var(--sci-fi-lines) 1px, transparent 1px) 0 0 / 20px 20px;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 虚拟全息图边框效果 */
+.blue-theme.sci-fi .node-level-1::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: calc(100% + 10px);
+  height: calc(100% + 10px);
+  border: 1px dashed var(--sci-fi-neon);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  animation: borderPulse 3s linear infinite;
+}
+
+.blue-theme.sci-fi .node-level-1:hover::before {
+  opacity: 0.8;
+}
+
+@keyframes borderPulse {
+  0% {
+    border-color: var(--sci-fi-neon);
+    box-shadow: 0 0 10px var(--sci-fi-neon);
+  }
+  50% {
+    border-color: var(--sci-fi-energy);
+    box-shadow: 0 0 20px var(--sci-fi-energy);
+  }
+  100% {
+    border-color: var(--sci-fi-neon);
+    box-shadow: 0 0 10px var(--sci-fi-neon);
+  }
+}
+
+/* 增加启动和关闭线条动画 */
+.blue-theme.sci-fi .root::after {
+  content: 'SYS-' attr(data-id);
+  position: absolute;
+  bottom: 5px;
+  right: 10px;
+  font-size: 12px;
+  color: var(--sci-fi-neon);
+  opacity: 0.9;
+  font-family: 'Consolas', monospace;
+  letter-spacing: 1px;
+  text-shadow: 0 0 5px var(--sci-fi-neon);
+}
+
+/* 添加系统线条在根节点 */
+.blue-theme.sci-fi .root::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(90deg, transparent 49.5%, var(--sci-fi-neon) 49.5%, var(--sci-fi-neon) 50.5%, transparent 50.5%) top/100% 2px,
+    linear-gradient(90deg, transparent 49.5%, var(--sci-fi-neon) 49.5%, var(--sci-fi-neon) 50.5%, transparent 50.5%) bottom/100% 2px,
+    linear-gradient(0deg, transparent 49.5%, var(--sci-fi-neon) 49.5%, var(--sci-fi-neon) 50.5%, transparent 50.5%) left/2px 100%,
+    linear-gradient(0deg, transparent 49.5%, var(--sci-fi-neon) 49.5%, var(--sci-fi-neon) 50.5%, transparent 50.5%) right/2px 100%;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+  pointer-events: none;
+  animation: cornersScan 3s linear infinite;
+}
+
+@keyframes cornersScan {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
+/* 编辑时的终端风格增强 */
+.blue-theme.sci-fi .node-edit-box {
+  background: rgba(5, 0, 26, 0.9);
+  color: var(--sci-fi-neon);
+  border: 1px solid var(--sci-fi-neon);
+  border-radius: 0;
+  font-family: 'Consolas', monospace;
+  padding: 10px 14px;
+  box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+  caret-color: var(--sci-fi-energy);
+  text-shadow: 0 0 5px var(--sci-fi-neon);
+}
+
+.blue-theme.sci-fi .node-edit-box:focus {
+  background: rgba(5, 0, 26, 0.95);
+  border-color: var(--sci-fi-energy);
+  box-shadow: 0 0 30px rgba(110, 255, 250, 0.6);
+}
+
+/* 添加浮动粒子样式增强 */
+.sci-fi-particle {
+  position: absolute;
+  background-color: var(--sci-fi-neon) !important;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(1px);
+  box-shadow: 0 0 10px var(--sci-fi-neon) !important;
+  animation: floatSciFi 15s linear infinite !important;
+  opacity: 0.7 !important;
+}
+
+@keyframes floatSciFi {
+  0% {
+    transform: translateY(100vh) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(50px);
+    opacity: 0;
+  }
+}
+
+/* 扫描线动画 */
+@keyframes scanline {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* 虚线流动动画 */
+@keyframes dashFlow {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+
+/* 修改所有主题的节点背景为透明 */
+.blue-theme .node {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(8px);
+}
+
+.blue-theme.deep-sea .node {
+  background-color: rgba(0, 48, 73, 0.3) !important;
+}
+
+.blue-theme.neon .node {
+  background-color: rgba(20, 33, 61, 0.3) !important;
+}
+
+/* 基础蓝色主题 */
+.blue-theme-classic {
+    --blue-primary: rgb(0, 85, 255);
+    --blue-secondary: rgb(0, 140, 255);
+    --blue-accent: rgb(90, 200, 255);
+    --blue-dark: rgb(0, 30, 90);
+    --blue-light: rgb(200, 230, 255);
+    --blue-bg: linear-gradient(135deg, rgba(0, 30, 75, 0.9), rgba(0, 40, 105, 0.9));
+    color: var(--blue-light);
+}
+
+/* 深海蓝变体 */
+.blue-theme-deep-sea {
+    --blue-primary: rgb(0, 60, 120);
+    --blue-secondary: rgb(0, 90, 150);
+    --blue-accent: rgb(0, 160, 200);
+    --blue-dark: rgb(0, 20, 40);
+    --blue-light: rgb(160, 210, 240);
+    --blue-bg: linear-gradient(135deg, rgba(0, 20, 40, 0.95), rgba(0, 40, 80, 0.95));
+    color: var(--blue-light);
+}
+
+/* 霓虹蓝变体 */
+.blue-theme-neon {
+    --blue-primary: rgb(0, 195, 255);
+    --blue-secondary: rgb(0, 240, 255);
+    --blue-accent: rgb(120, 255, 255);
+    --blue-dark: rgb(0, 20, 50);
+    --blue-light: rgb(200, 250, 255);
+    --blue-bg: linear-gradient(135deg, rgba(0, 15, 40, 0.9), rgba(0, 40, 100, 0.9));
+    color: var(--blue-light);
+}
+
+/* 蓝色主题背景 */
+.blue-theme-classic body,
+.blue-theme-deep-sea body,
+.blue-theme-neon body {
+    background: var(--blue-bg);
+    background-attachment: fixed;
+}
+
+/* 蓝色主题节点 */
+.blue-theme-classic .node,
+.blue-theme-deep-sea .node,
+.blue-theme-neon .node {
+    background-color: rgba(0, 40, 90, 0.7) !important;
+    border: 1px solid var(--blue-accent);
+    box-shadow: 0 0 15px rgba(0, 150, 255, 0.2);
+    color: var(--blue-light);
+    backdrop-filter: blur(5px);
+}
+
+/* 蓝色主题特殊节点效果 */
+.crystal-node {
+    background: rgba(100, 200, 255, 0.15) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(200, 240, 255, 0.6) !important;
+    box-shadow: 
+        0 0 20px rgba(100, 200, 255, 0.4),
+        inset 0 0 15px rgba(255, 255, 255, 0.3) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 确保节点文本元素也是白色 */
+.blue-theme .node-text {
+  color: var(--text-primary) !important;
+}
+
+/* 编辑状态下也保持白色文本 */
+.blue-theme .node-editing {
+  color: var(--text-primary) !important;
+}
+
+.blue-theme .edit-textarea {
+  color: var(--text-primary) !important;
+}
+
+/* 确保科幻主题中的节点文本也是白色 */
+.blue-theme.sci-fi .node {
+  color: var(--text-primary) !important;
+}
+
+/* 确保深海主题中的节点文本也是白色 */
+.blue-theme.deep-sea .node {
+  color: var(--text-primary) !important;
+}
+
+/* 确保neon主题中的节点文本也是白色 */
+.blue-theme.neon .node {
+  color: var(--text-primary) !important;
+}

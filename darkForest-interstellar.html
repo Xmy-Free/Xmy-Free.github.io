@@ -1,0 +1,3930 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黑暗森林·星际穿越</title>
+       
+    <!-- 曲速引擎样式配置 -->
+    <style>
+        /* 曲速场容器 - 我们的时空扭曲区域 */
+        .warp-container {
+            position: fixed;  /* 固定定位确保不受引力影响 */
+            top: 0;
+            left: 0;
+            width: 100%;  /* 全宽度覆盖 */
+            height: 100%;  /* 全高度覆盖 */
+            pointer-events: none;  /* 允许点击穿透 */
+            overflow: hidden;  /* 隐藏超空间溢出 */
+        }
+        
+        /* 曲速核心 - 能量来源 */
+        .warp-core {
+            position: absolute;  /* 绝对定位 */
+            border-radius: 50%;  /* 完美球形 */
+            pointer-events: none;  /* 非交互式 */
+            /* 核心能量梯度 - 从炽热蓝白到深蓝 */
+            background: radial-gradient(circle, 
+                rgba(0, 255, 255, 0.9) 0%, 
+                rgba(0, 150, 255, 0.7) 30%, 
+                rgba(0, 80, 200, 0.5) 60%, 
+                rgba(0, 20, 100, 0) 100%);
+            /* 能量光环效果 */
+            box-shadow: 0 0 30px 10px rgba(0, 200, 255, 0.8),
+                        0 0 60px 20px rgba(0, 150, 255, 0.6),
+                        0 0 90px 30px rgba(0, 100, 200, 0.4);
+            transform: translate(-50%, -50%);  /* 中心定位 */
+            z-index: 10;  /* 最高层级 */
+        }
+        
+        /* 曲速隧道 - 时空扭曲的可见部分 */
+        .warp-tunnel {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            /* 隧道能量梯度 - 更柔和的表现 */
+            background: radial-gradient(circle, 
+                rgba(0, 255, 255, 0.2) 0%, 
+                rgba(0, 150, 255, 0.15) 30%, 
+                rgba(0, 80, 200, 0.1) 60%, 
+                rgba(0, 20, 100, 0) 100%);
+            transform: translate(-50%, -50%);
+            z-index: 5;  /* 低于核心 */
+        }
+        
+        /* 曲速线 - 能量流线 */
+        .warp-line {
+            position: absolute;
+            /* 线性渐变模拟能量流动 */
+            background: linear-gradient(to right, 
+                rgba(0,0,0,0) 0%, 
+                rgba(0, 255, 255, 0.8) 50%, 
+                rgba(0,0,0,0) 100%);
+            height: 1px;  /* 细线效果 */
+            transform-origin: left center;  /* 旋转基点 */
+            pointer-events: none;
+            z-index: 8;  /* 介于核心和隧道之间 */
+        }
+        
+        /* 高能粒子 - 曲速场中的能量碎片 */
+        .warp-particle {
+            position: absolute;
+            border-radius: 50%;  /* 圆形粒子 */
+            pointer-events: none;
+            /* 粒子发光效果 */
+            background: radial-gradient(circle, 
+                rgba(0, 255, 255, 0.9) 0%, 
+                rgba(0, 150, 255, 0.7) 70%, 
+                rgba(0, 80, 200, 0) 100%);
+            box-shadow: 0 0 10px 2px rgba(0, 200, 255, 0.8);
+            z-index: 9;  /* 接近核心层级 */
+        }
+        
+        /* 冲击波 - 曲速启动时的时空涟漪 */
+        .warp-shockwave {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            border: 1px solid rgba(0, 200, 255, 0.5);  /* 半透明边界 */
+            box-shadow: 0 0 20px 5px rgba(0, 150, 255, 0.4);  /* 发光效果 */
+            transform: translate(-50%, -50%);
+            z-index: 7;  /* 低于粒子 */
+        }
+        
+        /* 量子弦 - 时空结构的基本组成 */
+        .quantum-string {
+            position: absolute;
+            /* 弦理论可视化 */
+            background: linear-gradient(to right, 
+                rgba(0,0,0,0) 0%, 
+                rgba(0, 255, 255, 0.6) 30%, 
+                rgba(0, 255, 255, 0.8) 50%, 
+                rgba(0, 255, 255, 0.6) 70%, 
+                rgba(0,0,0,0) 100%);
+            height: 1px;  /* 一维弦 */
+            transform-origin: left center;
+            pointer-events: none;
+            z-index: 6;  /* 基础结构层 */
+        }
+    </style>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Arial', sans-serif;
+        }
+
+        #info {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            z-index: 100;
+            pointer-events: none;
+            text-shadow: 0 0 5px #000;
+        }
+
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            z-index: 1000;
+        }
+
+        .laser {
+            position: fixed;
+            width: 8px;
+            height: 0;
+            background: linear-gradient(to bottom,
+                    rgba(100, 255, 255, 0.98),
+                    rgba(80, 220, 255, 0.95),
+                    rgba(60, 180, 255, 0.92),
+                    rgba(40, 140, 255, 0.88));
+            box-shadow:
+                0 0 5px rgba(255, 255, 255, 1),
+                0 0 10px rgba(255, 255, 255, 1),
+                0 0 20px rgba(220, 255, 255, 1),
+                0 0 40px rgba(200, 255, 255, 1),
+                0 0 60px rgba(180, 255, 255, 0.98),
+                0 0 80px rgba(160, 255, 255, 0.96),
+                0 0 100px rgba(140, 255, 255, 0.94),
+                0 0 120px rgba(120, 255, 255, 0.92),
+                0 0 140px rgba(100, 255, 255, 0.9),
+                0 0 160px rgba(80, 255, 255, 0.88),
+                0 0 180px rgba(60, 255, 255, 0.86),
+                0 0 200px rgba(40, 255, 255, 0.84);
+            animation:
+                laser-beam 1.2s cubic-bezier(0.2, 0.8, 0.8, 1) forwards,
+                laser-pulse 0.8s ease-in-out infinite,
+                laser-flow 2s linear infinite,
+                laser-vibrate 0.15s ease-in-out infinite;
+            z-index: 999999;
+            pointer-events: none;
+            opacity: 0.95;
+            transform-origin: bottom;
+            filter: blur(0.3px);
+        }
+
+        .laser::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                    rgba(220, 255, 255, 1),
+                    rgba(200, 255, 255, 0.98),
+                    rgba(180, 255, 255, 0.96),
+                    rgba(160, 255, 255, 0.94),
+                    rgba(140, 255, 255, 0.92),
+                    rgba(120, 255, 255, 0.9));
+            box-shadow:
+                0 0 15px rgba(200, 255, 255, 1),
+                0 0 25px rgba(150, 255, 255, 0.95),
+                0 0 35px rgba(100, 255, 255, 0.85),
+                0 0 45px rgba(80, 240, 255, 0.7) inset;
+            animation:
+                laser-core-pulse 0.3s ease-in-out infinite,
+                laser-core-flicker 1s ease-in-out infinite,
+                laser-core-extend 1s ease-out forwards,
+                laser-core-sparkle 2s linear infinite;
+            filter: blur(0.1px) brightness(1.1);
+            z-index: 999999;
+            mask-image: linear-gradient(to bottom,
+                    rgba(0, 0, 0, 1) 0%,
+                    rgba(0, 0, 0, 1) 70%,
+                    rgba(0, 0, 0, 0.3) 100%);
+        }
+
+        .laser::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent);
+            animation: laser-energy 1.5s linear infinite;
+        }
+
+        @keyframes laser-core-sparkle {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                opacity: 0.95;
+                box-shadow: 0 0 20px rgba(220, 255, 255, 1), 0 0 30px rgba(120, 255, 255, 0.98), 0 0 40px rgba(100, 255, 255, 0.88), 0 0 50px rgba(80, 240, 255, 0.75) inset;
+            }
+        }
+
+        @keyframes laser-core-extend {
+            0% {
+                mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0.2) 100%);
+            }
+
+            50% {
+                mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0.4) 100%);
+            }
+
+            100% {
+                mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 65%, rgba(0, 0, 0, 0.35) 100%);
+            }
+        }
+
+        @keyframes laser-core-flicker {
+
+            0%,
+            10%,
+            12%,
+            20%,
+            24%,
+            65%,
+            72%,
+            77%,
+            85%,
+            95%,
+            100% {
+                opacity: 1;
+            }
+
+            11%,
+            23%,
+            66%,
+            76%,
+            86% {
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes laser-pulse {
+
+            0%,
+            100% {
+                opacity: 0.98;
+                box-shadow: 0 0 8px rgba(200, 255, 255, 0.95), 0 0 12px rgba(100, 255, 255, 0.95), 0 0 20px rgba(80, 240, 255, 0.9), 0 0 35px rgba(60, 220, 255, 0.85), 0 0 50px rgba(40, 200, 255, 0.7), 0 0 65px rgba(20, 180, 255, 0.6), 0 0 80px rgba(0, 160, 255, 0.5), 0 0 95px rgba(0, 140, 255, 0.4), 0 0 110px rgba(0, 120, 255, 0.3), 0 0 125px rgba(0, 100, 255, 0.2);
+            }
+
+            25% {
+                opacity: 0.95;
+                box-shadow: 0 0 10px rgba(220, 255, 255, 0.98), 0 0 15px rgba(120, 255, 255, 0.98), 0 0 25px rgba(100, 240, 255, 0.93), 0 0 40px rgba(80, 220, 255, 0.88), 0 0 55px rgba(60, 200, 255, 0.75), 0 0 70px rgba(40, 180, 255, 0.65), 0 0 85px rgba(20, 160, 255, 0.55), 0 0 100px rgba(0, 140, 255, 0.45), 0 0 115px rgba(0, 120, 255, 0.35), 0 0 130px rgba(0, 100, 255, 0.25);
+            }
+
+            50% {
+                opacity: 0.92;
+                box-shadow: 0 0 12px rgba(240, 255, 255, 1), 0 0 18px rgba(140, 255, 255, 1), 0 0 30px rgba(120, 240, 255, 0.95), 0 0 45px rgba(100, 220, 255, 0.9), 0 0 60px rgba(80, 200, 255, 0.8), 0 0 75px rgba(60, 180, 255, 0.7), 0 0 90px rgba(40, 160, 255, 0.6), 0 0 105px rgba(20, 140, 255, 0.5), 0 0 120px rgba(0, 120, 255, 0.4), 0 0 135px rgba(0, 100, 255, 0.3);
+            }
+
+            75% {
+                opacity: 0.95;
+                box-shadow: 0 0 10px rgba(220, 255, 255, 0.98), 0 0 15px rgba(120, 255, 255, 0.98), 0 0 25px rgba(100, 240, 255, 0.93), 0 0 40px rgba(80, 220, 255, 0.88), 0 0 55px rgba(60, 200, 255, 0.75), 0 0 70px rgba(40, 180, 255, 0.65), 0 0 85px rgba(20, 160, 255, 0.55), 0 0 100px rgba(0, 140, 255, 0.45), 0 0 115px rgba(0, 120, 255, 0.35), 0 0 130px rgba(0, 100, 255, 0.25);
+            }
+        }
+
+        @keyframes laser-core-pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                width: 3px;
+                transform: translateX(-50%) scaleY(1);
+                box-shadow: 0 0 5px rgba(255, 255, 255, 1), 0 0 10px rgba(255, 255, 255, 1), 0 0 20px rgba(240, 255, 255, 1), 0 0 40px rgba(220, 255, 255, 1), 0 0 60px rgba(200, 255, 255, 0.98) inset, 0 0 80px rgba(180, 255, 255, 0.96) inset, 0 0 100px rgba(160, 255, 255, 0.94) inset;
+            }
+
+            25% {
+                opacity: 0.99;
+                width: 3.3px;
+                transform: translateX(-50%) scaleY(1.03);
+                box-shadow: 0 0 18px rgba(230, 255, 255, 1), 0 0 30px rgba(130, 255, 255, 0.98), 0 0 40px rgba(110, 240, 255, 0.85), 0 0 50px rgba(90, 220, 255, 0.7) inset;
+            }
+
+            50% {
+                opacity: 0.98;
+                width: 3.6px;
+                transform: translateX(-50%) scaleY(1.07);
+                box-shadow: 0 0 20px rgba(240, 255, 255, 1), 0 0 35px rgba(140, 255, 255, 1), 0 0 45px rgba(120, 240, 255, 0.9), 0 0 55px rgba(100, 220, 255, 0.8) inset;
+            }
+
+            75% {
+                opacity: 0.99;
+                width: 3.3px;
+                transform: translateX(-50%) scaleY(1.03);
+                box-shadow: 0 0 18px rgba(230, 255, 255, 1), 0 0 30px rgba(130, 255, 255, 0.98), 0 0 40px rgba(110, 240, 255, 0.85), 0 0 50px rgba(90, 220, 255, 0.7) inset;
+            }
+        }
+
+        @keyframes laser-flow {
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 0 100vh;
+            }
+        }
+
+        @keyframes laser-energy {
+            0% {
+                transform: translateY(-100%);
+            }
+
+            100% {
+                transform: translateY(100%);
+            }
+        }
+
+        @keyframes laser-vibrate {
+
+            0%,
+            100% {
+                transform: translateX(0) scaleX(1);
+            }
+
+            25% {
+                transform: translateX(0.5px) scaleX(1.02);
+            }
+
+            50% {
+                transform: translateX(-0.5px) scaleX(0.98);
+            }
+
+            75% {
+                transform: translateX(0.3px) scaleX(1.01);
+            }
+        }
+
+        @keyframes shockwave {
+            0% {
+                transform: scale(0.1);
+                opacity: 0.9;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+
+        .laser-shockwave {
+            position: absolute;
+            border-radius: 50%;
+            background: transparent;
+            border: 2px solid rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), inset 0 0 10px rgba(0, 255, 255, 0.4);
+            animation: shockwave 0.8s cubic-bezier(0.1, 0.3, 0.2, 1) forwards;
+            pointer-events: none;
+            z-index: 999998;
+        }
+
+        .laser-particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background-color: rgba(0, 200, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-fade 1s ease-out forwards;
+            box-shadow: 0 0 5px #00ffff, 0 0 10px rgba(0, 255, 255, 0.6);
+            filter: blur(0.3px);
+            z-index: 999997;
+        }
+
+        @keyframes laser-beam {
+            0% {
+                height: 0;
+                opacity: 0.8;
+                transform: scaleY(0.1);
+            }
+
+            20% {
+                opacity: 1;
+                transform: scaleY(1.1);
+            }
+
+            50% {
+                transform: scaleY(0.95);
+            }
+
+            100% {
+                height: 100vh;
+                opacity: 0;
+                transform: scaleY(1);
+            }
+        }
+
+        @keyframes particle-fade {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+
+            25% {
+                transform: translate(var(--x-offset, 10px), -30px) scale(0.8);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: translate(calc(var(--x-offset, 10px) * -0.5), -60px) scale(0.6);
+                opacity: 0.6;
+            }
+
+            75% {
+                transform: translate(calc(var(--x-offset, 10px) * 0.2), -80px) scale(0.4);
+                opacity: 0.3;
+            }
+
+            100% {
+                transform: translate(calc(var(--x-offset, 10px) * -0.1), -100px) scale(0.2);
+                opacity: 0;
+            }
+        }
+    </style>
+        <style>
+        
+        /* 宇宙波纹效果 - 增强颜色 */
+        .cosmic-wave {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            animation: cosmic-pulse 3s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+            border: 1px solid rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 25px rgba(0, 200, 255, 0.6);
+        }
+        
+        @keyframes cosmic-pulse {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 0.9;
+                border-width: 3px;
+            }
+            70% {
+                opacity: 0.6;
+            }
+            100% {
+                width: 800px;
+                height: 800px;
+                opacity: 0;
+                border-width: 0.5px;
+            }
+        }
+        
+        /* 星际粒子效果 - 增强颜色 */
+        .star-particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            animation: star-trail 2.5s ease-out forwards;
+            opacity: 0;
+            background: linear-gradient(45deg, #00ffff, #0066ff);
+        }
+        
+        @keyframes star-trail {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0.1) translate(var(--tx), var(--ty));
+                opacity: 0;
+            }
+        }
+        
+        /* 三体文字编码效果 - 增强颜色 */
+        .trisolaris-code {
+            position: absolute;
+            color: rgba(0, 255, 255, 0.95);
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            pointer-events: none;
+            animation: code-fade 2.5s ease-out forwards;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.9);
+        }
+        
+        @keyframes code-fade {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.2) translateY(-120px);
+            }
+        }
+        
+        /* 红岸基地发射核心效果 - 增强颜色 */
+        .red-coast-core {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.95) 0%, rgba(0, 150, 255, 0.7) 50%, rgba(0, 100, 255, 0) 80%);
+            pointer-events: none;
+            animation: core-pulse 1.5s ease-out forwards;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.9), 0 0 60px rgba(0, 200, 255, 0.6);
+        }
+        
+        @keyframes core-pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(2);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+        }
+        
+        /* 星际信号波纹 - 增强颜色 */
+        .signal-wave {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            animation: signal-expand 4s linear forwards;
+            border: 2px solid rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 20px rgba(0, 200, 255, 0.5);
+        }
+        
+        @keyframes signal-expand {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 0.8;
+            }
+            100% {
+                width: 1500px;
+                height: 1500px;
+                opacity: 0;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="my-cursor.css">
+</head>
+
+<body>
+    <div class="warp-container" id="warpContainer"></div>
+    <!-- 自定义鼠标指针 -->
+    <div class="custom-cursor" id="custom-cursor">
+        <div class="cursor-core"></div>
+        <div class="cursor-ring"></div>
+    </div>
+
+    <div id="loading">3D场景加载中...</div>
+
+
+    <canvas id="Zero" style="display:none;position:fixed;top:0;left:0;z-index:101;pointer-events:none;"></canvas>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/postprocessing/SSRPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/shaders/SSRShader.js"></script>
+
+    <script src="my-cursor.js"></script>
+
+   
+    <script>
+        // ===== 曲速引擎主函数 =====
+        // 功能：在指定坐标创建曲速场效果
+        // 参数：x,y - 曲速场起始坐标（屏幕像素位置）
+        function createWarpEffect(x, y) {
+            // 获取曲速场容器元素
+            const container = document.getElementById('warpContainer');
+            
+            // === 第一阶段：创建曲速核心 ===
+            // 核心是曲速场的能量来源，类似微型人造奇点
+            const warpCore = document.createElement('div');
+            warpCore.className = 'warp-core';
+            warpCore.style.left = `${x}px`;  // 设置核心X坐标
+            warpCore.style.top = `${y}px`;    // 设置核心Y坐标
+            warpCore.style.width = '0px';    // 初始大小为0
+            warpCore.style.height = '0px';    // 初始大小为0
+            container.appendChild(warpCore);  // 将核心加入容器
+            
+            // === 第二阶段：创建曲速隧道 ===
+            // 隧道是曲速泡的可见边界，代表扭曲的时空区域
+            const warpTunnel = document.createElement('div');
+            warpTunnel.className = 'warp-tunnel';
+            warpTunnel.style.left = `${x}px`;
+            warpTunnel.style.top = `${y}px`;
+            warpTunnel.style.width = '0px';
+            warpTunnel.style.height = '0px';
+            container.appendChild(warpTunnel);
+            
+            // 核心膨胀动画 - 模拟能量积累过程
+            let coreSize = 0;
+            const coreGrowth = setInterval(() => {
+                coreSize += 25;  // 每帧增长25像素
+                warpCore.style.width = `${coreSize}px`;
+                warpCore.style.height = `${coreSize}px`;
+                
+                // 当核心达到临界大小时开始消散
+                if (coreSize > 400) {
+                    clearInterval(coreGrowth);  // 停止增长
+                    warpCore.style.opacity = 0;  // 淡出效果
+                    setTimeout(() => {
+                        warpCore.remove();  // 从DOM移除元素
+                    }, 500);  // 500ms后完全移除
+                }
+            }, 16);  // 约60fps的刷新率
+            
+            // 隧道膨胀动画 - 比核心稍慢的扩张速度
+            let tunnelSize = 0;
+            const tunnelGrowth = setInterval(() => {
+                tunnelSize += 40;
+                warpTunnel.style.width = `${tunnelSize}px`;
+                warpTunnel.style.height = `${tunnelSize}px`;
+                
+                // 当隧道扩张到视窗外时消失
+                if (tunnelSize > 1500) {
+                    clearInterval(tunnelGrowth);
+                    warpTunnel.style.opacity = 0;
+                    setTimeout(() => {
+                        warpTunnel.remove();
+                    }, 500);
+                }
+            }, 16);
+            
+            // === 第三阶段：创建曲速线 ===
+            // 这些线代表时空网格的扭曲，72条形成完整圆环
+            const lineCount = 72;
+            for (let i = 0; i < lineCount; i++) {
+                const line = document.createElement('div');
+                line.className = 'warp-line';
+                line.style.left = `${x}px`;
+                line.style.top = `${y}px`;
+                line.style.width = '0px';
+                line.style.transform = `rotate(${i * (360/lineCount)}deg)`;  // 均匀分布
+                container.appendChild(line);
+                
+                // 线条延伸动画 - 带有波动效果模拟能量不稳定
+                let length = 0;
+                const lineGrowth = setInterval(() => {
+                    length += 20 + Math.sin(Date.now()/100 + i) * 5;  // 正弦波动
+                    line.style.width = `${length}px`;
+                    line.style.opacity = 1 - (length / 3000);  // 距离越远越透明
+                    
+                    // 当线条超出可视范围时移除
+                    if (length > 3000) {
+                        clearInterval(lineGrowth);
+                        line.remove();
+                    }
+                }, 16);
+            }
+            
+            // === 第四阶段：创建量子弦 ===
+            // 更粗的能量束，代表时空的基本结构
+            const stringCount = 12;
+            for (let i = 0; i < stringCount; i++) {
+                const string = document.createElement('div');
+                string.className = 'quantum-string';
+                string.style.left = `${x}px`;
+                string.style.top = `${y}px`;
+                string.style.width = '0px';
+                string.style.height = `${Math.random() * 2 + 1}px`;  // 随机高度
+                // 添加三维旋转模拟时空扭曲
+                string.style.transform = `rotate(${i * (360/stringCount)}deg) rotateY(${Math.random() * 60 - 30}deg) rotateX(${Math.random() * 60 - 30}deg)`;
+                container.appendChild(string);
+                
+                // 量子弦延伸动画 - 带有随机扭曲
+                let length = 0;
+                const stringGrowth = setInterval(() => {
+                    length += 30;
+                    string.style.width = `${length}px`;
+                    string.style.opacity = 1 - (length / 4000);
+                    // 持续变化角度模拟量子涨落
+                    string.style.transform = `rotate(${i * (360/stringCount)}deg) rotateY(${Math.random() * 60 - 30}deg) rotateX(${Math.random() * 60 - 30}deg)`;
+                    
+                    if (length > 4000) {
+                        clearInterval(stringGrowth);
+                        string.remove();
+                    }
+                }, 16);
+            }
+            
+            // === 第五阶段：创建高能粒子 ===
+            // 这些粒子代表从曲速场逃逸的能量
+            const particleCount = 150;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'warp-particle';
+                
+                // 随机粒子大小 (2px到10px)
+                const size = Math.random() * 8 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                
+                container.appendChild(particle);
+                
+                // 粒子飞散动画 - 使用requestAnimationFrame实现流畅运动
+                const angle = Math.random() * Math.PI * 2;  // 随机角度
+                const speed = Math.random() * 15 + 10;  // 随机速度
+                const distance = Math.random() * 500 + 300;  // 随机距离
+                const life = Math.random() * 1000 + 500;  // 随机生命周期
+                
+                let currentDistance = 0;
+                const startTime = Date.now();  // 记录诞生时间
+                
+                const particleMove = () => {
+                    const elapsed = Date.now() - startTime;
+                    // 生命周期结束则移除粒子
+                    if (elapsed > life) {
+                        particle.remove();
+                        return;
+                    }
+                    
+                    // 更新粒子位置 - 添加波动效果
+                    currentDistance += speed;
+                    const waveOffset = Math.sin(elapsed / 100) * 50;  // 正弦波偏移
+                    particle.style.left = `${x + Math.cos(angle) * (currentDistance + waveOffset)}px`;
+                    particle.style.top = `${y + Math.sin(angle) * (currentDistance + waveOffset)}px`;
+                    particle.style.opacity = 1 - (elapsed / life);  // 逐渐淡出
+                    // 添加旋转和缩放效果增强动态感
+                    particle.style.transform = `rotate(${elapsed / 10}deg) scale(${1 + Math.sin(elapsed / 50) * 0.5})`;
+                    
+                    requestAnimationFrame(particleMove);  // 继续动画循环
+                };
+                
+                requestAnimationFrame(particleMove);  // 启动动画
+            }
+            
+            // === 第六阶段：创建冲击波 ===
+            // 三重冲击波模拟曲速引擎启动时的时空涟漪
+            for (let i = 0; i < 3; i++) {
+                // 每个冲击波有200ms的延迟
+                setTimeout(() => {
+                    const shockwave = document.createElement('div');
+                    shockwave.className = 'warp-shockwave';
+                    shockwave.style.left = `${x}px`;
+                    shockwave.style.top = `${y}px`;
+                    shockwave.style.width = '0px';
+                    shockwave.style.height = '0px';
+                    container.appendChild(shockwave);
+                    
+                    let size = 0;
+                    const shockwaveGrowth = setInterval(() => {
+                        size += 30;
+                        shockwave.style.width = `${size}px`;
+                        shockwave.style.height = `${size}px`;
+                        shockwave.style.opacity = 1 - (size / 1000);  // 随扩张变淡
+                        
+                        if (size > 1000) {
+                            clearInterval(shockwaveGrowth);
+                            shockwave.remove();
+                        }
+                    }, 16);
+                }, i * 200);  // 冲击波间隔
+            }
+        }
+        
+        // ==== 双击右键事件监听 ====
+        // 我们将双击右键作为曲速引擎启动开关
+        let lastRightClickTime = 0;
+        
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();  // 阻止默认右键菜单
+            
+            const currentTime = new Date().getTime();
+            // 检测两次右键点击间隔是否小于300ms（视为双击）
+            if (currentTime - lastRightClickTime < 300) {
+                createWarpEffect(e.clientX, e.clientY);  // 在点击位置创建曲速场
+                lastRightClickTime = 0;  // 重置计时
+            } else {
+                lastRightClickTime = currentTime;  // 记录第一次点击时间
+            }
+        });
+        
+        // 额外保险：阻止辅助键的默认行为
+        document.addEventListener('auxclick', (e) => {
+            if (e.button === 2) {  // 右键
+                e.preventDefault();
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('click', function () {
+            var elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) { /* Firefox */
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE/Edge */
+                elem.msRequestFullscreen();
+            }
+        }, { once: true }); // 使用 { once: true } 确保只在第一次点击时触发
+    </script>
+
+    <script>
+        // 生成三体风格的二进制编码
+        function generateTrisolarisCode() {
+            const codeTypes = [
+                "100.001100110011", // 地球距离三体约为4.2光年，二进制表示为100.00110011...
+                "01001110 01001111", //NO：N-78；O-79，二进制表示为01001110 01001111，不要回答！
+            ];
+            
+            // 随机选择一种编码类型
+            return codeTypes[Math.floor(Math.random() * codeTypes.length)];
+        }
+        
+        // 创建三体宇宙广播特效
+        function createTrisolarisBroadcast(x, y) {
+            // 创建红岸基地核心效果
+            const core = document.createElement('div');
+            core.className = 'red-coast-core';
+            core.style.left = `${x}px`;
+            core.style.top = `${y}px`;
+            document.body.appendChild(core);
+            
+            setTimeout(() => {
+                core.remove();
+            }, 1500);
+            
+            // 创建宇宙波纹效果
+            for (let i = 0; i < 3; i++) {
+                const wave = document.createElement('div');
+                wave.className = 'cosmic-wave';
+                wave.style.left = `${x}px`;
+                wave.style.top = `${y}px`;
+                wave.style.animationDelay = `${i * 0.3}s`;
+                wave.style.borderColor = `rgba(0, ${200 + i * 50}, 255, 0.6)`;
+                wave.style.boxShadow = `0 0 30px rgba(0, ${150 + i * 50}, 255, 0.5)`;
+                
+                document.body.appendChild(wave);
+                
+                setTimeout(() => {
+                    wave.remove();
+                }, 3000);
+            }
+            
+            // 创建星际信号波纹
+            for (let i = 0; i < 2; i++) {
+                const signal = document.createElement('div');
+                signal.className = 'signal-wave';
+                signal.style.left = `${x}px`;
+                signal.style.top = `${y}px`;
+                signal.style.animationDelay = `${i * 0.5}s`;
+                signal.style.borderColor = `rgba(${i * 50}, 255, 255, 0.5)`;
+                
+                document.body.appendChild(signal);
+                
+                setTimeout(() => {
+                    signal.remove();
+                }, 4000);
+            }
+            
+            // 创建三体编码
+            for (let i = 0; i < 25; i++) {
+                const code = document.createElement('div');
+                code.className = 'trisolaris-code';
+                code.textContent = generateTrisolarisCode();
+                
+                // 随机位置在点击周围
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 150 + 50;
+                const codeX = x + Math.cos(angle) * distance;
+                const codeY = y + Math.sin(angle) * distance;
+                
+                code.style.left = `${codeX}px`;
+                code.style.top = `${codeY}px`;
+                
+                // 随机动画持续时间
+                const duration = Math.random() * 9 + 1.5;
+                code.style.animationDuration = `${duration}s`;
+                
+                // 随机颜色 - 增强蓝色/青色
+                const blueIntensity = 200 + Math.random() * 55;
+                const greenIntensity = 200 + Math.random() * 55;
+                code.style.color = `rgba(0, ${greenIntensity}, ${blueIntensity}, 0.95)`;
+                code.style.textShadow = `0 0 20px rgba(0, ${greenIntensity}, ${blueIntensity}, 0.9)`;
+                
+                document.body.appendChild(code);
+                
+                setTimeout(() => {
+                    code.remove();
+                }, duration * 1000);
+            }
+            
+            // 创建星际粒子
+            for (let i = 0; i < 100; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'star-particle';
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                
+                // 随机大小
+                const size = Math.random() * 2 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // 随机动画持续时间
+                const duration = Math.random() * 2 + 1.5;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // 随机方向
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 300 + 100;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                
+                // 随机蓝色/青色调
+                const blueIntensity = 150 + Math.random() * 105;
+                const greenIntensity = 150 + Math.random() * 105;
+                particle.style.background = `radial-gradient(circle, rgba(0, ${greenIntensity}, 255, 0.9), rgba(0, 255, ${blueIntensity}, 0.9))`;
+                
+                document.body.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, duration * 1000);
+            }
+        }
+        
+        // 监听鼠标中键点击
+        document.addEventListener('mousedown', (event) => {
+            if (event.button === 1) { // 中键
+                event.preventDefault();
+                createTrisolarisBroadcast(event.clientX, event.clientY);
+            }
+        });
+        
+        // 阻止中键默认行为（滚动）
+        document.addEventListener('auxclick', (event) => {
+            if (event.button === 1) {
+                event.preventDefault();
+            }
+        });
+    </script>
+    <script>
+        // 全局变量
+        let scene, camera, renderer, controls, composer, bloomPass;
+        let droplet, stars = [];
+        let dropletSpeed = 0;
+        let dropletVelocity = new THREE.Vector3(0, 0, 0);
+        let dropletDirection = new THREE.Vector3(1, 0, 0);
+        let clock = new THREE.Clock();
+        let starCount = 2000;
+        let pointLights = [];
+        let bloomParams = {
+            exposure: 1.2,
+            bloomStrength: 2.5,
+            bloomThreshold: 0.1,
+            bloomRadius: 0.8
+        };
+        let stats = {
+            fps: 0,
+            lastTime: 0,
+            frameCount: 0
+        };
+
+        // 新增：当前宇宙主题（'heatwave' 或 'icesea'）
+        let currentCosmicTheme = null;
+
+        // 九大天体粒子系统对象
+        let celestialBodies = [];
+
+        // 新增：闪烁粒子系统
+        let flashParticles = [];
+
+        // 新增：宇宙闪烁粒子池
+        let universeFlashPool = [];
+        let universeFlashActive = false;
+
+        let raycaster = new THREE.Raycaster();
+        let mouse = new THREE.Vector2();
+        let isLaserActive = false;
+        let lastLaserTime = 0;
+        let laserMesh = null;
+
+        let rightClickCount = 0;
+        let universeLaserMesh = null;
+
+        // 工具函数：生成球面坐标
+        function sphericalToCartesian(radius, theta, phi) {
+            return new THREE.Vector3(
+                radius * Math.sin(phi) * Math.cos(theta),
+                radius * Math.sin(phi) * Math.sin(theta),
+                radius * Math.cos(phi)
+            );
+        }
+
+        const particleCount = 15000;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+        // 深蓝-冰蓝-冰青色渐变
+        const c1 = new THREE.Color('#0a1a3c'); // 深蓝
+        const c2 = new THREE.Color('#7eeeff'); // 冰蓝
+        const c3 = new THREE.Color('#bafffa'); // 冰青色
+        for (let i = 0; i < particleCount; i++) {
+            const t = Math.random();
+            const angle = t * Math.PI * 8;
+            const radius = 2 + t * 8 + Math.random() * 0.5;
+            const x = Math.cos(angle) * radius;
+            const y = (t - 0.5) * 16;
+            const z = Math.sin(angle) * radius;
+            positions[i * 3] = x;
+            positions[i * 3 + 1] = y;
+            positions[i * 3 + 2] = z;
+            let color;
+            if (t < 0.5) {
+                color = c1.clone().lerp(c2, t * 2);
+            } else {
+                color = c2.clone().lerp(c3, (t - 0.5) * 2);
+            }
+            colors[i * 3] = color.r;
+            colors[i * 3 + 1] = color.g;
+            colors[i * 3 + 2] = color.b;
+        }
+
+
+
+
+        //  太阳
+        function createSun(position) {
+            const particleCount = 12000;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount; i++) {
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                const r = 6 + Math.pow(Math.random(), 1.5) * 3;
+                const x = r * Math.sin(phi) * Math.cos(theta);
+                const y = r * Math.sin(phi) * Math.sin(theta);
+                const z = r * Math.cos(phi);
+                positions[i * 3] = x;
+                positions[i * 3 + 1] = y;
+                positions[i * 3 + 2] = z;
+                // 分层渐变
+                const dist = Math.sqrt(x * x + y * y + z * z);
+                let color;
+                if (dist < 6 * 0.3) {
+                    color = new THREE.Color('#ffffff').lerp(new THREE.Color('#ffff00'), dist / (6 * 0.3));
+                } else if (dist < 6 * 0.6) {
+                    color = new THREE.Color('#ffff00').lerp(new THREE.Color('#ff8c00'), (dist - 6 * 0.3) / (6 * 0.3));
+                } else {
+                    color = new THREE.Color('#ff8c00').lerp(new THREE.Color('#ff4500'), (dist - 6 * 0.6) / (6 * 0.4));
+                }
+                colors[i * 3] = color.r;
+                colors[i * 3 + 1] = color.g;
+                colors[i * 3 + 2] = color.b;
+            }
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            const material = new THREE.PointsMaterial({ size: 0.22, vertexColors: true, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending });
+            const sun = new THREE.Points(geometry, material);
+            sun.position.copy(position);
+            scene.add(sun);
+            celestialBodies.push(sun);
+        }
+
+        // 新增：冰星（Ice Star）
+        function createIceStar(position) {
+            // 冰星主球体（冰蓝色、半透明、带自发光）
+            const iceGeometry = new THREE.SphereGeometry(5.5, 128, 128);
+            const iceMaterial = new THREE.MeshPhysicalMaterial({
+                color: 0x7eeeff, // 冰蓝色
+                metalness: 0.45,
+                roughness: 0.08,
+                transmission: 0.85, // 玻璃感
+                thickness: 2.5,
+                ior: 1.35,
+                clearcoat: 1.0,
+                clearcoatRoughness: 0.05,
+                envMapIntensity: 2.5,
+                transparent: true,
+                opacity: 0.92,
+                emissive: new THREE.Color(0x7eeeff),
+                emissiveIntensity: 0.45,
+                side: THREE.DoubleSide
+            });
+            const iceStar = new THREE.Mesh(iceGeometry, iceMaterial);
+            iceStar.position.copy(position);
+            scene.add(iceStar);
+            celestialBodies.push(iceStar);
+
+            // 冰星表面冰晶粒子（史诗感冰蓝色粒子环绕）
+            const crystalCount = 9000;
+            const crystalGeometry = new THREE.BufferGeometry();
+            const crystalPositions = new Float32Array(crystalCount * 3);
+            const crystalColors = new Float32Array(crystalCount * 3);
+            const c1 = new THREE.Color('#bafffa'); // 冰青色
+            const c2 = new THREE.Color('#7eeeff'); // 冰蓝
+            const c3 = new THREE.Color('#e0f7ff'); // 极淡蓝白
+            for (let i = 0; i < crystalCount; i++) {
+                // 分布在球壳上，部分外扩
+                const t = Math.random();
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                const r = 5.5 + 0.5 + Math.pow(t, 1.5) * 2.5 + Math.random() * 0.7;
+                const x = r * Math.sin(phi) * Math.cos(theta);
+                const y = r * Math.sin(phi) * Math.sin(theta);
+                const z = r * Math.cos(phi);
+                crystalPositions[i * 3] = x + position.x;
+                crystalPositions[i * 3 + 1] = y + position.y;
+                crystalPositions[i * 3 + 2] = z + position.z;
+                let color = c1.clone().lerp(c2, t * 0.7).lerp(c3, Math.pow(t, 2.5));
+                crystalColors[i * 3] = color.r;
+                crystalColors[i * 3 + 1] = color.g;
+                crystalColors[i * 3 + 2] = color.b;
+            }
+            crystalGeometry.setAttribute('position', new THREE.BufferAttribute(crystalPositions, 3));
+            crystalGeometry.setAttribute('color', new THREE.BufferAttribute(crystalColors, 3));
+            const crystalMaterial = new THREE.PointsMaterial({
+                size: 0.18,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.85,
+                blending: THREE.AdditiveBlending
+            });
+            const iceCrystals = new THREE.Points(crystalGeometry, crystalMaterial);
+            scene.add(iceCrystals);
+            celestialBodies.push(iceCrystals);
+
+            // 冰星光晕（史诗感冷色光环）
+            const haloGeometry = new THREE.RingGeometry(7.5, 10.5, 128);
+            const haloMaterial = new THREE.MeshBasicMaterial({
+                color: 0xbafffa,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.22,
+                blending: THREE.AdditiveBlending
+            });
+            const halo = new THREE.Mesh(haloGeometry, haloMaterial);
+            halo.position.copy(position);
+            halo.lookAt(camera.position); // 朝向相机
+            scene.add(halo);
+            celestialBodies.push(halo);
+
+            // 冰星冷雾（淡蓝色体积雾球）
+            const fogGeometry = new THREE.SphereGeometry(8.5, 64, 64);
+            const fogMaterial = new THREE.MeshBasicMaterial({
+                color: 0x7eeeff,
+                transparent: true,
+                opacity: 0.08,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending
+            });
+            const fog = new THREE.Mesh(fogGeometry, fogMaterial);
+            fog.position.copy(position);
+            scene.add(fog);
+            celestialBodies.push(fog);
+
+            // 冰星极光（动态冰蓝色极光带）
+            const auroraGeometry = new THREE.RingGeometry(6.5, 8.5, 64, 1, 0, Math.PI * 1.2);
+            const auroraMaterial = new THREE.MeshBasicMaterial({
+                color: 0x8fd6ff,
+                transparent: true,
+                opacity: 0.18,
+                blending: THREE.AdditiveBlending
+            });
+            const aurora = new THREE.Mesh(auroraGeometry, auroraMaterial);
+            aurora.position.copy(position);
+            aurora.rotation.x = Math.PI / 2.5;
+            scene.add(aurora);
+            celestialBodies.push(aurora);
+
+            // 冰星史诗感闪耀（中心冰蓝色脉冲光）
+            const pulseGeometry = new THREE.SphereGeometry(5.7, 32, 32);
+            const pulseMaterial = new THREE.MeshBasicMaterial({
+                color: 0x7eeeff,
+                transparent: true,
+                opacity: 0.18,
+                blending: THREE.AdditiveBlending
+            });
+            const pulse = new THREE.Mesh(pulseGeometry, pulseMaterial);
+            pulse.position.copy(position);
+            scene.add(pulse);
+            celestialBodies.push(pulse);
+
+            // 动态史诗感：冰星光晕和极光随时间微微旋转
+            function animateIceStar() {
+                halo.lookAt(camera.position);
+                aurora.rotation.z += 0.0025;
+                pulse.material.opacity = 0.13 + 0.07 * Math.abs(Math.sin(performance.now() * 0.0007));
+                requestAnimationFrame(animateIceStar);
+            }
+            animateIceStar();
+        }
+
+        // 在init中添加九大天体，分布在球面不同方位
+        function addCelestialBodies() {
+            const R = 120; // 球面半径
+            const thetas = [0, Math.PI / 4, Math.PI / 2, 3 * Math.PI / 4, Math.PI, 5 * Math.PI / 4, 3 * Math.PI / 2, 7 * Math.PI / 4, Math.PI / 2];
+            const phis = [Math.PI / 4, Math.PI / 3, Math.PI / 2, 2 * Math.PI / 3, 3 * Math.PI / 4, Math.PI / 2, Math.PI / 3, Math.PI / 4, Math.PI / 2];
+            // 只保留太阳
+            createSun(sphericalToCartesian(R, thetas[5], phis[5]));
+            // 新增：在太阳对面创建冰星
+            // 太阳在thetas[5], phis[5]，冰星取对面（theta+PI, phi）
+            const sunTheta = thetas[5], sunPhi = phis[5];
+            const iceTheta = (sunTheta + Math.PI) % (2 * Math.PI);
+            const icePhi = sunPhi; // 保持纬度一致
+            createIceStar(sphericalToCartesian(R, iceTheta, icePhi));
+        }
+
+        // 初始化场景
+        function init() {
+            // 创建场景
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000000);
+
+            // 增强光照以突出金属质感
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.2); // 大幅增强环境光
+            scene.add(ambientLight);
+
+            // 创建20个球面分布的点光源阵列
+            const lightConfigs = [];
+            const radius = 10; // 球体半径
+            const goldenRatio = (1 + Math.sqrt(5)) / 2;
+
+            // 生成20个球面均匀分布的点光源
+            for (let i = 0; i < 20; i++) {
+                // 使用斐波那契球面分布算法
+                const theta = 2 * Math.PI * i / goldenRatio;
+                const phi = Math.acos(1 - 2 * (i + 0.5) / 20);
+                const x = radius * Math.sin(phi) * Math.cos(theta);
+                const y = radius * Math.sin(phi) * Math.sin(theta);
+                const z = radius * Math.cos(phi);
+
+                // 随机化参数增加自然感
+                const intensity = 0.5 + Math.random() * 2.5; // 0.5-3.0
+                const distance = 50 + Math.random() * 100; // 50-150
+
+                // 冷暖色调交替
+                const color = i % 2 === 0 ?
+                    0xffffff : // 白光
+                    0xadd8e6;  // 冷蓝色光
+
+                lightConfigs.push({
+                    color: color,
+                    intensity: intensity,
+                    distance: distance,
+                    position: [x, y, z]
+                });
+            }
+
+            // 添加主光源增强核心照明
+            lightConfigs.push({
+                color: 0xffffff,
+                intensity: 4.0,
+                distance: 200,
+                position: [0, 5, 5]
+            });
+
+            // 清空全局点光源数组
+            pointLights = [];
+
+            // 批量创建并添加光源(不显示辅助工具)
+            lightConfigs.forEach(config => {
+                const pointLight = new THREE.PointLight(
+                    config.color,
+                    config.intensity,
+                    config.distance
+                );
+                pointLight.position.set(...config.position);
+                pointLights.push(pointLight); // 将创建的光源添加到全局数组
+                scene.add(pointLight);
+            });
+
+            // 创建相机
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 5, 20);
+
+            // 创建渲染器
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.toneMapping = THREE.ReinhardToneMapping;
+            document.body.appendChild(renderer.domElement);
+
+            // 添加增强版轨道控制器
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.08;
+            controls.enablePan = true;
+            controls.enableZoom = true;
+            controls.enableRotate = true;
+            controls.mouseButtons = {
+                LEFT: THREE.MOUSE.ROTATE,
+                MIDDLE: null,
+                RIGHT: THREE.MOUSE.PAN
+            };
+            controls.touches = {
+                ONE: null,
+                TWO: null
+            };
+            // 允许左键旋转，右键平移，滚轮缩放，实现完全自由的相机镜头
+
+            // 设置后期处理
+            setupPostProcessing();
+
+            // 创建水滴模型
+            createDroplet();
+
+            // 新增：创建可点击的黑洞模型
+            const blackholeGeometry = new THREE.SphereGeometry(8, 64, 64);
+            const blackholeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 }); // 透明材质以便点击穿透或只用于射线检测
+            const blackholeMesh = new THREE.Mesh(blackholeGeometry, blackholeMaterial);
+            blackholeMesh.position.set(droplet.position.x + 15, droplet.position.y, droplet.position.z); // 放在水滴附近
+            blackholeMesh.name = 'clickableBlackHole'; // 给模型命名以便识别
+            scene.add(blackholeMesh);
+
+            // 新增：创建可见的黑洞视觉模型 (环形光晕)
+            const blackholeVisualGeometryRing = new THREE.RingGeometry(6, 10, 64);
+            const blackholeVisualMaterialRing = new THREE.ShaderMaterial({
+                uniforms: {
+                    uTime: { value: 0.0 },
+                    uColor1: { value: new THREE.Color(0x8a2be2) }, // 蓝紫色
+                    uColor2: { value: new THREE.Color(0x00ffff) }, // 青色
+                    uInnerRadius: { value: 6.0 },
+                    uOuterRadius: { value: 10.0 }
+                },
+                vertexShader: `
+                    varying vec2 vUv;
+                    varying float vRadius;
+                    uniform float uInnerRadius;
+                    uniform float uOuterRadius;
+                    void main() {
+                        vUv = uv;
+                        vRadius = length(position.xy);
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform float uTime;
+                    uniform vec3 uColor1;
+                    uniform vec3 uColor2;
+                    uniform float uInnerRadius;
+                    uniform float uOuterRadius;
+                    varying vec2 vUv;
+                    varying float vRadius;
+
+                    void main() {
+                        float dist = vRadius;
+                        float normalizedDist = (dist - uInnerRadius) / (uOuterRadius - uInnerRadius);
+
+                        // 创建径向渐变颜色
+                        vec3 color = mix(uColor1, uColor2, normalizedDist);
+
+                        // 添加时间变化的脉冲或流动效果
+                        float flow = sin(normalizedDist * 15.0 + uTime * 2.0) * 0.2 + 0.8;
+                        color *= flow;
+
+                        // 添加中心更亮，边缘衰减的效果
+                        float alpha = 1.0 - pow(normalizedDist, 1.5);
+                         alpha *= (sin(uTime * 1.5 + normalizedDist * 10.0) * 0.1 + 0.9); // 闪烁效果
+
+                        gl_FragColor = vec4(color, alpha);
+
+                        // 模拟光线扭曲观感，边缘模糊
+                         float edgeFade = smoothstep(uOuterRadius - 1.0, uOuterRadius, dist);
+                         gl_FragColor.a *= (1.0 - edgeFade);
+
+                         // 增强观感：增加一些内发光效果
+                         float innerGlow = smoothstep(uInnerRadius + 1.0, uInnerRadius, dist);
+                         gl_FragColor.rgb += vec3(1.0, 1.0, 1.0) * innerGlow * 0.5; // 添加白色内发光
+
+                         // 提高整体亮度以增强高级感
+                         gl_FragColor.rgb *= 3.0;
+                    }
+                `,
+                transparent: true,
+                blending: THREE.AdditiveBlending, // 叠加混合，产生辉光效果
+                side: THREE.DoubleSide,
+                depthWrite: false // 不写入深度，避免透明问题
+            });
+
+            const blackholeVisualMeshRing = new THREE.Mesh(blackholeVisualGeometryRing, blackholeVisualMaterialRing);
+            blackholeVisualMeshRing.position.copy(blackholeMesh.position); // 放在透明点击模型的位置
+            scene.add(blackholeVisualMeshRing);
+
+            // 新增：创建黑洞内部视觉模型 (球体，模拟扭曲宇宙)
+            const blackholeVisualGeometrySphere = new THREE.SphereGeometry(7.5, 64, 64); // 略小于点击球体
+            const blackholeVisualMaterialSphere = new THREE.ShaderMaterial({
+                uniforms: {
+                    uTime: { value: 0.0 },
+                    uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                    uColorDark: { value: new THREE.Color(0x000000) }, // 内部黑色
+                    uColorLight: { value: new THREE.Color(0x4b0082) }, // 紫色光晕
+                    uColorStar: { value: new THREE.Color(0xffffff) } // 星光色
+                },
+                vertexShader: `
+                    varying vec3 vNormal;
+                    varying vec3 vViewPosition;
+                    varying vec3 vModelPosition;
+                    void main() {
+                        vNormal = normalize(normalMatrix * normal);
+                        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                        vViewPosition = -mvPosition.xyz;
+                        vModelPosition = position;
+                        gl_Position = projectionMatrix * mvPosition;
+                    }
+                `,
+                fragmentShader: `
+                    uniform float uTime;
+                    uniform vec2 uResolution;
+                    uniform vec3 uColorDark; // 内部黑色
+                    uniform vec3 uColorLight; // 紫色光晕
+                    uniform vec3 uColorStar; // 星光色
+                    varying vec3 vNormal;
+                    varying vec3 vViewPosition;
+                    varying vec3 vModelPosition;
+
+                    float random(vec2 st) {
+                        return fract(sin(dot(st.xy,
+                                             vec2(12.9898,78.233)))*
+                                            43758.5453123);
+                    }
+
+                    // Simplex noise 3D (improved) - simplified for clarity in edit
+                    // (Full snoise function remains, assumed correct from previous edit)
+                    vec4 permute(vec4 t) { return t * (t * 34.0 + 133.0); }
+                    float snoise(vec3 p) {
+                       vec4 i = floor(p + dot(p, vec3(1.0/3.0)));
+                        vec4 x0 = p - i + dot(i, vec3(1.0/3.0));
+                        vec4 i0;
+                        vec3 is = step(x0.yzx, x0.xyz);
+                        vec3 id = step(x0.zxy, x0.yxz);
+                        i0.x = dot(is, vec3(1.0, 1.0, 1.0));
+                        i0.yzx = id.xyx;
+                        i0.zxy = 1.0 - id.zxy;
+                        vec4 s = vec4(0.0, 0.0, 0.0, 0.0);
+                        s.xy = i0.xy - 0.5 + step(i0.xy, vec2(2.5, 2.5));
+                        s.z = i0.z - 0.5 + step(i0.z, 2.5);
+                        s.w = 3.0 - s.x - s.y - s.z;
+                        vec4 x1 = x0 - s + 1.0/6.0;
+                        vec4 x2 = x0 - s.yzxw + 2.0/6.0;
+                        vec4 x3 = x0 - s.zxyw + 3.0/6.0;
+                        vec4 x4 = x0 - s.wxyz + 4.0/6.0;
+                        vec4 y1 = x1 - s.wzzx + 1.0/6.0;
+                        vec4 y2 = x2 - s.xyzw + 2.0/6.0;
+                        vec4 y3 = x3 - s.yxwz + 3.0/6.0;
+                        vec4 y4 = x4 - s.zxyw + 4.0/6.0;
+                        vec4 i3 = permute(permute(permute(i + vec4(s.zxyw, s.yxwz)) + i.yzxw) + i.wxyz);
+                         vec4 i4 = permute(permute(permute(i + vec4(y1.xyzw, y2.xyzw)) + i.zxyw) + i.yzxw);
+                         vec4 i5 = permute(permute(permute(i + vec4(y3.xyzw, y4.xyzw)) + i.wxyz) + i.zxyw);
+                         vec4 i6 = permute(permute(permute(i + vec4(x1.yzxw, x2.zxyw)) + i.wxyz) + i.zxyw);
+                        vec4 i7 = permute(permute(permute(i + vec4(x3.yzxw, x4.zxyw)) + i.zxyw) + i.yxwz);
+
+                        vec4 grad_x = vec4(0.5, 0.5, 0.5, 0.5);
+                        vec4 grad_y = vec4(0.866, 0.866, 0.866, 0.866);
+                        vec4 grad_z = vec4(0.866, 0.866, 0.866, 0.866);
+
+                        vec4 grad_sum = grad_x + grad_y + grad_z;
+                        vec4 grad_sq = grad_sum * grad_sum;
+                        vec4 grad_inv_len = inversesqrt(grad_sq);
+
+                        vec4 grad_dot_x0 = grad_x * x0 + grad_y * y1.yzxw + grad_z * y2.zxyw;
+                        vec4 grad_dot_x1 = grad_x * x1 + grad_y * y1.wxyz + grad_z * y2.xyzw;
+                        vec4 grad_dot_x2 = grad_x * x2 + grad_y * y3.xyzw + grad_z * y4.zxyw;
+                        vec4 grad_dot_x3 = grad_x * x3 + grad_y * y3.zxyw + grad_z * y4.yxwz;
+
+                        vec4 n = grad_dot_x0 * permute(i0.zxyw) + grad_dot_x1 * permute(i0.wxyz) + grad_dot_x2 * permute(i0.yzxw) + grad_dot_x3 * permute(i0.zxyw);
+
+                         vec4 s_dot_x = s.x * x0.x + s.y * x0.y + s.z * x0.z + s.w * x0.w;
+                         vec4 t_sq = x0 * x0;
+                         vec4 t_norm_sq = t_sq.x + t_sq.y + t_sq.z + t_sq.w;
+                         vec4 t_sum = x0.x + x0.y + x0.z + x0.w;
+                         vec4 t_mean = t_sum / 4.0;
+
+                         vec4 weights = max(0.5 - vec4(dot(x0, x0), dot(x1, x1), dot(x2, x2), dot(x3, x3)), 0.0);
+                         weights = weights * weights;
+                         weights = weights * weights;
+
+                         vec4 pn = permute(i);
+                         vec4 gx = pn * (1.0 / 7.0); // Gradient from [-1.0, 1.0]
+                         vec4 gy = mod(floor(pn / 7.0), 7.0) * (1.0 / 7.0) - 0.5; // Gradient from [-0.5, 0.5]
+                         vec4 gz = mod(floor(pn / 49.0), 7.0) * (1.0 / 7.0) - 0.5; // Gradient from [-0.5, 0.5]
+
+                         vec4 g = vec4(gx.x, gy.x, gz.x, gx.y);
+
+
+
+
+
+                        vec4 c = (n + grad_dot_x0 + grad_dot_x1 + grad_dot_x2 + grad_dot_x3);
+
+                        return dot(weights, c);
+                    }
+
+                    void main() {
+                        // 使用模型空间位置计算到模型中心的距离 (0,0,0)
+                        float distToCenter = length(vModelPosition);
+                         // 获取球体半径 (hardcoded for simplicity, could pass as uniform)
+                         float sphereRadius = 7.5;
+                        float normalizedDist = distToCenter / sphereRadius; // 0 at center, 1 at edge
+
+                        vec3 viewDir = normalize(vViewPosition);
+
+                        // 模拟扭曲空间和引力透镜效果 - 基于到中心的距离
+                        float distortionFactor = 1.0 / (normalizedDist * normalizedDist * 5.0 + 0.1) * 0.8; // 中心扭曲更强
+                        // 扭曲UV坐标 - 需要将球坐标映射到2D，这里简化处理，直接扭曲视图方向或模型位置
+                        // 更精确的引力透镜需要复杂的计算或查找表
+                         vec2 distortedCoords = vModelPosition.xy * (1.0 + distortionFactor);
+
+                         // 添加旋转效果 - 作用于用于噪声采样的坐标
+                         float angle = uTime * 0.15;
+                         float cosA = cos(angle);
+                         float sinA = sin(angle);
+                         vec2 rotatedCoords = vec2(
+                            distortedCoords.x * cosA - distortedCoords.y * sinA,
+                            distortedCoords.x * sinA + distortedCoords.y * cosA
+                         );
+
+                        // 使用噪声模拟宇宙星空和气体流
+                        // 根据到中心的距离调整噪声频率和强度
+                        float noiseScale1 = 10.0 + normalizedDist * 20.0; // 边缘噪声更密
+                        float noiseScale2 = 20.0 + normalizedDist * 30.0;
+                        float noiseScale3 = 50.0 + normalizedDist * 40.0;
+
+                        float noise1 = snoise(vec3(rotatedCoords * noiseScale1, uTime * 0.08));
+                        float noise2 = snoise(vec3(rotatedCoords * noiseScale2, uTime * 0.12 + 100.0));
+                         float noise3 = snoise(vec3(rotatedCoords * noiseScale3, uTime * 0.18 + 200.0));
+
+                        // 叠加噪声模拟星光和气体
+                        float cosmicPattern = max(0.0, noise1 * 2.5 + noise2 * 1.2 + noise3 * 0.6 - 1.0);
+                        cosmicPattern = pow(cosmicPattern, 3.0) * (1.0 - normalizedDist*0.5); // 提高对比度，边缘减弱
+
+                        // 模拟光线无法逃逸，中心向外逐渐变亮 - 基于到中心的距离
+                        // 中心完全黑暗 (alpha=0), 边缘亮度最高 (alpha=1)
+                        float lightEscapeFactor = pow(normalizedDist, 2.0); // 平方使中心衰减更快
+                        lightEscapeFactor *= (sin(uTime * 2.0 + normalizedDist * 15.0) * 0.1 + 0.9); // 添加轻微闪烁
+
+                        // 混合颜色：中心暗色，外部光晕，星光
+                        // 星光颜色混合
+                         vec3 starColor = uColorStar * cosmicPattern * lightEscapeFactor * 3.0;
+
+                        // 基础颜色混合：从中心黑到边缘光晕
+                        vec3 baseColor = mix(uColorDark, uColorLight, pow(normalizedDist, 0.5)); // 根号使外部光晕更明显
+
+                        vec3 finalColor = baseColor + starColor; // 叠加星光
+
+
+                         // 添加时间变化的颜色脉冲
+                         float colorPulse = sin(uTime * 2.2) * 0.08 + 1.0;
+                         finalColor *= colorPulse;
+
+                        // 模拟事件视界边缘的急剧变化 - 在接近边缘时快速变暗
+                        // 这个效果现在通过 lightEscapeFactor 的 pow(normalizedDist, 2.0) 和 smoothstep 在 normalizedDist 接近 0 时变暗来实现
+                         // 可以选择性地添加一个 sharp falloff
+                         float edgeFalloff = smoothstep(0.8, 0.95, normalizedDist); // 在边缘0.8到0.95范围内快速衰减
+                         finalColor *= (1.0 - edgeFalloff);
+
+                         // 提高整体亮度以增强高级感
+                         finalColor *= 4.0; // 整体提高亮度
+
+                        gl_FragColor = vec4(finalColor, lightEscapeFactor); // 使用lightEscapeFactor作为Alpha通道
+                        // 为了确保内部不是全透明而仍然可见，可以将alpha设为1.0
+                         gl_FragColor = vec4(finalColor, 1.0);
+
+                         // 但如果需要模拟光线无法逃逸的Alpha观感，再改回基于距离的Alpha
+                         // gl_FragColor = vec4(finalColor, lightEscapeFactor);
+
+                         // 如果仍然全黑，可能是没有光照或者Shader计算出的颜色值太低。确保Shader输出的rgb值足够大
+                         // finalColor *= 10.0; // 尝试大幅提高亮度
+
+                         // 最终输出颜色，乘以Alpha，模拟透明度，但仍然是可见的黑洞核心
+                         gl_FragColor = vec4(finalColor * (1.0 - pow(normalizedDist, 5.0)), 1.0); // 越靠近中心越暗，边缘逐渐明亮可见
+                         gl_FragColor.rgb *= (1.0 + sin(uTime*3.0)*0.1); // 整体颜色轻微脉冲
+                         gl_FragColor.rgb += vec3(0.1, 0.05, 0.2) * pow(1.0 - normalizedDist, 3.0); // 中心添加深邃的紫黑色
+                         gl_FragColor.rgb = clamp(gl_FragColor.rgb, 0.0, 5.0); // Clamp color to avoid overexposure
+                         gl_FragColor.a = 1.0; // Ensure it's not transparently black, but visibly dark/glowing
+
+                         // 但如果需要模拟光线无法逃逸的Alpha观感，再改回基于距离的Alpha
+                         // gl_FragColor = vec4(finalColor, lightEscapeFactor);
+
+                         // 如果仍然全黑，可能是没有光照或者Shader计算出的颜色值太低。确保Shader输出的rgb值足够大
+                         // finalColor *= 10.0; // 尝试大幅提高亮度
+
+                         // 修正最终颜色输出逻辑，确保中心黑暗，边缘可见光晕和星光
+                         // 基础颜色混合：从中心黑到边缘光晕
+                         vec3 baseColorAdjusted = mix(uColorDark, uColorLight, pow(normalizedDist, 0.6)); // 使用根号使外部光晕更明显
+                         
+                         // 星光颜色叠加，越靠近中心越弱
+                         vec3 starColorAdjusted = uColorStar * cosmicPattern * pow(normalizedDist, 0.8) * 4.0; // 星光在中心衰减更快
+                         
+                         vec3 finalVisibleColor = baseColorAdjusted + starColorAdjusted; // 叠加基础颜色和星光
+                         
+                         // 添加时间变化的颜色脉冲和流动感
+                         finalVisibleColor *= (1.0 + sin(uTime*2.8 + normalizedDist*6.0)*0.1); 
+                         
+                         // 模拟事件视界边缘的急剧变化 - 在接近边缘时快速变暗，但在边缘外侧保留光晕
+                         float edgeFadeOut = smoothstep(0.75, 0.95, normalizedDist); // 在边缘0.75到0.95范围内快速衰减
+                         finalVisibleColor *= (1.0 - edgeFadeOut);
+                         
+                         // 提高整体亮度以增强高级感
+                         finalVisibleColor *= 5.0; // 整体提高亮度
+
+                          // Clamp color to avoid overexposure, allow values > 1.0 for bloom
+                          finalVisibleColor = clamp(finalVisibleColor, 0.0, 10.0); 
+                         
+                          gl_FragColor = vec4(finalVisibleColor, 1.0); // Alpha设为1.0确保可见
+                     }
+                 `,
+                transparent: false, // 不透明，填充内部
+                blending: THREE.NormalBlending, // 正常混合
+                side: THREE.FrontSide, // 只渲染正面
+                depthWrite: true
+            });
+
+            const blackholeVisualMeshSphere = new THREE.Mesh(blackholeVisualGeometrySphere, blackholeVisualMaterialSphere);
+            blackholeVisualMeshSphere.position.copy(blackholeMesh.position); // 放在透明点击模型的位置
+            scene.add(blackholeVisualMeshSphere);
+
+            // 创建星空背景
+            createStarfield();
+
+            // 添加事件监听器
+            setupEventListeners();
+
+            // 隐藏加载提示
+            document.getElementById('loading').style.display = 'none';
+
+            // 拖尾参数
+            let cometTail;
+            let cometTailGeometry, cometTailMaterial;
+            let TAIL_SEGMENTS = 36; // 拖尾段数，动态调整
+            let cometTailPositions = new Float32Array(TAIL_SEGMENTS * 3);
+            let cometTailWidths = new Float32Array(TAIL_SEGMENTS);
+            let cometTailColors = new Float32Array(TAIL_SEGMENTS * 3);
+            let cometTailAlphas = new Float32Array(TAIL_SEGMENTS);
+            // 拖尾色彩渐变：头部白蓝，尾部紫金
+            const cometTailColorHead = new THREE.Color(0xffffff);
+            const cometTailColorMid = new THREE.Color(0x7eeeff);
+            const cometTailColorTail = new THREE.Color(0x8f5fff);
+            const cometTailColorGold = new THREE.Color(0xffe066);
+
+            function initCometTail() {
+                cometTailGeometry = new THREE.BufferGeometry();
+                cometTailGeometry.setAttribute('position', new THREE.BufferAttribute(cometTailPositions, 3));
+                cometTailGeometry.setAttribute('width', new THREE.BufferAttribute(cometTailWidths, 1));
+                cometTailGeometry.setAttribute('color', new THREE.BufferAttribute(cometTailColors, 3));
+                cometTailGeometry.setAttribute('alpha', new THREE.BufferAttribute(cometTailAlphas, 1));
+                cometTailMaterial = new THREE.ShaderMaterial({
+                    uniforms: {
+                        uTime: { value: 0 },
+                        uSpeed: { value: 0 }
+                    },
+                    vertexShader: `
+                        attribute float width;
+                        attribute float alpha;
+                        attribute vec3 color;
+                        varying float vAlpha;
+                        varying vec3 vColor;
+                        varying float vT;
+                        uniform float uTime;
+                        void main() {
+                            vAlpha = alpha;
+                            vColor = color;
+                            vT = float(gl_VertexID) / float(${TAIL_SEGMENTS - 1});
+                            // 流线扰动: 让拖尾有空间穿越感
+                            float wave = sin(uTime * 0.001 + vT * 18.0) * 0.12 * (1.0 - vT) + cos(uTime * 0.0015 + vT * 24.0) * 0.08 * (1.0 - vT);
+                            vec3 pos = position.xyz;
+                            pos.x += wave * (1.0 - vT * 0.7);
+                            pos.y += cos(uTime * 0.001 + vT * 10.0) * 0.07 * (1.0 - vT);
+                            vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+                            gl_Position = projectionMatrix * mvPosition;
+                            gl_PointSize = width * (1.0 + 1.5 * (1.0 - vT));
+                            // 适配高DPI
+                            gl_PointSize *= clamp(1.0 + 0.5 * (1.0 - vT), 1.0, 2.5);
+                        }
+                    `,
+                    fragmentShader: `
+                        varying float vAlpha;
+                        varying vec3 vColor;
+                        varying float vT;
+                        void main() {
+                            float d = length(gl_PointCoord - vec2(0.5));
+                            float core = smoothstep(0.12, 0.0, d); // 头部极亮
+                            float glow = smoothstep(0.5, 0.12, d) * 0.8;
+                            float fade = smoothstep(1.0, 0.0, vT);
+                            float widthFade = 1.0 - vT * 0.8;
+                            float alpha = vAlpha * fade * (core + glow) * widthFade;
+                            // 色彩冷暖渐变
+                            vec3 col = mix(vColor, vec3(1.0,0.95,0.7), vT * 0.7);
+                            col = mix(col, vec3(0.7,0.85,1.0), (1.0-vT)*0.25);
+                            // 尾部加一点金色
+                            col = mix(col, vec3(1.0,0.85,0.3), pow(vT,2.5)*0.7);
+                            // 空间穿越感：头部更亮
+                            gl_FragColor = vec4(col * (2.5 + 1.5 * (1.0-vT)), alpha);
+                            if (gl_FragColor.a < 0.01) discard;
+                        }
+                    `,
+                    transparent: true,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                    vertexColors: true
+                });
+                cometTail = new THREE.Points(cometTailGeometry, cometTailMaterial);
+                scene.add(cometTail);
+            }
+
+            function updateCometTail() {
+                // 动态调整拖尾点数，速度快时更多
+                let speed = dropletVelocity.length();
+                let targetSegments = Math.floor(24 + Math.min(1, speed / 8) * 32); // 24~56
+                if (targetSegments !== TAIL_SEGMENTS) {
+                    TAIL_SEGMENTS = targetSegments;
+                    cometTailPositions = new Float32Array(TAIL_SEGMENTS * 3);
+                    cometTailWidths = new Float32Array(TAIL_SEGMENTS);
+                    cometTailColors = new Float32Array(TAIL_SEGMENTS * 3);
+                    cometTailAlphas = new Float32Array(TAIL_SEGMENTS);
+                    cometTailGeometry.setAttribute('position', new THREE.BufferAttribute(cometTailPositions, 3));
+                    cometTailGeometry.setAttribute('width', new THREE.BufferAttribute(cometTailWidths, 1));
+                    cometTailGeometry.setAttribute('color', new THREE.BufferAttribute(cometTailColors, 3));
+                    cometTailGeometry.setAttribute('alpha', new THREE.BufferAttribute(cometTailAlphas, 1));
+                }
+                let pos = droplet.position.clone();
+                let dir = dropletVelocity.lengthSq() > 0.01 ? dropletVelocity.clone().normalize() : new THREE.Vector3(0, 0, -1);
+                // 拖尾长度随速度自适应
+                let tailLength = 2.5 + Math.min(1, speed / 8) * 13.0;
+                for (let i = 0; i < TAIL_SEGMENTS; i++) {
+                    let t = i / (TAIL_SEGMENTS - 1);
+                    // 指数衰减分布，头部密集
+                    let localLen = tailLength * (1.0 - Math.pow(t, 1.5));
+                    let tailPos = pos.clone().add(dir.clone().multiplyScalar(-localLen));
+                    cometTailPositions[i * 3] = tailPos.x;
+                    cometTailPositions[i * 3 + 1] = tailPos.y;
+                    cometTailPositions[i * 3 + 2] = tailPos.z;
+                    // 宽度：头粗尾细，速度快更粗
+                    cometTailWidths[i] = 22.0 * (1.0 - t * 0.7) * (1.0 + speed * 0.13);
+                    // 透明度：头亮尾淡
+                    cometTailAlphas[i] = 0.88 * (1.0 - t * 0.8) + 0.06;
+                    // 色彩渐变：头部白蓝，尾部紫金
+                    let color = cometTailColorHead.clone().lerp(cometTailColorMid, t * 0.5).lerp(cometTailColorTail, t * 0.7);
+                    if (t > 0.7) color.lerp(cometTailColorGold, (t - 0.7) / 0.3);
+                    cometTailColors[i * 3] = color.r;
+                    cometTailColors[i * 3 + 1] = color.g;
+                    cometTailColors[i * 3 + 2] = color.b;
+                }
+                cometTailGeometry.attributes.position.needsUpdate = true;
+                cometTailGeometry.attributes.width.needsUpdate = true;
+                cometTailGeometry.attributes.color.needsUpdate = true;
+                cometTailGeometry.attributes.alpha.needsUpdate = true;
+                cometTailMaterial.uniforms.uSpeed.value = speed;
+                cometTailMaterial.uniforms.uTime.value = performance.now();
+            }
+
+            // 初始化拖尾
+            initCometTail();
+
+            // 修改animate函数以更新拖尾
+            function animate() {
+                requestAnimationFrame(animate);
+                const deltaTime = clock.getDelta();
+
+                updateDropletMotion(deltaTime);
+                updateCometTail(); // 用超级精美拖尾替换原有updateTail
+
+                controls.update();
+                composer.render();
+
+                // 在主动画循环（如animate函数）中，添加如下代码（放在requestAnimationFrame(animate);之后，或渲染前）：
+                for (let i = flashParticles.length - 1; i >= 0; i--) {
+                    const flash = flashParticles[i];
+                    const elapsed = performance.now() - flash.startTime;
+                    const t = Math.min(1, elapsed / flash.duration);
+                    for (let j = 0; j < flash.opacities.length; j++) {
+                        flash.opacities[j] = 1.0 - t;
+                    }
+                    flash.geometry.attributes.opacity.needsUpdate = true;
+                    if (t >= 1) {
+                        scene.remove(flash.mesh);
+                        flashParticles.splice(i, 1);
+                    }
+                }
+
+                if (universeFlashActive && universeFlashPool.length > 0) {
+                    const points = universeFlashPool[0];
+                    const elapsed = performance.now() - points.startTime;
+                    points.material.uniforms.uTime.value = elapsed;
+                    if (elapsed > 24000) { // 24秒后自动移除
+                        scene.remove(points);
+                        universeFlashPool = [];
+                        universeFlashActive = false;
+                    }
+                }
+
+                // 更新黑洞视觉模型的Shader时间Uniform
+                if (blackholeVisualMeshRing && blackholeVisualMaterialRing) {
+                    blackholeVisualMaterialRing.uniforms.uTime.value += deltaTime;
+                }
+
+                // 更新黑洞内部视觉模型的Shader时间Uniform
+                if (blackholeVisualMeshSphere && blackholeVisualMaterialSphere) {
+                    blackholeVisualMaterialSphere.uniforms.uTime.value += deltaTime;
+                    blackholeVisualMaterialSphere.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+                }
+            }
+
+            // 开始动画循环
+            animate();
+        }
+
+
+        // 设置后期处理
+        function setupPostProcessing() {
+            const renderScene = new THREE.RenderPass(scene, camera);
+
+            // 添加SSR通道
+            const ssrPass = new THREE.SSRPass({
+                renderer: renderer,
+                scene: scene,
+                camera: camera,
+                width: window.innerWidth,
+                height: window.innerHeight,
+                groundRoughness: 0.005,
+                groundMetalness: 0.95,
+                intensity: 1.2,
+                maxRoughness: 0.3,
+                thickness: 0.1,
+                maxDepth: 20,
+                maxDistance: 0.5
+            });
+
+            // 配置泛光通道
+            bloomPass = new THREE.UnrealBloomPass(
+                new THREE.Vector2(window.innerWidth, window.innerHeight),
+                1.5,
+                0.4,
+                0.85
+            );
+
+            composer = new THREE.EffectComposer(renderer);
+            composer.addPass(renderScene);
+            composer.addPass(ssrPass);
+            composer.addPass(bloomPass);
+
+            // 启用渲染器物理校正
+            renderer.physicallyCorrectLights = true;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.outputEncoding = THREE.sRGBEncoding;
+
+            // 创建更新点光源位置的函数
+            function updatePointLights() {
+                const radius = 10; // 球体半径
+                const goldenRatio = (1 + Math.sqrt(5)) / 2;
+
+                // 更新20个球面均匀分布的点光源位置
+                for (let i = 0; i < 20; i++) {
+                    // 使用斐波那契球面分布算法
+                    const theta = 2 * Math.PI * i / goldenRatio;
+                    const phi = Math.acos(1 - 2 * (i + 0.5) / 20);
+                    const x = radius * Math.sin(phi) * Math.cos(theta);
+                    const y = radius * Math.sin(phi) * Math.sin(theta);
+                    const z = radius * Math.cos(phi);
+
+                    // 相对于水滴位置更新光源位置
+                    pointLights[i].position.set(
+                        droplet.position.x + x,
+                        droplet.position.y + y,
+                        droplet.position.z + z
+                    );
+                }
+
+                // 更新主光源位置
+                pointLights[20].position.set(
+                    droplet.position.x,
+                    droplet.position.y + 5,
+                    droplet.position.z + 5
+                );
+            }
+        }
+
+        // 创建水滴模型
+        function createDroplet() {
+            // 使用参数化球体几何体
+            const geometry = new THREE.SphereGeometry(1.5, 128, 128);
+
+            // 应用顶点形变算法
+            const vertices = geometry.attributes.position.array;
+            for (let i = 0; i < vertices.length; i += 3) {
+                const x = vertices[i];
+                const y = vertices[i + 1];
+                const z = vertices[i + 2];
+
+                // 去除对称结构：区分头尾应用不同形变参数
+                // 尾部（z<0）使用4次幂增强收缩，头部（z≥0）使用2次幂保持浑圆
+                const tailFactor = z < 0 ? Math.pow(-z, 5) * 0.5 : 0; // 增强尾部收缩：指数5，系数0.5
+                const headFactor = z >= 0 ? Math.pow(z, 2) * 0.1 : 0; // 头部收缩系数保持
+                const scale = 1.0 - (tailFactor + headFactor); // 综合缩放系数
+
+                vertices[i] = x * scale; // 横向缩放
+                vertices[i + 1] = y * scale;
+                vertices[i + 2] = z * (z < 0 ? 3.5 : 1.2); // 增强尾部拉伸：比例3.5，头部保持1.2倍
+            }
+            geometry.computeVertexNormals();
+            geometry.computeTangents();
+
+            // 使用内置纯色环境贴图（避免外部资源依赖）
+            const envMap = new THREE.CubeTexture([]);
+            envMap.needsUpdate = true;
+
+            // 增强金属材质参数以突出银色效果
+            const material = new THREE.MeshPhysicalMaterial({
+                color: 0xc0c0c0, // 银色表面
+                metalness: 0.98, // 接近纯金属反射
+                roughness: 0.02, // 极低粗糙度增强镜面反射
+                envMap: envMap,
+                envMapIntensity: 3.0, // 增强环境反射
+                clearcoat: 1.0,
+                clearcoatRoughness: 0.02, // 轻微表面纹理
+                clearcoatNormalScale: new THREE.Vector2(0.1, 0.1), // 添加细微法线细节
+                side: THREE.DoubleSide,
+                ior: 2.0, // 增加折射率增强反射
+                specularIntensity: 1.0 // 增强高光
+            });
+
+            droplet = new THREE.Mesh(geometry, material);
+            droplet.rotation.set(Math.PI / 2, 0, 0);
+            scene.add(droplet);
+        }
+
+        // 创建星空背景
+        function createStarfield() {
+            const starCount = 15000;
+            const positions = new Float32Array(starCount * 3);
+            const colors = new Float32Array(starCount * 3);
+            starParticles = [];
+            for (let i = 0; i < starCount; i++) {
+                const i3 = i * 3;
+                let theta = Math.random() * Math.PI * 2;
+                let phi = Math.acos((Math.random() * 2) - 1);
+                let radius = 1200 + Math.random() * 600;
+                positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
+                positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+                positions[i3 + 2] = radius * Math.cos(phi);
+                const color = new THREE.Color().setHSL(0.55 + Math.random() * 0.15, 0.7 + Math.random() * 0.3, 0.5 + Math.random() * 0.4);
+                colors[i3] = color.r;
+                colors[i3 + 1] = color.g;
+                colors[i3 + 2] = color.b;
+                starParticles.push({
+                    basePos: new THREE.Vector3(positions[i3], positions[i3 + 1], positions[i3 + 2]),
+                    tail: Array(TAIL_MAX_POINTS).fill([positions[i3], positions[i3 + 1], positions[i3 + 2]]),
+                    tailPtr: 0,
+                    tailLen: 1
+                });
+            }
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            const material = new THREE.PointsMaterial({
+                size: 1.5,
+                sizeAttenuation: true,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+            starField = new THREE.Points(geometry, material);
+            scene.add(starField);
+
+            // 新增：尾迹Shader批量渲染
+            tailStarCount = starCount;
+            // 每颗星有(TAIL_MAX_POINTS-1)段，每段2点
+            const segs = (TAIL_MAX_POINTS - 1);
+            tailBuffer = new Float32Array(starCount * segs * 2 * 3); // [星][段][2点][xyz]
+            tailColorBuffer = new Float32Array(starCount * segs * 2 * 3);
+            tailAlphaBuffer = new Float32Array(starCount * segs * 2);
+            tailIndexBuffer = new Float32Array(starCount * segs * 2); // t: 0~1
+            tailShaderGeometry = new THREE.BufferGeometry();
+            tailShaderGeometry.setAttribute('position', new THREE.BufferAttribute(tailBuffer, 3));
+            tailShaderGeometry.setAttribute('color', new THREE.BufferAttribute(tailColorBuffer, 3));
+            tailShaderGeometry.setAttribute('alpha', new THREE.BufferAttribute(tailAlphaBuffer, 1));
+            tailShaderGeometry.setAttribute('t', new THREE.BufferAttribute(tailIndexBuffer, 1));
+            tailShaderMaterial = new THREE.ShaderMaterial({
+                vertexShader: tailVertexShader,
+                fragmentShader: tailFragmentShader,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                vertexColors: true
+            });
+            tailShaderMesh = new THREE.LineSegments(tailShaderGeometry, tailShaderMaterial);
+            scene.add(tailShaderMesh);
+
+            animateStars();
+        }
+
+        function animateStars() {
+            if (!starField) return;
+            const geometry = starField.geometry;
+            const positions = geometry.attributes.position.array;
+            // 速度平滑插值
+            starSpeed += (targetStarSpeed - starSpeed) * 0.1;
+            // 拖尾长度随速度动态调整
+            let dynamicTailPoints = Math.floor(8 + (TAIL_MAX_POINTS - 8) * (starSpeed / STAR_MAX_SPEED));
+            // 运动方向
+            const dir = new THREE.Vector3(
+                Math.cos(starViewPitch) * Math.sin(starViewYaw),
+                Math.sin(starViewPitch),
+                Math.cos(starViewPitch) * Math.cos(starViewYaw)
+            ).normalize();
+            for (let i = 0; i < starParticles.length; i++) {
+                const i3 = i * 3;
+                // 让星星沿dir方向运动
+                positions[i3] += dir.x * starSpeed;
+                positions[i3 + 1] += dir.y * starSpeed;
+                positions[i3 + 2] += dir.z * starSpeed;
+                // 边界重置
+                if (Math.abs(positions[i3]) > 3000 || Math.abs(positions[i3 + 1]) > 3000 || Math.abs(positions[i3 + 2]) > 3000) {
+                    positions[i3] = (Math.random() - 0.5) * 1000;
+                    positions[i3 + 1] = (Math.random() - 0.5) * 1000;
+                    positions[i3 + 2] = (Math.random() - 0.5) * 1000;
+                    starParticles[i].tailLen = 1;
+                }
+                // 新增：剔除正向摄入镜头的星粒本身
+                let camDir = new THREE.Vector3();
+                camera.getWorldDirection(camDir);
+                let toStar = new THREE.Vector3(
+                    positions[i3] - camera.position.x,
+                    positions[i3 + 1] - camera.position.y,
+                    positions[i3 + 2] - camera.position.z
+                );
+                let dist = toStar.length();
+                toStar.normalize();
+                let dot = toStar.dot(camDir);
+                // 夹角小于30度且距离较近时，将该星粒移到远处（或透明）
+                if (dot > 0.866 && dist < 300) {
+                    // 方案1：直接移到远处
+                    positions[i3] = (Math.random() - 0.5) * 1000;
+                    positions[i3 + 1] = (Math.random() - 0.5) * 1000;
+                    positions[i3 + 2] = (Math.random() - 0.5) * 1000;
+                    starParticles[i].tailLen = 1;
+                }
+                // 新增：更新尾迹循环缓冲区
+                let p = [positions[i3], positions[i3 + 1], positions[i3 + 2]];
+                let tail = starParticles[i].tail;
+                let ptr = starParticles[i].tailPtr;
+                tail[ptr] = p;
+                ptr = (ptr + 1) % TAIL_MAX_POINTS;
+                starParticles[i].tailPtr = ptr;
+                starParticles[i].tailLen = Math.min(starParticles[i].tailLen + 1, dynamicTailPoints);
+            }
+            geometry.attributes.position.needsUpdate = true;
+
+            // 新增：批量更新尾迹Shader的buffer
+            let segs = (TAIL_MAX_POINTS - 1);
+            let idx = 0;
+            for (let i = 0; i < starParticles.length; i++) {
+                let tail = starParticles[i].tail;
+                let ptr = starParticles[i].tailPtr;
+                let len = starParticles[i].tailLen;
+                let color = geometry.attributes.color.array.slice(i * 3, i * 3 + 3);
+                for (let j = 1; j < len; j++) {
+                    // 环形索引
+                    let a = (ptr - j + TAIL_MAX_POINTS) % TAIL_MAX_POINTS;
+                    let b = (ptr - j - 1 + TAIL_MAX_POINTS) % TAIL_MAX_POINTS;
+                    let pa = tail[a], pb = tail[b];
+                    if (!pa || !pb) continue;
+                    // 剔除正方向冲击到相机的拖尾段
+                    let mx = (pa[0] + pb[0]) * 0.5;
+                    let my = (pa[1] + pb[1]) * 0.5;
+                    let mz = (pa[2] + pb[2]) * 0.5;
+                    let camDist = Math.sqrt(
+                        (mx - camera.position.x) * (mx - camera.position.x) +
+                        (my - camera.position.y) * (my - camera.position.y) +
+                        (mz - camera.position.z) * (mz - camera.position.z)
+                    );
+                    let camDir = new THREE.Vector3();
+                    camera.getWorldDirection(camDir);
+                    let segDir = new THREE.Vector3(pb[0] - pa[0], pb[1] - pa[1], pb[2] - pa[2]).normalize();
+                    let toCam = new THREE.Vector3(mx - camera.position.x, my - camera.position.y, mz - camera.position.z).normalize();
+                    let viewDot = segDir.dot(camDir);
+                    // 夹角小于30度且距离较近时剔除
+                    if (viewDot > 0.866 && camDist < 1800) continue;
+
+                    // 头部t=0，尾部t=1
+                    let tA = (j - 1) / (len - 1);
+                    let tB = (j) / (len - 1);
+                    // 头亮尾淡
+                    let alphaA = 0.8 * (1 - tA) + 0.1;
+                    let alphaB = 0.8 * (1 - tB) + 0.1;
+                    // 填充buffer
+                    tailBuffer[idx * 3 + 0] = pa[0];
+                    tailBuffer[idx * 3 + 1] = pa[1];
+                    tailBuffer[idx * 3 + 2] = pa[2];
+                    tailColorBuffer[idx * 3 + 0] = color[0];
+                    tailColorBuffer[idx * 3 + 1] = color[1];
+                    tailColorBuffer[idx * 3 + 2] = color[2];
+                    tailAlphaBuffer[idx] = alphaA;
+                    tailIndexBuffer[idx] = tA;
+                    idx++;
+                    tailBuffer[idx * 3 + 0] = pb[0];
+                    tailBuffer[idx * 3 + 1] = pb[1];
+                    tailBuffer[idx * 3 + 2] = pb[2];
+                    tailColorBuffer[idx * 3 + 0] = color[0];
+                    tailColorBuffer[idx * 3 + 1] = color[1];
+                    tailColorBuffer[idx * 3 + 2] = color[2];
+                    tailAlphaBuffer[idx] = alphaB;
+                    tailIndexBuffer[idx] = tB;
+                    idx++;
+                }
+            }
+            // 剩余部分补零
+            for (; idx < tailStarCount * segs * 2; idx++) {
+                tailBuffer[idx * 3 + 0] = 0;
+                tailBuffer[idx * 3 + 1] = 0;
+                tailBuffer[idx * 3 + 2] = 0;
+                tailColorBuffer[idx * 3 + 0] = 0;
+                tailColorBuffer[idx * 3 + 1] = 0;
+                tailColorBuffer[idx * 3 + 2] = 0;
+                tailAlphaBuffer[idx] = 0.0;
+                tailIndexBuffer[idx] = 1.0;
+            }
+            tailShaderGeometry.attributes.position.needsUpdate = true;
+            tailShaderGeometry.attributes.color.needsUpdate = true;
+            tailShaderGeometry.attributes.alpha.needsUpdate = true;
+            tailShaderGeometry.attributes.t.needsUpdate = true;
+
+            requestAnimationFrame(animateStars);
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 窗口大小调整
+            window.addEventListener('resize', onWindowResize);
+            // 中键长按跳转
+            let middleMouseDownTimer = null;
+            window.addEventListener('mousedown', function (event) {
+                if (event.button === 1) { // 1 表示鼠标中键
+                    middleMouseDownTimer = setTimeout(function () {
+                        window.location.href = './wandering-earth.html';
+                    }, 1000); // 1秒
+                }
+            });
+            window.addEventListener('mouseup', function (event) {
+                if (event.button === 1) { // 1 表示鼠标中键
+                    if (middleMouseDownTimer) {
+                        clearTimeout(middleMouseDownTimer);
+                        middleMouseDownTimer = null;
+                    }
+                }
+            });
+            // 防止中键点击时出现上下文菜单
+            window.addEventListener('contextmenu', function (event) {
+                if (event.button === 1) {
+                    event.preventDefault();
+                }
+            });
+
+            // 新增：双击触发宇宙闪烁
+            window.addEventListener('dblclick', triggerUniverseFlash);
+
+            // 鼠标移动检测水滴悬停
+            window.addEventListener('mousemove', function (event) {
+                // 归一化屏幕坐标
+                mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+                raycaster.setFromCamera(mouse, camera);
+                if (!droplet) return;
+                const intersects = raycaster.intersectObject(droplet);
+                if (intersects.length > 0) {
+                    if (!isLaserActive || performance.now() - lastLaserTime > 350) {
+                        triggerDropletLaser();
+                        isLaserActive = true;
+                        lastLaserTime = performance.now();
+                    }
+                } else {
+                    isLaserActive = false;
+                }
+            });
+
+            // 新增：点击太阳触发宇宙热浪 (water-drop中改为点击冰星触发)
+            window.addEventListener('mousedown', function (event) {
+                if (event.button === 0 && celestialBodies.length > 1) { // 左键且有冰星模型
+                    // 归一化屏幕坐标
+                    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+                    raycaster.setFromCamera(mouse, camera);
+                    // 射线检测冰星 (celestialBodies[1])
+                    const intersects = raycaster.intersectObject(celestialBodies[1]);
+                    if (intersects.length > 0) {
+                        triggerCosmicIceSea();
+                    }
+                }
+            });
+            // 新增：点击冰星触发冰海特效 (water-drop中改为点击太阳触发热浪)
+            window.addEventListener('mousedown', function (event) {
+                if (event.button === 0 && celestialBodies.length > 0) { // 左键且有太阳模型
+                    // 归一化屏幕坐标
+                    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+                    raycaster.setFromCamera(mouse, camera);
+                    // 射线检测太阳 (celestialBodies[0])
+                    const intersects = raycaster.intersectObject(celestialBodies[0]);
+                    if (intersects.length > 0) {
+                        triggerCosmicHeatwave();
+                    }
+                }
+            });
+            // 新增：点击黑洞模型触发黑洞特效
+            window.addEventListener('mousedown', function (event) {
+                if (event.button === 0) { // 左键
+                    // 归一化屏幕坐标
+                    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+                    raycaster.setFromCamera(mouse, camera);
+                    // 射线检测黑洞模型
+                    const intersects = raycaster.intersectObjects(scene.children).filter(obj => obj.object.name === 'clickableBlackHole');
+                    if (intersects.length > 0) {
+                        showBlackhole();
+                    }
+                }
+            });
+            // 新增：点击水滴跳转到galaxy.html
+            window.addEventListener('mousedown', function (event) {
+                if (event.button === 0 && droplet) { // 左键且水滴已创建
+                    // 归一化屏幕坐标
+                    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+                    raycaster.setFromCamera(mouse, camera);
+                    // 射线检测水滴
+                    const intersects = raycaster.intersectObject(droplet);
+                    if (intersects.length > 0) {
+                        window.location.href = 'galaxy.html';
+                    }
+                }
+            });
+        }
+
+        // 窗口大小调整
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // 更新水滴运动
+        function updateDropletMotion(deltaTime) {
+            updatePointLights(droplet.position);
+            dropletVelocity.copy(dropletDirection).multiplyScalar(dropletSpeed);
+            droplet.position.add(dropletVelocity.clone().multiplyScalar(deltaTime * 10));
+            if (dropletVelocity.lengthSq() > 0.01) {
+                const targetQuaternion = new THREE.Quaternion().setFromUnitVectors(
+                    new THREE.Vector3(0, 0, -1),
+                    dropletVelocity.clone().normalize()
+                );
+                droplet.quaternion.slerp(targetQuaternion, deltaTime * 5);
+            }
+        }
+
+        // 更新点光源位置
+        function updatePointLights(dropletPos) {
+            const speedFactor = Math.min(dropletSpeed / 5, 1); // 将速度标准化到0-1范围
+            const goldenRatio = (1 + Math.sqrt(5)) / 2;
+
+            pointLights.forEach((light, index) => {
+                if (index < 20) {
+                    // 更新球面分布的点光源
+                    const baseRadius = 10;
+                    const radius = baseRadius + speedFactor * 5; // 高速时扩大分布范围
+                    const theta = 2 * Math.PI * index / goldenRatio;
+                    const phi = Math.acos(1 - 2 * (index + 0.5) / 20);
+
+                    // 在运动方向上稍微拉伸分布
+                    const stretchFactor = 1 + speedFactor;
+                    const x = radius * Math.sin(phi) * Math.cos(theta);
+                    const y = radius * Math.sin(phi) * Math.sin(theta);
+                    const z = radius * Math.cos(phi) * stretchFactor;
+
+                    // 添加基于速度的位置偏移
+                    const offsetX = dropletVelocity.x * speedFactor * 2;
+                    const offsetY = dropletVelocity.y * speedFactor * 2;
+                    const offsetZ = dropletVelocity.z * speedFactor * 2;
+
+                    light.position.set(
+                        dropletPos.x + x + offsetX,
+                        dropletPos.y + y + offsetY,
+                        dropletPos.z + z + offsetZ
+                    );
+
+                    // 调整光源强度
+                    light.intensity = 0.5 + speedFactor * 2.5;
+                } else {
+                    // 更新主光源位置和强度
+                    const heightOffset = 5 + speedFactor * 3;
+                    const distanceOffset = 5 + speedFactor * 3;
+
+                    light.position.set(
+                        dropletPos.x + dropletVelocity.x * speedFactor * 3,
+                        dropletPos.y + heightOffset,
+                        dropletPos.z + distanceOffset
+                    );
+
+                    // 调整主光源强度
+                    light.intensity = 4.0 + speedFactor * 4.0;
+                }
+            });
+        }
+
+        // ========== 星际穿越星空沉浸增强 ========== //
+        // 星空速度与视角控制参数
+        let starSpeed = 5;
+        let targetStarSpeed = 5;
+        const STAR_MAX_SPEED = 50;
+        let starViewYaw = 0;
+        let starViewPitch = 0;
+        let isStarMouseDown = false;
+        let isStarRightMouseDown = false; // 新增：右键按下标志
+        let lastStarMouseX = 0, lastStarMouseY = 0;
+        let starParticles = [];
+        let starField; // 让starField在全局可用
+        // 拖尾批量渲染参数
+        const TAIL_MAX_POINTS = 24; // 每颗星最大尾迹点数
+        let tailPositions, tailGeometry, tailMaterial, tailLines;
+
+        // 顶点着色器
+        const tailVertexShader = `
+            attribute float alpha;
+            attribute float t;
+            varying float vAlpha;
+            varying float vT;
+            void main() {
+                vAlpha = alpha;
+                vT = t;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `;
+        // 片元着色器
+        const tailFragmentShader = `
+            varying float vAlpha;
+            varying float vT;
+            void main() {
+                // 头亮尾淡，头粗尾细（可用vT做渐变）
+                float fade = smoothstep(1.0, 0.0, vT);
+                gl_FragColor = vec4(mix(vec3(1.0,1.0,1.0), vec3(0.3,0.7,1.0), vT), vAlpha * fade);
+            }
+        `;
+
+        // 鼠标拖动控制视角
+        window.addEventListener('mousedown', (e) => {
+            isStarMouseDown = true;
+            lastStarMouseX = e.clientX;
+            lastStarMouseY = e.clientY;
+            if (e.button === 2) { // 右键
+                isStarRightMouseDown = true;
+            }
+        });
+        window.addEventListener('mouseup', (e) => {
+            isStarMouseDown = false;
+            if (e.button === 2) {
+                isStarRightMouseDown = false;
+            }
+        });
+        window.addEventListener('mousemove', (e) => {
+            if (isStarRightMouseDown) {
+                const dx = e.clientX - lastStarMouseX;
+                const dy = e.clientY - lastStarMouseY;
+                starViewYaw -= dx * 0.005; // 方向修正：与鼠标一致
+                starViewPitch -= dy * 0.005; // 方向修正：与鼠标一致
+                starViewPitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, starViewPitch));
+                lastStarMouseX = e.clientX;
+                lastStarMouseY = e.clientY;
+            }
+        });
+        window.addEventListener('wheel', (e) => {
+            targetStarSpeed += e.deltaY * -0.01;
+            targetStarSpeed = Math.max(0, Math.min(STAR_MAX_SPEED, targetStarSpeed));
+        });
+        // 禁止右键菜单，避免干扰拖动
+        window.addEventListener('contextmenu', function (event) {
+            event.preventDefault();
+        });
+        // ========== END ========== //
+
+        // 新增：双击触发宇宙闪烁
+        function triggerUniverseFlash() {
+            const flashCount = 120000; // 极多极细腻
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(flashCount * 3);
+            const colors = new Float32Array(flashCount * 3);
+            const opacities = new Float32Array(flashCount);
+            const sizes = new Float32Array(flashCount);
+            const lifetimes = new Float32Array(flashCount);
+            const velocities = new Float32Array(flashCount * 3);
+
+            // 优化色彩：中心白金，渐变金黄、橙金，边缘带淡蓝冷晕
+            const colorA = new THREE.Color(0xffffff); // 白金
+            const colorB = new THREE.Color(0xffe066); // 亮金
+            const colorC = new THREE.Color(0xffd700); // 金黄
+            const colorD = new THREE.Color(0xffa500); // 橙金
+            const colorE = new THREE.Color(0x8fd6ff); // 冷蓝晕
+
+            for (let i = 0; i < flashCount; i++) {
+                // 球壳分布，中心极密
+                const t = Math.pow(Math.random(), 2.2); // 更密集
+                const r = 200 + t * 1800;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+                positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                positions[i * 3 + 2] = r * Math.cos(phi);
+
+                // 多重渐变：中心白金，渐变金黄橙，边缘带冷蓝
+                let color = colorA.clone()
+                    .lerp(colorB, t * 0.5)
+                    .lerp(colorC, t * t)
+                    .lerp(colorD, Math.pow(t, 2.5));
+                // 边缘加冷色晕
+                if (t > 0.85) color.lerp(colorE, (t - 0.85) / 0.15);
+                colors[i * 3] = color.r;
+                colors[i * 3 + 1] = color.g;
+                colors[i * 3 + 2] = color.b;
+
+                // 极细粒子，中心大外围小
+                sizes[i] = 1.2 - t * 0.7 + Math.random() * 0.3; // 1.2~0.5
+                opacities[i] = 1.0;
+
+                // 生命周期极长，持续高亮（延长到20~24秒）
+                lifetimes[i] = 20000 + Math.random() * 4000; // 20~24秒
+
+                // 爆发速度更慢，粒子缓慢流动
+                const speed = 0.5 + t * 1.2 + Math.random() * 0.3;
+                velocities[i * 3] = speed * Math.sin(phi) * Math.cos(theta);
+                velocities[i * 3 + 1] = speed * Math.sin(phi) * Math.sin(theta);
+                velocities[i * 3 + 2] = speed * Math.cos(phi);
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            geometry.setAttribute('opacity', new THREE.BufferAttribute(opacities, 1));
+            geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+            geometry.setAttribute('lifetime', new THREE.BufferAttribute(lifetimes, 1));
+            geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+
+            const material = new THREE.ShaderMaterial({
+                uniforms: {
+                    uTime: { value: 0.0 }
+                },
+                vertexShader: `
+                    attribute float opacity;
+                    attribute float size;
+                    attribute float lifetime;
+                    attribute vec3 velocity;
+                    varying float vOpacity;
+                    varying vec3 vColor;
+                    varying float vLife;
+                    uniform float uTime;
+                    void main() {
+                        float age = mod(uTime, lifetime);
+                        vec3 newPos = position + velocity * age * 0.7;
+                        // 生命周期内几乎不衰减
+                        vOpacity = opacity * (1.0 - pow(age / lifetime, 0.15));
+                        vColor = color;
+                        vLife = age / lifetime;
+                        float sizeFade = 1.0 - vLife * 0.1;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);
+                        gl_PointSize = size * sizeFade * 2.2;
+                        // 适配高DPI
+                        gl_PointSize *= (320.0 / length(newPos));
+                    }
+                `,
+                fragmentShader: `
+                    varying float vOpacity;
+                    varying vec3 vColor;
+                    varying float vLife;
+                    void main() {
+                        float d = length(gl_PointCoord - vec2(0.5));
+                        float core = smoothstep(0.13, 0.0, d); // 更细亮点
+                        float glow = smoothstep(0.5, 0.13, d) * 0.85; // 柔和外晕
+                        float blueAura = smoothstep(0.8, 0.4, d) * 0.5 * (1.0 - vLife);
+                        // 只在最后1秒整体淡出
+                        float globalFade = 1.0;
+                        if(vLife > 0.89) globalFade = 1.0 - (vLife - 0.89) / 0.11;
+                        float alpha = (core + glow + blueAura) * vOpacity * globalFade;
+                        vec3 col = mix(vColor, vec3(1.0, 0.98, 0.7), vLife * 0.6);
+                        col += vec3(1.0, 0.95, 0.7) * glow * 0.6;
+                        col = mix(col, vec3(0.7, 0.85, 1.0), blueAura * 0.7);
+                        gl_FragColor = vec4(col * 99.9, alpha);
+                        if (gl_FragColor.a < 0.01) discard;
+                    }
+                `,
+                vertexColors: true,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+
+            // 只保留一个闪烁特效
+            if (universeFlashPool.length > 0) {
+                scene.remove(universeFlashPool[0]);
+                universeFlashPool = [];
+            }
+            const points = new THREE.Points(geometry, material);
+            scene.add(points);
+            universeFlashPool.push(points);
+            points.startTime = performance.now();
+            universeFlashActive = true;
+        }
+
+        // 激光特效：水滴悬停（DOM实现，复刻index.html，方向反转）
+        function createDomLaserEffect(start3D, end3D) {
+            // 投影到屏幕
+            const tipVec = start3D.clone().project(camera);
+            const tailVec = end3D.clone().project(camera);
+            const tipX = (tipVec.x * 0.5 + 0.5) * window.innerWidth;
+            const tipY = (-(tipVec.y * 0.5) + 0.1) * window.innerHeight;
+            const tailX = (tailVec.x * 0.5 + 0.5) * window.innerWidth;
+            const tailY = (-(tailVec.y * 0.5) + 0.1) * window.innerHeight;
+            // 计算激光角度和长度
+            const dx = tailX - tipX;
+            const dy = tailY - tipY;
+            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+            const length = Math.sqrt(dx * dx + dy * dy);
+            // 主激光
+            const laser = document.createElement('div');
+            laser.className = 'laser';
+            const randomWidth = 6 + Math.random() * 4;
+            laser.style.left = `${tipX - randomWidth / 2}px`;
+            laser.style.top = `${tipY}px`;
+            laser.style.width = `${randomWidth}px`;
+            laser.style.height = `${length}px`;
+            laser.style.transformOrigin = 'top center';
+            laser.style.transform = `rotate(${angle}deg) translateX(${(Math.random() - 0.5) * 10}px)`;
+            // 动态色彩
+            let laserHue, laserSat, laserLight;
+            if (currentCosmicTheme === 'heatwave') {
+                laserHue = 25 + Math.random() * 15 + Math.sin(performance.now() / 700) * 5; // 25~40
+                laserSat = 98;
+                laserLight = 65 + Math.sin(performance.now() / 900) * 10; // 65~75
+            } else if (currentCosmicTheme === 'icesea') {
+                laserHue = 185 + Math.random() * 15 + Math.sin(performance.now() / 800) * 5; // 185~200
+                laserSat = 95;
+                laserLight = 80 + Math.sin(performance.now() / 1000) * 10; // 75~90
+            } else {
+                laserHue = 180;
+                laserSat = 100;
+                laserLight = 70;
+            }
+            laser.style.background = `linear-gradient(to bottom, hsla(${laserHue},${laserSat}%,${laserLight + 10}%,0.98), hsla(${laserHue},${laserSat}%,${laserLight}%,0.95), hsla(${laserHue},${laserSat}%,${laserLight - 10}%,0.92), hsla(${laserHue},${laserSat}%,${laserLight - 20}%,0.88))`;
+            const hueRotate = Math.floor(Math.random() * 30) - 15;
+            const saturationBoost = 10 + Math.random() * 20;
+            laser.style.filter = `blur(0.3px) hue-rotate(${hueRotate}deg) saturate(${100 + saturationBoost}%)`;
+            const intensity = 0.8 + Math.random() * 0.4;
+            laser.style.opacity = intensity;
+            document.body.appendChild(laser);
+            // 能量波
+            setTimeout(() => {
+                const energyWave = document.createElement('div');
+                energyWave.className = 'laser-energy-wave';
+                energyWave.style.position = 'absolute';
+                energyWave.style.left = `${tipX - randomWidth / 2}px`;
+                energyWave.style.top = `${tipY}px`;
+                energyWave.style.width = `${randomWidth}px`;
+                energyWave.style.height = '0';
+                energyWave.style.transformOrigin = 'top center';
+                energyWave.style.transform = `rotate(${angle}deg)`;
+                energyWave.style.background = 'linear-gradient(to bottom, rgba(255,255,255,0.2), transparent)';
+                energyWave.style.animation = 'laser-energy-wave 1.5s ease-out forwards';
+                energyWave.style.zIndex = '9999';
+                document.body.appendChild(energyWave);
+                setTimeout(() => energyWave.remove(), 1500);
+            }, 200);
+            // 闪光
+            const flash = document.createElement('div');
+            flash.style.position = 'absolute';
+            flash.style.width = '30px';
+            flash.style.height = '30px';
+            flash.style.borderRadius = '50%';
+            // 动态色彩
+            let fHue, fSat, fLight;
+            if (currentCosmicTheme === 'heatwave') {
+                fHue = 25 + Math.random() * 15 + Math.sin(performance.now() / 700) * 5;
+                fSat = 98;
+                fLight = 70 + Math.sin(performance.now() / 900) * 10;
+            } else if (currentCosmicTheme === 'icesea') {
+                fHue = 185 + Math.random() * 15 + Math.sin(performance.now() / 800) * 5;
+                fSat = 95;
+                fLight = 85 + Math.sin(performance.now() / 1000) * 10;
+            } else {
+                fHue = 180;
+                fSat = 100;
+                fLight = 70;
+            }
+            flash.style.backgroundColor = `hsla(${fHue},${fSat}%,${fLight}%,0.7)`;
+            flash.style.boxShadow = `0 0 20px hsla(${fHue},${fSat}%,${fLight + 10}%,1), 0 0 40px hsla(${fHue},${fSat}%,${fLight - 10}%,0.5)`;
+            flash.style.left = `${tipX - 15}px`;
+            flash.style.top = `${tipY - 15}px`;
+            flash.style.opacity = '1';
+            flash.style.transition = 'all 0.3s ease-out';
+            flash.style.zIndex = '9998';
+            document.body.appendChild(flash);
+            setTimeout(() => {
+                flash.style.transform = 'scale(2)';
+                flash.style.opacity = '0';
+                setTimeout(() => flash.remove(), 300);
+            }, 50);
+            // 粒子
+            const createParticles = () => {
+                const particleCount = 10 + Math.floor(Math.random() * 15);
+                for (let i = 0; i < particleCount; i++) {
+                    setTimeout(() => {
+                        if (!document.body.contains(laser)) return;
+                        const particle = document.createElement('div');
+                        particle.className = 'laser-particle';
+                        const randomHeight = Math.random() * length * 0.7;
+                        const randomSide = Math.random() > 0.5 ? 1 : -1;
+                        const randomDistance = (5 + Math.random() * 15) * randomSide;
+                        // 沿激光方向分布
+                        const px = tipX + dx * (randomHeight / length) + randomDistance * Math.cos(angle * Math.PI / 180 + Math.PI / 2);
+                        const py = tipY + dy * (randomHeight / length) + randomDistance * Math.sin(angle * Math.PI / 180 + Math.PI / 2);
+                        particle.style.left = `${px}px`;
+                        particle.style.top = `${py}px`;
+                        const size = 2 + Math.random() * 4;
+                        particle.style.width = `${size}px`;
+                        particle.style.height = `${size}px`;
+                        // 动态色彩
+                        let pHue, pSat, pLight;
+                        if (currentCosmicTheme === 'heatwave') {
+                            pHue = 25 + Math.random() * 15 + Math.sin(performance.now() / 700) * 5;
+                            pSat = 98;
+                            pLight = 65 + Math.sin(performance.now() / 900) * 10;
+                        } else if (currentCosmicTheme === 'icesea') {
+                            pHue = 185 + Math.random() * 15 + Math.sin(performance.now() / 800) * 5;
+                            pSat = 95;
+                            pLight = 80 + Math.sin(performance.now() / 1000) * 10;
+                        } else {
+                            pHue = 180;
+                            pSat = 100;
+                            pLight = 70;
+                        }
+                        particle.style.backgroundColor = `hsla(${pHue},${pSat}%,${pLight}%,0.8)`;
+                        const duration = 0.5 + Math.random() * 0.8;
+                        particle.style.animation = `particle-fade ${duration}s ease-out forwards`;
+                        document.body.appendChild(particle);
+                        particle.addEventListener('animationend', function () { this.remove(); });
+                    }, i * 30 + Math.random() * 100);
+                }
+            };
+            createParticles();
+            // 激光动画结束后移除
+            laser.addEventListener('animationend', function () { this.remove(); });
+        }
+        function triggerDropletLaser() {
+            if (blackholeActive) return; // 如果黑洞特效激活，不触发激光
+
+            // 获取水滴头部和尾部世界坐标
+            const dropletTip = droplet.position.clone();
+            dropletTip.z += 1.8;
+            const dropletTail = droplet.position.clone();
+            dropletTail.z -= 4.5;
+            createDomLaserEffect(dropletTip, dropletTail);
+        }
+
+        // 激光特效：宇宙穿越
+        function triggerUniverseLaser() {
+            // 随机一端到另一端
+            const r = 1200;
+            const theta1 = Math.random() * Math.PI * 2;
+            const phi1 = Math.random() * Math.PI;
+            const theta2 = theta1 + Math.PI + (Math.random() - 0.5) * 0.2;
+            const phi2 = Math.PI - phi1 + (Math.random() - 0.5) * 0.2;
+            const p1 = new THREE.Vector3(
+                r * Math.sin(phi1) * Math.cos(theta1),
+                r * Math.sin(phi1) * Math.sin(theta1),
+                r * Math.cos(phi1)
+            );
+            const p2 = new THREE.Vector3(
+                r * Math.sin(phi2) * Math.cos(theta2),
+                r * Math.sin(phi2) * Math.sin(theta2),
+                r * Math.cos(phi2)
+            );
+            // 只保留DOM激光特效
+            createDomLaserEffect(p1, p2);
+        }
+
+        // ========== 史诗宇宙热浪特效 ========== //
+        let cosmicHeatwave = null;
+        let cosmicHeatwaveStartTime = 0;
+
+        function triggerCosmicHeatwave() {
+            if (cosmicHeatwave) return; // 防止重复触发
+            createCosmicHeatwave();
+        }
+
+        function createCosmicHeatwave() {
+            // 太阳史诗分层参数
+            const heatwaveCount = 320000; // 极大量粒子
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(heatwaveCount * 3);
+            const colors = new Float32Array(heatwaveCount * 3);
+            const seeds = new Float32Array(heatwaveCount * 3);
+            for (let i = 0; i < heatwaveCount; i++) {
+                const t = Math.pow(Math.random(), 1.7);
+                // 多层结构：核心、辐射、对流、日冕
+                let r, color;
+                if (t < 0.22) {
+                    // 核心区：白色-淡黄
+                    r = 180 + t * 400;
+                    color = new THREE.Color('#ffffff').lerp(new THREE.Color('#fff7e6'), t / 0.22);
+                } else if (t < 0.45) {
+                    // 辐射区：黄-橙
+                    r = 580 + (t - 0.22) * 900;
+                    color = new THREE.Color('#ffff00').lerp(new THREE.Color('#ffb366'), (t - 0.22) / 0.23);
+                } else if (t < 0.7) {
+                    // 对流区：橙-红
+                    r = 1480 + (t - 0.45) * 1200;
+                    color = new THREE.Color('#ffb366').lerp(new THREE.Color('#ff4500'), (t - 0.45) / 0.25);
+                } else {
+                    // 日冕/耀斑区：红-金-白
+                    r = 2680 + (t - 0.7) * 1200 + Math.sin(t * 60 + performance.now() * 0.001) * 60;
+                    color = new THREE.Color('#ff4500').lerp(new THREE.Color('#fff7e6'), (t - 0.7) / 0.3);
+                }
+                // 球壳分布
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+                positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                positions[i * 3 + 2] = r * Math.cos(phi);
+                colors[i * 3] = color.r;
+                colors[i * 3 + 1] = color.g;
+                colors[i * 3 + 2] = color.b;
+                seeds[i * 3] = Math.random() * 1000;
+                seeds[i * 3 + 1] = Math.random() * 1000;
+                seeds[i * 3 + 2] = Math.random() * 1000;
+            }
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            geometry.setAttribute('seed', new THREE.BufferAttribute(seeds, 3));
+            const material = new THREE.ShaderMaterial({
+                uniforms: {
+                    uTime: { value: 0 },
+                    uPhase: { value: 0 },
+                    uOpacity: { value: 1.0 }
+                },
+                vertexShader: `
+                    attribute vec3 seed;
+                    varying float vT;
+                    varying float vSeed;
+                    uniform float uTime;
+                    void main() {
+                        vT = length(position) / 3400.0;
+                        vSeed = seed.x;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                        gl_PointSize = 2.5 + 3.5 * (1.0-vT);
+                        gl_PointSize *= (320.0 / length(position));
+                    }
+                `,
+                fragmentShader: `
+                    varying float vT;
+                    varying float vSeed;
+                    uniform float uTime;
+                    uniform float uOpacity;
+                    void main() {
+                        float t = vT;
+                        float colorShift = 0.18 * sin(uTime * 0.001 + vSeed * 2.0 + t * 8.0);
+                        t = clamp(t + colorShift, 0.0, 1.0);
+                        vec3 cA = vec3(1.0, 0.98, 0.85); // 白金
+                        vec3 cB = vec3(1.0, 0.88, 0.4);  // 亮金
+                        vec3 cC = vec3(1.0, 0.7, 0.28);  // 橙金
+                        vec3 cD = vec3(1.0, 0.27, 0.0);  // 红金
+                        vec3 cE = vec3(1.0, 0.98, 0.95); // 日冕白
+                        vec3 col = mix(cA, cB, t * 0.5);
+                        col = mix(col, cC, t * t);
+                        col = mix(col, cD, pow(t, 2.5));
+                        if (t > 0.85) col = mix(col, cE, (t - 0.85) / 0.15);
+                        float d = length(gl_PointCoord - vec2(0.5));
+                        float core = smoothstep(0.15, 0.0, d);
+                        float glow = smoothstep(0.5, 0.15, d) * 0.8;
+                        float alpha = (core + glow) * uOpacity * (1.0-vT*0.7);
+                        gl_FragColor = vec4(col * 12.5, alpha);
+                        if (gl_FragColor.a < 0.01) discard;
+                    }
+                `,
+                vertexColors: true,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+            cosmicHeatwave = new THREE.Points(geometry, material);
+            scene.add(cosmicHeatwave);
+            cosmicHeatwaveStartTime = performance.now();
+            function animateHeatwave() {
+                if (!cosmicHeatwave) return;
+                const elapsed = (performance.now() - cosmicHeatwaveStartTime) / 1000;
+                const phase = Math.min(1, elapsed / 36.0);
+                material.uniforms.uTime.value = performance.now();
+                material.uniforms.uPhase.value = phase;
+                if (phase > 0.93) {
+                    material.uniforms.uOpacity.value = 1.0 - (phase - 0.93) / 0.07;
+                } else {
+                    material.uniforms.uOpacity.value = 1.0;
+                }
+                if (phase < 1.0) {
+                    requestAnimationFrame(animateHeatwave);
+                } else {
+                    scene.remove(cosmicHeatwave);
+                    cosmicHeatwave = null;
+                }
+            }
+            animateHeatwave();
+        }
+
+        // 启动应用
+        init();
+        addCelestialBodies();
+        // createStarfield(); // 注释掉星空背景，只保留太阳
+
+        let cosmicIceSea = null;
+        let cosmicIceSeaStartTime = 0;
+
+        function triggerCosmicIceSea() {
+            if (cosmicIceSea) return; // 防止重复触发
+            createCosmicIceSea();
+        }
+
+        function createCosmicIceSea() {
+            const iceSeaCount = 200000;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(iceSeaCount * 3);
+            const colors = new Float32Array(iceSeaCount * 3);
+            const seeds = new Float32Array(iceSeaCount * 3);
+            for (let i = 0; i < iceSeaCount; i++) {
+                const t = Math.pow(Math.random(), 2.2);
+                const r = 180 + t * 2200;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+                positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                positions[i * 3 + 2] = r * Math.cos(phi);
+                colors[i * 3] = 0.8;
+                colors[i * 3 + 1] = 0.95;
+                colors[i * 3 + 2] = 1.0;
+                seeds[i * 3] = Math.random() * 1000;
+                seeds[i * 3 + 1] = Math.random() * 1000;
+                seeds[i * 3 + 2] = Math.random() * 1000;
+            }
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            geometry.setAttribute('seed', new THREE.BufferAttribute(seeds, 3));
+            const material = new THREE.ShaderMaterial({
+                uniforms: {
+                    uTime: { value: 0 },
+                    uPhase: { value: 0 },
+                    uOpacity: { value: 1.0 }
+                },
+                vertexShader: `
+                    attribute vec3 seed;
+                    varying float vT;
+                    varying float vSeed;
+                    uniform float uTime;
+                    void main() {
+                        vT = length(position) / 2400.0;
+                        vSeed = seed.x;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                        gl_PointSize = 2.0 + 2.5 * (1.0-vT);
+                        gl_PointSize *= (320.0 / length(position));
+                    }
+                `,
+                fragmentShader: `
+                    varying float vT;
+                    varying float vSeed;
+                    uniform float uTime;
+                    uniform float uOpacity;
+                    void main() {
+                        float t = vT;
+                        float colorShift = 0.13 * sin(uTime * 0.001 + vSeed * 2.5 + t * 7.0);
+                        t = clamp(t + colorShift, 0.0, 1.0);
+                        vec3 cA = vec3(0.88, 0.97, 1.0); // 银白
+                        vec3 cB = vec3(0.49, 0.93, 1.0); // 冰蓝
+                        vec3 cC = vec3(0.73, 1.0, 0.98); // 青白
+                        vec3 cD = vec3(0.88, 0.97, 1.0); // 极淡蓝白
+                        vec3 cE = vec3(0.56, 0.84, 1.0); // 冷蓝雾
+                        vec3 col = mix(cA, cB, t * 0.5);
+                        col = mix(col, cC, t * t);
+                        col = mix(col, cD, pow(t, 2.5));
+                        if (t > 0.85) col = mix(col, cE, (t - 0.85) / 0.15);
+                        float d = length(gl_PointCoord - vec2(0.5));
+                        float core = smoothstep(0.18, 0.0, d);
+                        float glow = smoothstep(0.5, 0.18, d) * 0.7;
+                        float alpha = (core + glow) * uOpacity * (1.0-vT*0.7);
+                        gl_FragColor = vec4(col * 8.5, alpha);
+                        if (gl_FragColor.a < 0.01) discard;
+                    }
+                `,
+                vertexColors: true,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+            cosmicIceSea = new THREE.Points(geometry, material);
+            scene.add(cosmicIceSea);
+            cosmicIceSeaStartTime = performance.now();
+            function animateIceSea() {
+                if (!cosmicIceSea) return;
+                const elapsed = (performance.now() - cosmicIceSeaStartTime) / 1000;
+                const phase = Math.min(1, elapsed / 30.0);
+                material.uniforms.uTime.value = performance.now();
+                material.uniforms.uPhase.value = phase;
+                if (phase > 0.93) {
+                    material.uniforms.uOpacity.value = 1.0 - (phase - 0.93) / 0.07;
+                } else {
+                    material.uniforms.uOpacity.value = 1.0;
+                }
+                if (phase < 1.0) {
+                    requestAnimationFrame(animateIceSea);
+                } else {
+                    scene.remove(cosmicIceSea);
+                    cosmicIceSea = null;
+                }
+            }
+            animateIceSea();
+        }
+
+        // 新增：创建吸附盘粒子系统
+        let accretionDiskParticles = null;
+        let accretionDiskMaterial = null;
+
+        function createAccretionDiskParticles(centerPosition) {
+            const particleCount = 80000; // 大量粒子模拟流体感
+            const geometry = new THREE.BufferGeometry();
+
+            const positions = new Float32Array(particleCount * 3); // 粒子初始位置 (用于BufferAttribute)
+            const velocities = new Float32Array(particleCount * 3); // 粒子速度 (用于BufferAttribute)
+            const colors = new Float32Array(particleCount * 3); // 粒子颜色 (用于BufferAttribute)
+            const starts = new Float32Array(particleCount); // 粒子动画开始时间 (用于BufferAttribute)
+            const sizes = new Float32Array(particleCount); // 粒子大小 (用于BufferAttribute)
+
+            // 吸附盘参数
+            const innerRadius = 9; // 吸附盘内径 (略大于内部球体)
+            const outerRadius = 25; // 吸附盘外径
+            const height = 2; // 吸附盘厚度
+            const rotationSpeed = 0.1; // 旋转速度
+            const fallSpeed = 0.05; // 向内下落速度
+
+            const colorStart = new THREE.Color(0xffa500); // 粒子起始颜色 (橙金色)
+            const colorEnd = new THREE.Color(0x8a2be2); // 粒子结束颜色 (蓝紫色)
+
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+
+                // 在环形区域内随机生成位置 (使用极坐标)
+                const r = innerRadius + Math.pow(Math.random(), 1.5) * (outerRadius - innerRadius); // 指数分布让内部更密集
+                const theta = Math.random() * Math.PI * 2;
+                const z = (Math.random() - 0.5) * height; // 在厚度范围内
+
+                positions[i3] = r * Math.cos(theta);
+                positions[i3 + 1] = r * Math.sin(theta);
+                positions[i3 + 2] = z;
+
+                // 设置速度 (切向速度和向内径向速度)
+                velocities[i3] = -Math.sin(theta) * rotationSpeed * r; // 切向速度 (与位置垂直)
+                velocities[i3 + 1] = Math.cos(theta) * rotationSpeed * r;
+                velocities[i3 + 2] = (Math.random() - 0.5) * fallSpeed; // 随机的上下和向内速度
+                // 向内速度也与半径有关，越靠近中心速度越大（简化处理）
+                const radialVelFactor = (outerRadius - r) / (outerRadius - innerRadius);
+                const radialVel = -fallSpeed * radialVelFactor; // 越靠近中心越快向内
+                velocities[i3] += Math.cos(theta) * radialVel;
+                velocities[i3 + 1] += Math.sin(theta) * radialVel;
+
+                // 粒子动画开始时间 (错开动画)
+                starts[i] = Math.random() * 10000; // 10秒循环周期
+
+                // 粒子大小 (外围大，内部小)
+                sizes[i] = 1.0 + (outerRadius - r) / (outerRadius - innerRadius) * 3.0 + Math.random() * 1.0; // 1.0 ~ 5.0 + 随机
+
+                // 粒子颜色 (根据半径或起始时间混合)
+                const colorMixFactor = (r - innerRadius) / (outerRadius - innerRadius);
+                const mixedColor = colorStart.clone().lerp(colorEnd, colorMixFactor);
+                colors[i3] = mixedColor.r;
+                colors[i3 + 1] = mixedColor.g;
+                colors[i3 + 2] = mixedColor.b;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            geometry.setAttribute('start', new THREE.BufferAttribute(starts, 1));
+            geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+            // 创建ShaderMaterial
+            accretionDiskMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    uTime: { value: 0.0 },
+                    // uColorStart: { value: colorStart }, // 如果需要在Shader中混合颜色，可以传递这些uniform
+                    // uColorEnd: { value: colorEnd }
+                },
+                vertexShader: `
+                    attribute vec3 velocity;
+                    attribute float start;
+                    attribute float size;
+                    attribute vec3 color;
+
+                    uniform float uTime;
+
+                    varying vec3 vColor;
+                    varying float vOpacity;
+
+                    void main() {
+                        // 计算粒子生命周期内的位置
+                        float totalTime = 10000.0; // 粒子循环周期 (与start属性范围一致)
+                        float elapsed = mod(uTime + start, totalTime); // 考虑粒子的起始时间
+                        float life = elapsed / totalTime; // 粒子生命周期进度 (0到1)
+
+                        vec3 animatedPosition = position + velocity * elapsed * 0.01; // 0.01 是一个缩放因子，调整运动速度
+
+                        // 模拟向中心螺旋下落 (根据生命周期进度)
+                        float spiralFactor = pow(life, 2.0); // 下落速度随生命周期增加
+                        animatedPosition.z -= spiralFactor * 10.0; // 向Z负方向下落 (可调整)
+
+                        // 粒子逐渐向中心汇聚 (根据生命周期进度)
+                        float convergeFactor = 1.0 - pow(life, 1.5); // 汇聚强度随生命周期减弱
+                        float initialRadius = length(position.xy); // 初始半径
+                        float currentRadius = initialRadius * convergeFactor; // 当前半径
+
+                         // 重新计算XY位置以模拟螺旋
+                         float angle = atan(position.y, position.x) + life * Math.PI * 6.0; // 旋转角度随生命周期增加
+                         animatedPosition.x = currentRadius * cos(angle);
+                         animatedPosition.y = currentRadius * sin(angle);
+
+                        // 粒子到达中心附近时淡出
+                        float centerDist = length(animatedPosition.xy); // 到中心的XY距离
+                         float fadeOutDist = 10.0; // 在距离中心10以内开始淡出
+                        float centerFade = smoothstep(fadeOutDist, fadeOutDist * 0.5, centerDist); // 越靠近中心越透明
+
+                        // 粒子生命周期末期淡出
+                         float endLifeFade = smoothstep(0.8, 1.0, life); // 在生命周期最后20%淡出
+
+                         vOpacity = (1.0 - endLifeFade) * centerFade; // 最终透明度
+
+                        vColor = color; // 将颜色传递给片元着色器
+
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(animatedPosition, 1.0);
+
+                        // 粒子大小随生命周期和距离中心的变化
+                        float currentSize = size * (1.0 - life * 0.5) * smoothstep(0.0, fadeOutDist*1.2, centerDist); // 生命周期减小，靠近中心减小，边缘可见
+                        gl_PointSize = currentSize * (320.0 / length(gl_Position.xyz)); // 屏幕空间大小调整
+
+                        // 如果透明度极低，剔除粒子以提高性能
+                        if (vOpacity < 0.05) {
+                            gl_Position = vec4(1e20, 1e20, 1e20, 1.0); // 将粒子移到屏幕外
+                        }
+                    }
+                `,
+                fragmentShader: `
+                    varying vec3 vColor;
+                    varying float vOpacity;
+
+                    void main() {
+                        // 粒子中心更亮，边缘柔和过渡
+                        float d = length(gl_PointCoord - vec2(0.5));
+                        float core = smoothstep(0.2, 0.0, d); // 粒子核心亮度
+                        float glow = smoothstep(0.6, 0.2, d) * 0.8; // 粒子边缘辉光
+
+                        // 根据生命周期或速度调整颜色 (可选)
+                        vec3 finalColor = vColor * (core + glow * 0.5); // 基础颜色 + 辉光叠加
+
+                         // 添加辉光效果，提高亮度
+                         finalColor *= 4.0; // 整体提亮
+
+                         // 根据透明度调整最终颜色和alpha
+                        gl_FragColor = vec4(finalColor, vOpacity * (core + glow)); // alpha也考虑核心和辉光
+
+                        // 如果透明度极低，剔除粒子
+                         if (gl_FragColor.a < 0.01) discard;
+                    }
+                `,
+                transparent: true,
+                blending: THREE.AdditiveBlending, // 叠加混合，产生辉光效果
+                depthWrite: false // 不写入深度，避免透明问题
+            });
+
+            accretionDiskParticles = new THREE.Points(geometry, accretionDiskMaterial);
+            accretionDiskParticles.position.copy(centerPosition);
+            scene.add(accretionDiskParticles);
+        }
+
+        // 移除three.js空间内的中央冰晶和中央火球特效相关对象
+        // let centralIceCrystal = null; // 中央冰晶特效引用
+        // let centralFireball = null;   // 中央火球特效引用
+        // function showCentralIceCrystal() { ... }
+        // function showCentralFireball() { ... }
+        // 修改triggerCosmicIceSea和triggerCosmicHeatwave，分别调用中央特效
+        const oldTriggerCosmicIceSea = triggerCosmicIceSea;
+        triggerCosmicIceSea = function () {
+            showCentralEffect('ice');
+            oldTriggerCosmicIceSea.apply(this, arguments);
+        };
+        const oldTriggerCosmicHeatwave = triggerCosmicHeatwave;
+        triggerCosmicHeatwave = function () {
+            showCentralEffect('fire');
+            oldTriggerCosmicHeatwave.apply(this, arguments);
+        };
+
+        // 屏幕中央canvas特效容器
+        let centralEffectCanvas = null;
+        let centralEffectCtx = null;
+        let centralEffectType = null;
+        let centralEffectFadeTimer = null;
+
+        function removeCentralEffect() {
+            if (centralEffectCanvas) {
+                centralEffectCanvas.style.transition = 'opacity 0.8s';
+                centralEffectCanvas.style.opacity = '0';
+                setTimeout(() => {
+                    if (centralEffectCanvas && centralEffectCanvas.parentNode) {
+                        centralEffectCanvas.parentNode.removeChild(centralEffectCanvas);
+                    }
+                    centralEffectCanvas = null;
+                    centralEffectCtx = null;
+                    centralEffectType = null;
+                }, 800);
+            }
+            if (centralEffectFadeTimer) {
+                clearTimeout(centralEffectFadeTimer);
+                centralEffectFadeTimer = null;
+            }
+        }
+
+        function showCentralEffect(type) {
+            removeCentralEffect();
+            // 创建canvas
+            centralEffectCanvas = document.createElement('canvas');
+            centralEffectCanvas.width = window.innerWidth;
+            centralEffectCanvas.height = window.innerHeight;
+            centralEffectCanvas.style.position = 'fixed';
+            centralEffectCanvas.style.left = '0';
+            centralEffectCanvas.style.top = '0';
+            centralEffectCanvas.style.width = '100vw';
+            centralEffectCanvas.style.height = '100vh';
+            centralEffectCanvas.style.pointerEvents = 'none';
+            centralEffectCanvas.style.zIndex = '999999';
+            centralEffectCanvas.style.opacity = '1';
+            document.body.appendChild(centralEffectCanvas);
+            centralEffectCtx = centralEffectCanvas.getContext('2d');
+            centralEffectType = type;
+            // 渲染动画
+            let start = performance.now();
+            function animate() {
+                if (!centralEffectCanvas) return;
+                const ctx = centralEffectCtx;
+                ctx.clearRect(0, 0, centralEffectCanvas.width, centralEffectCanvas.height);
+                const w = centralEffectCanvas.width;
+                const h = centralEffectCanvas.height;
+                const cx = w / 2;
+                const cy = h / 2;
+                const t = (performance.now() - start) / 1000;
+                if (type === 'ice') {
+                    drawCentralIceCrystal(ctx, cx, cy, Math.min(w, h) * 0.28, t); // 体积更大
+                } else if (type === 'fire') {
+                    drawCentralFireball(ctx, cx, cy, Math.min(w, h) * 0.29, t); // 体积更大
+                }
+                if (centralEffectCanvas) requestAnimationFrame(animate);
+            }
+            animate();
+            // 12秒后淡出
+            centralEffectFadeTimer = setTimeout(removeCentralEffect, 12000);
+        }
+
+        // 超级优化后的冰晶特效
+        function drawCentralIceCrystal(ctx, cx, cy, r, t) {
+            // 冰雾体积粒子（更细腻更亮更蓝）
+            for (let i = 0; i < 6000; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const dist = r * (0.13 + Math.pow(Math.random(), 1.7) * 0.87);
+                const x = cx + Math.cos(angle) * dist + Math.sin(t * 1.1 + i * 0.7) * 4.2;
+                const y = cy + Math.sin(angle) * dist + Math.cos(t * 1.2 + i * 0.5) * 4.2;
+                const alpha = 0.13 + 0.38 * Math.pow(1 - dist / r, 2.7);
+                ctx.beginPath();
+                ctx.arc(x, y, 1.1 + Math.random() * 2.1, 0, 2 * Math.PI);
+                ctx.fillStyle = `rgba(${120 + Math.random() * 60},${210 + Math.random() * 40},255,${alpha})`;
+                ctx.shadowColor = `rgba(120,200,255,0.92)`;
+                ctx.shadowBlur = 22;
+                ctx.fill();
+            }
+            // 多层雪花主干+分支（更立体更高光更蓝白）
+            for (let k = 0; k < 7; k++) {
+                const snowR = r * (0.44 + k * 0.12 + Math.sin(t * 0.8 + k) * 0.05);
+                for (let i = 0; i < 6; i++) {
+                    const angle = i * Math.PI / 3 + Math.sin(t * 0.6 + k) * 0.09;
+                    drawSnowBranch(ctx, cx, cy, angle, snowR, t, k, true, true);
+                }
+            }
+            // 六边形冰片+高光（更亮更蓝）
+            for (let i = 0; i < 18; i++) {
+                const angle = i * Math.PI / 3 + Math.sin(t * 0.9 + i) * 0.17;
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.rotate(angle);
+                ctx.beginPath();
+                for (let j = 0; j < 6; j++) {
+                    const a = j * Math.PI / 3;
+                    const rr = r * (0.21 + Math.sin(t * 0.7 + i + j) * 0.022);
+                    ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
+                }
+                ctx.closePath();
+                ctx.globalAlpha = 0.38;
+                ctx.strokeStyle = 'rgba(180,240,255,0.98)';
+                ctx.lineWidth = 4.2;
+                ctx.shadowColor = 'rgba(180,240,255,0.98)';
+                ctx.shadowBlur = 28;
+                ctx.stroke();
+                ctx.restore();
+            }
+            // 冰晶高光闪烁（更冷艳更亮）
+            for (let i = 0; i < 38; i++) {
+                const angle = i * Math.PI * 2 / 38 + Math.sin(t * 0.8 + i) * 0.17;
+                const rr = r * (0.41 + Math.sin(t * 1.3 + i) * 0.13);
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.rotate(angle);
+                ctx.beginPath();
+                ctx.moveTo(rr, 0);
+                ctx.lineTo(rr + r * 0.22, 0);
+                ctx.globalAlpha = 0.23 + 0.23 * Math.abs(Math.sin(t * 1.3 + i));
+                ctx.strokeStyle = 'rgba(180,240,255,1)';
+                ctx.lineWidth = 3.2;
+                ctx.shadowColor = 'rgba(120,200,255,0.98)';
+                ctx.shadowBlur = 32;
+                ctx.stroke();
+                ctx.restore();
+            }
+            // 中心高亮脉冲（更明亮更蓝白）
+            ctx.save();
+            ctx.globalAlpha = 0.55 + 0.25 * Math.abs(Math.sin(t * 2.1));
+            const grad = ctx.createRadialGradient(cx, cy, r * 0.01, cx, cy, r * 0.52);
+            grad.addColorStop(0, 'rgba(200,255,255,1)');
+            grad.addColorStop(0.18, 'rgba(120,210,255,0.95)');
+            grad.addColorStop(0.45, 'rgba(120,210,255,0.45)');
+            grad.addColorStop(0.8, 'rgba(120,210,255,0.13)');
+            grad.addColorStop(1, 'rgba(120,210,255,0.01)');
+            ctx.beginPath();
+            ctx.arc(cx, cy, r * 0.52, 0, 2 * Math.PI);
+            ctx.closePath();
+            ctx.fillStyle = grad;
+            ctx.shadowColor = 'rgba(120,210,255,0.95)';
+            ctx.shadowBlur = 48;
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // 超级优化后的火球特效
+        function drawCentralFireball(ctx, cx, cy, r, t) {
+            // 0. 填补中心空心：密集金色粒子
+            for (let i = 0; i < 2200; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const rr = r * (Math.pow(Math.random(), 1.7) * 0.18); // 只在中心0~0.18r
+                const x = cx + Math.cos(angle) * rr + Math.sin(t * 1.5 + i * 0.9) * 0.8;
+                const y = cy + Math.sin(angle) * rr + Math.cos(t * 1.2 + i * 0.7) * 0.8;
+                ctx.beginPath();
+                ctx.arc(x, y, 2.2 + Math.random() * 2.2, 0, 2 * Math.PI);
+                ctx.fillStyle = `rgba(255, 210, 60, ${0.32 + 0.38 * (1 - rr / r)})`;
+                ctx.shadowColor = 'rgba(255, 210, 60, 0.98)';
+                ctx.shadowBlur = 18 + Math.random() * 10;
+                ctx.fill();
+            }
+            // 1. 太阳核心分层粒子（主色调为橙色、金黄色、金色）
+            for (let i = 0; i < 12000; i++) {
+                const layer = Math.random();
+                let rr, color;
+                if (layer < 0.25) {
+                    rr = r * (0.13 + Math.random() * 0.18);
+                    color = [255, 180 + Math.random() * 60, 40 + Math.random() * 40]; // 金黄橙
+                } else if (layer < 0.5) {
+                    rr = r * (0.28 + Math.random() * 0.22);
+                    color = [255, 200 + Math.random() * 40, 60 + Math.random() * 80]; // 金色
+                } else if (layer < 0.8) {
+                    rr = r * (0.5 + Math.random() * 0.25);
+                    color = [255, 160 + Math.random() * 60, 30 + Math.random() * 60]; // 橙金
+                } else {
+                    rr = r * (0.75 + Math.random() * 0.25);
+                    color = [255, 120 + Math.random() * 60, 20 + Math.random() * 40]; // 橙红
+                }
+                const angle = Math.random() * Math.PI * 2;
+                const x = cx + Math.cos(angle) * rr + Math.sin(t * 1.1 + i * 0.7) * 2.2;
+                const y = cy + Math.sin(angle) * rr + Math.cos(t * 1.2 + i * 0.5) * 2.2;
+                ctx.beginPath();
+                ctx.arc(x, y, 2.2 + Math.random() * 2.8, 0, 2 * Math.PI);
+                ctx.fillStyle = `rgba(${color[0]},${color[1]},${color[2]},${0.18 + 0.32 * (1 - rr / r)})`;
+                ctx.shadowColor = `rgba(${color[0]},${color[1]},${color[2]},0.98)`;
+                ctx.shadowBlur = 18 + Math.random() * 10;
+                ctx.fill();
+            }
+            // 2. 光球层（柔和金色大晕圈）
+            ctx.save();
+            const grad1 = ctx.createRadialGradient(cx, cy, r * 0.1, cx, cy, r * 0.7);
+            grad1.addColorStop(0, 'rgba(255,200,60,0.45)');
+            grad1.addColorStop(0.4, 'rgba(255,180,40,0.22)');
+            grad1.addColorStop(1, 'rgba(255,140,30,0.08)');
+            ctx.globalAlpha = 0.7 + 0.2 * Math.sin(t * 1.2);
+            ctx.beginPath();
+            ctx.arc(cx, cy, r * 0.7, 0, 2 * Math.PI);
+            ctx.closePath();
+            ctx.fillStyle = grad1;
+            ctx.shadowColor = 'rgba(255,180,40,0.25)';
+            ctx.shadowBlur = 40;
+            ctx.fill();
+            ctx.restore();
+            // 3. 色球层（橙红色晕圈）
+            ctx.save();
+            const grad2 = ctx.createRadialGradient(cx, cy, r * 0.2, cx, cy, r * 0.95);
+            grad2.addColorStop(0, 'rgba(255,180,60,0.22)');
+            grad2.addColorStop(0.5, 'rgba(255,140,30,0.13)');
+            grad2.addColorStop(1, 'rgba(255,80,30,0.05)');
+            ctx.globalAlpha = 0.5 + 0.2 * Math.abs(Math.sin(t * 0.8));
+            ctx.beginPath();
+            ctx.arc(cx, cy, r * 0.95, 0, 2 * Math.PI);
+            ctx.closePath();
+            ctx.fillStyle = grad2;
+            ctx.shadowColor = 'rgba(255,140,30,0.18)';
+            ctx.shadowBlur = 60;
+            ctx.fill();
+            ctx.restore();
+            // 4. 日冕层（外部金色光晕）
+            ctx.save();
+            const grad3 = ctx.createRadialGradient(cx, cy, r * 0.7, cx, cy, r * 1.25);
+            grad3.addColorStop(0, 'rgba(255,200,60,0.13)');
+            grad3.addColorStop(0.5, 'rgba(255,180,40,0.09)');
+            grad3.addColorStop(1, 'rgba(255,120,30,0.03)');
+            ctx.globalAlpha = 0.35 + 0.1 * Math.abs(Math.sin(t * 0.5));
+            ctx.beginPath();
+            ctx.arc(cx, cy, r * 1.25, 0, 2 * Math.PI);
+            ctx.closePath();
+            ctx.fillStyle = grad3;
+            ctx.shadowColor = 'rgba(255,180,40,0.12)';
+            ctx.shadowBlur = 80;
+            ctx.fill();
+            ctx.restore();
+            // 5. 太阳耀斑（动态火舌）
+            for (let i = 0; i < 60; i++) {
+                const flareAngle = i * Math.PI * 2 / 60 + Math.sin(t * 0.9 + i) * 0.19;
+                const flareLen = r * (0.8 + Math.sin(t * 1.3 + i) * 0.22 + Math.sin(t * 2.1 + i * 0.5) * 0.08);
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.rotate(flareAngle);
+                ctx.beginPath();
+                ctx.moveTo(r * 0.65, 0);
+                ctx.quadraticCurveTo(r * 0.8, -flareLen * 0.13, flareLen, 0);
+                ctx.quadraticCurveTo(r * 0.8, flareLen * 0.13, r * 0.65, 0);
+                ctx.closePath();
+                ctx.globalAlpha = 0.18 + 0.18 * Math.abs(Math.sin(t * 1.3 + i));
+                ctx.fillStyle = 'rgba(255,180,40,0.99)';
+                ctx.shadowColor = 'rgba(255,180,40,0.99)';
+                ctx.shadowBlur = 38;
+                ctx.fill();
+                ctx.restore();
+            }
+            // 6. 太阳外晕（更亮更大）
+            for (let i = 0; i < 220; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const rr = r * (0.98 + Math.random() * 0.55);
+                const x = cx + Math.cos(angle) * rr;
+                const y = cy + Math.sin(angle) * rr;
+                ctx.beginPath();
+                ctx.arc(x, y, 7.5 + Math.random() * 8.5, 0, 2 * Math.PI);
+                ctx.fillStyle = `rgba(255,200,60,${0.09 + Math.random() * 0.13})`;
+                ctx.shadowColor = 'rgba(255,180,40,0.92)';
+                ctx.shadowBlur = 32;
+                ctx.fill();
+            }
+            // 7. 体积光晕（史诗感体积光）
+            ctx.save();
+            const grad4 = ctx.createRadialGradient(cx, cy, r * 0.41, cx, cy, r * 1.32);
+            grad4.addColorStop(0, 'rgba(255,200,60,0.28)');
+            grad4.addColorStop(0.22, 'rgba(255,180,40,0.23)');
+            grad4.addColorStop(0.55, 'rgba(255,140,30,0.13)');
+            grad4.addColorStop(1, 'rgba(255,80,30,0.04)');
+            ctx.globalAlpha = 1.0;
+            ctx.beginPath();
+            ctx.arc(cx, cy, r * 1.32, 0, 2 * Math.PI);
+            ctx.closePath();
+            ctx.fillStyle = grad4;
+            ctx.shadowColor = 'rgba(255,180,40,0.25)';
+            ctx.shadowBlur = 80;
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // 超级优化雪花分支函数，增加高光和亮度参数
+        function drawSnowBranch(ctx, cx, cy, angle, len, t, layer, highlight, epic) {
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(angle);
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(len, 0);
+            // 分支
+            for (let i = 0.18; i < 1; i += 0.13 + layer * 0.018) {
+                const branchLen = len * (0.19 + 0.13 * Math.sin(t * 1.3 + i * 8 + layer));
+                const branchAngle = Math.PI / 7 + Math.sin(t * 1.7 + i * 6 + layer) * 0.13;
+                ctx.moveTo(len * i, 0);
+                ctx.lineTo(len * i - branchLen * Math.cos(branchAngle), branchLen * Math.sin(branchAngle));
+                ctx.moveTo(len * i, 0);
+                ctx.lineTo(len * i - branchLen * Math.cos(-branchAngle), branchLen * Math.sin(-branchAngle));
+            }
+            ctx.globalAlpha = highlight ? (epic ? 0.62 + 0.22 * Math.sin(t * 1.3 + layer) : 0.48 + 0.18 * Math.sin(t * 1.2 + layer)) : 0.38 + 0.18 * Math.sin(t * 1.2 + layer);
+            ctx.strokeStyle = highlight ? (epic ? 'rgba(180,240,255,1)' : 'rgba(220,255,255,0.98)') : 'rgba(180,240,255,0.92)';
+            ctx.lineWidth = highlight ? (epic ? 3.6 - layer * 0.32 : 2.7 - layer * 0.4) : 2.1 - layer * 0.5;
+            ctx.shadowColor = highlight ? (epic ? 'rgba(120,210,255,0.99)' : 'rgba(220,255,255,0.95)') : 'rgba(180,240,255,0.7)';
+            ctx.shadowBlur = highlight ? (epic ? 28 : 16) : 8;
+            ctx.stroke();
+            ctx.restore();
+        }
+    </script>
+
+
+    <!-- 黑洞特效容器 -->
+    <div id="blackhole-container" class="blackhole-hidden">
+        <div class="blackhole-event-horizon">
+            <div class="blackhole-accretion-disk">
+                <!-- 星际穿越特效将放在这里 -->
+                <canvas id="interstellar-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* 黑洞特效样式 - 增强全屏版 */
+        .blackhole-hidden {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center,
+                    rgba(0, 0, 0, 0.98) 0%,
+                    rgba(0, 0, 0, 0.95) 50%,
+                    rgba(0, 0, 0, 0.9) 100%);
+            z-index: 99999;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .blackhole-show {
+            display: block;
+            opacity: 1;
+        }
+
+        .blackhole-event-horizon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 95vmin;
+            height: 95vmin;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at center,
+                    rgba(0, 0, 0, 1) 0%,
+                    rgba(0, 0, 0, 0.9) 30%,
+                    rgba(10, 10, 20, 0.8) 50%,
+                    rgba(20, 20, 40, 0.6) 70%,
+                    rgba(30, 30, 60, 0.4) 90%),
+                radial-gradient(circle at 30% 30%,
+                    rgba(64, 224, 208, 0.2) 0%,
+                    rgba(0, 191, 255, 0.15) 20%,
+                    transparent 60%),
+                radial-gradient(circle at 70% 70%,
+                    rgba(0, 105, 148, 0.2) 0%,
+                    rgba(0, 56, 80, 0.15) 20%,
+                    transparent 60%);
+            box-shadow:
+                0 0 80px rgba(64, 224, 208, 0.8),
+                0 0 160px rgba(0, 191, 255, 0.6),
+                0 0 240px rgba(0, 105, 148, 0.4),
+                inset 0 0 100px rgba(0, 60, 120, 0.8),
+                inset 0 0 200px rgba(0, 30, 60, 0.6);
+            animation:
+                blackhole-pulse 2.5s infinite alternate,
+                blackhole-wobble 8s infinite ease-in-out,
+                blackhole-color-shift 15s infinite alternate;
+            filter: contrast(120%) brightness(1.1);
+            z-index: 100001;
+        }
+
+        .blackhole-accretion-disk {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700vmin;
+            height: 300vmin;
+            border-radius: 50%;
+            background:
+                conic-gradient(from 0deg at 50% 50%,
+                    rgba(255, 60, 0, 0.95) 0deg,
+                    rgba(255, 100, 0, 0.9) 30deg,
+                    rgba(255, 160, 0, 0.85) 60deg,
+                    rgba(255, 200, 0, 0.8) 90deg,
+                    rgba(0, 200, 255, 0.8) 120deg,
+                    rgba(0, 160, 255, 0.85) 150deg,
+                    rgba(0, 100, 255, 0.9) 180deg,
+                    rgba(0, 60, 255, 0.95) 210deg,
+                    rgba(255, 60, 0, 0.95) 240deg,
+                    rgba(255, 100, 0, 0.9) 270deg,
+                    rgba(255, 160, 0, 0.85) 300deg,
+                    rgba(255, 200, 0, 0.8) 330deg,
+
+                ),
+                radial-gradient(circle at 50% 50%,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.05) 30%,
+                    transparent 70%);
+            opacity: 0.9;
+            mix-blend-mode: screen;
+            filter: brightness(1.3) contrast(130%);
+            animation:
+                accretion-rotate 12s linear infinite,
+                accretion-pulse 5s infinite alternate;
+        }
+
+        #interstellar-canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90vmin;
+            height: 90vmin;
+            border-radius: 50%;
+            overflow: hidden;
+            z-index: 100000;
+            box-shadow:
+                0 0 50px rgba(0, 247, 255, 0.7),
+                0 0 100px rgba(0, 170, 255, 0.5),
+                inset 0 0 60px rgba(0, 102, 204, 0.8);
+        }
+
+        @keyframes blackhole-pulse {
+            0% {
+                box-shadow:
+                    0 0 60px rgba(0, 247, 255, 0.6),
+                    0 0 120px rgba(0, 170, 255, 0.4),
+                    0 0 180px rgba(0, 102, 204, 0.2),
+                    inset 0 0 80px rgba(0, 60, 120, 0.7),
+                    inset 0 0 160px rgba(0, 30, 60, 0.5);
+            }
+
+            100% {
+                box-shadow:
+                    0 0 100px rgba(0, 247, 255, 0.8),
+                    0 0 200px rgba(0, 170, 255, 0.6),
+                    0 0 300px rgba(0, 102, 204, 0.4),
+                    inset 0 0 120px rgba(0, 80, 160, 0.9),
+                    inset 0 0 240px rgba(0, 40, 80, 0.7);
+            }
+        }
+
+        @keyframes blackhole-wobble {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(-50%, -50%) scale(1.02) rotate(2deg);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(0.98) rotate(-2deg);
+            }
+
+            75% {
+                transform: translate(-50%, -50%) scale(1.02) rotate(2deg);
+            }
+        }
+
+        @keyframes accretion-rotate {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        @keyframes accretion-pulse {
+            0% {
+                opacity: 0.85;
+                filter: brightness(1.2) contrast(120%);
+            }
+
+            100% {
+                opacity: 0.95;
+                filter: brightness(1.4) contrast(140%);
+            }
+        }
+    </style>
+
+    <script>
+        // 黑洞特效控制
+        let blackholeActive = false;
+        let interstellarAnimation;
+
+        // 初始化星际穿越特效
+        function initInterstellar() {
+            const canvas = document.getElementById('interstellar-canvas');
+            const ctx = canvas.getContext('2d');
+
+            // 设置画布大小为窗口大小
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            // 星星数组
+            let stars = [];
+            const STAR_COUNT = 3111;
+            const MAX_SPEED = 111;
+            const FOCAL_LENGTH = canvas.width * 1.0;
+
+            // 鼠标位置
+            let mouseX = 0;
+            let mouseY = 0;
+
+            // 黑洞位置
+            let blackHoleX = canvas.width / 2;
+            let blackHoleY = canvas.height / 2;
+
+
+            // 速度控制
+            let speed = 5;
+            let targetSpeed = 15;
+
+            // 初始化星星
+            function initStars() {
+                stars = [];
+                for (let i = 0; i < STAR_COUNT; i++) {
+                    stars.push({
+                        x: Math.random() * canvas.width - canvas.width / 2,
+                        y: Math.random() * canvas.height - canvas.height / 2,
+                        z: Math.random() * canvas.width,
+                        prevX: 0,
+                        prevY: 0,
+                        size: Math.random() * 1.5 + 0.5,
+                        speed: 0,
+                        tail: []
+                    });
+                }
+            }
+
+
+            // 更新星星位置
+            function updateStars() {
+                // 平滑调整速度
+                speed += (targetSpeed - speed) * 0.1;
+
+                for (let i = 0; i < stars.length; i++) {
+                    const star = stars[i];
+
+                    // 保存上一帧位置用于绘制拖尾
+                    star.prevX = star.x;
+                    star.prevY = star.y;
+
+                    // 更新Z位置（向观察者移动）
+                    star.z -= speed;
+                    star.speed = speed;
+
+                    // 如果星星移动到观察者后面，重新放置到远处
+                    if (star.z <= 0) {
+                        star.x = Math.random() * canvas.width - canvas.width / 2;
+                        star.y = Math.random() * canvas.height - canvas.height / 2;
+                        star.z = canvas.width;
+                        star.tail = [];
+                    }
+
+                    // 根据鼠标位置偏移星星位置
+                    const perspective = FOCAL_LENGTH / (star.z + FOCAL_LENGTH);
+                    star.x += (mouseX - canvas.width / 2) * perspective * 0.98;
+                    star.y += (mouseY - canvas.height / 2) * perspective * 0.98;
+
+
+
+
+                    // 记录拖尾位置
+                    if (speed > 15) {
+                        star.tail.push({ x: star.x, y: star.y, z: star.z });
+                        if (star.tail.length > 5) {
+                            star.tail.shift();
+                        }
+                    } else {
+                        star.tail = [];
+                    }
+                }
+            }
+
+            // 绘制星星
+            function drawStars() {
+                ctx.fillStyle = 'black';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // 根据Z坐标排序星星，确保远处的星星先绘制
+                stars.sort((a, b) => b.z - a.z);
+
+                for (let i = 0; i < stars.length; i++) {
+                    const star = stars[i];
+
+                    // 计算透视投影
+                    const perspective = FOCAL_LENGTH / (star.z + FOCAL_LENGTH);
+                    const x = canvas.width / 2 + star.x * perspective;
+                    const y = canvas.height / 2 + star.y * perspective;
+                    const size = star.size * perspective;
+
+                    // 绘制拖尾
+                    if (star.tail.length > 1 && speed > 15) {
+                        ctx.beginPath();
+                        for (let j = 0; j < star.tail.length - 1; j++) {
+                            const tailPerspective1 = FOCAL_LENGTH / (star.tail[j].z + FOCAL_LENGTH);
+                            const tx1 = canvas.width / 2 + star.tail[j].x * tailPerspective1;
+                            const ty1 = canvas.height / 2 + star.tail[j].y * tailPerspective1;
+
+                            const tailPerspective2 = FOCAL_LENGTH / (star.tail[j + 1].z + FOCAL_LENGTH);
+                            const tx2 = canvas.width / 2 + star.tail[j + 1].x * tailPerspective2;
+                            const ty2 = canvas.height / 2 + star.tail[j + 1].y * tailPerspective2;
+
+                            if (j === 0) {
+                                ctx.moveTo(tx1, ty1);
+                            }
+                            ctx.lineTo(tx2, ty2);
+                        }
+
+                        // 拖尾颜色和透明度
+                        const alpha = Math.min(0.8, speed / MAX_SPEED * 0.8);
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+                        ctx.lineWidth = size * 0.5;
+                        ctx.stroke();
+                    }
+
+                    // 绘制星星
+                    const alpha = Math.min(1, perspective * 2);
+                    ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // 显示速度
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.font = '16px Arial';
+                ctx.fillText(`速度: ${speed.toFixed(1)}`, 20, 30);
+            }
+
+            // 动画循环
+            function animate() {
+                updateStars();
+                drawStars();
+                requestAnimationFrame(animate);
+            }
+
+            // 事件监听
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            window.addEventListener('wheel', (e) => {
+                targetSpeed += e.deltaY * -0.01;
+                targetSpeed = Math.max(0, Math.min(MAX_SPEED, targetSpeed));
+            });
+
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                initStars();
+            });
+
+            // 启动动画
+            initStars();
+            animate();
+
+
+            return {
+                stop: function () {
+                    cancelAnimationFrame(interstellarAnimation);
+                }
+            };
+        }
+
+        // 显示黑洞特效
+        function showBlackhole() {
+            if (blackholeActive) return;
+
+            const blackhole = document.getElementById('blackhole-container');
+            blackhole.classList.remove('blackhole-hidden');
+            blackhole.classList.add('blackhole-show');
+
+            // 初始化星际穿越特效
+            const interstellar = initInterstellar();
+
+            blackholeActive = true;
+
+            // ESC键退出
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    hideBlackhole();
+                    if (interstellar) {
+                        interstellar.stop();
+                    }
+                }
+            });
+        }
+
+        // 隐藏黑洞特效
+        function hideBlackhole() {
+            if (!blackholeActive) return;
+
+            const blackhole = document.getElementById('blackhole-container');
+            blackhole.classList.remove('blackhole-show');
+            blackhole.classList.add('blackhole-hidden');
+
+            blackholeActive = false;
+        }
+
+        // ESC键退出黑洞特效
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && blackholeActive) {
+                hideBlackhole();
+
+                // 恢复显示地球、太阳、月亮和三星系统
+                document.getElementById('earth-container').style.display = 'block';
+                document.getElementById('sun-container').style.display = 'block';
+                document.getElementById('moon-container').style.display = 'block';
+                document.querySelectorAll('.special-planet').forEach(el => el.style.display = 'block');
+
+                // 启用三星系统碰撞效果
+                if (window.threeStarSystem) {
+                    window.threeStarSystem.collisionEnabled = true;
+                }
+            }
+        });
+
+
+
+        // 中键长按跳转
+        let middleMouseDownTimer = null;
+        window.addEventListener('mousedown', function (event) {
+            if (event.button === 1) { // 1 表示鼠标中键
+                middleMouseDownTimer = setTimeout(function () {
+                    window.location.href = './wandering-earth.html';
+                }, 1000); // 1秒
+            }
+        });
+
+        window.addEventListener('mouseup', function (event) {
+            if (event.button === 1) { // 1 表示鼠标中键
+                if (middleMouseDownTimer) {
+                    clearTimeout(middleMouseDownTimer);
+                    middleMouseDownTimer = null;
+                }
+            }
+        });
+
+        // 防止中键点击时出现上下文菜单
+        window.addEventListener('contextmenu', function (event) {
+            if (event.button === 1) {
+                event.preventDefault();
+            }
+        });
+        
+    </script>
+
+    
+</body>
+</html>

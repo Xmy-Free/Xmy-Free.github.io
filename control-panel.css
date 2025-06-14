@@ -1,0 +1,423 @@
+/* 控制面板样式 */
+.control-panel {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    z-index: 1000;
+    width: 320px;
+    user-select: none;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: top right;
+}
+
+/* 超级精美最小化按钮的样式 - 通用样式 */
+.minimize-btn {
+    position: absolute;
+    right: 22px;
+    top: 35%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 
+        0 3px 8px rgba(0, 0, 0, 0.15),
+        inset 0px 1px 2px rgba(255, 255, 255, 0.5),
+        inset -1px -1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.minimize-btn:before {
+    content: '';
+    display: block;
+    width: 12px;
+    height: 2px;
+    border-radius: 1px;
+    transition: all 0.3s ease;
+}
+
+.minimize-btn:hover {
+    transform: translateY(-50%) scale(1.15);
+    box-shadow: 
+        0 5px 12px rgba(0, 0, 0, 0.2),
+        inset 0px 2px 3px rgba(255, 255, 255, 0.7),
+        inset -1px -1px 3px rgba(0, 0, 0, 0.1),
+        0 0 8px rgba(74, 137, 220, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.minimize-btn:active {
+    transform: translateY(-50%) scale(0.95);
+    box-shadow: 
+        0 2px 5px rgba(0, 0, 0, 0.15),
+        inset 0px 1px 1px rgba(255, 255, 255, 0.4),
+        inset -1px -1px 1px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* 控制面板最小化时隐藏最小化按钮 */
+.control-panel.minimized .minimize-btn {
+    display: none;
+}
+
+/* 彩虹主题的最小化按钮 */
+.rainbow-theme .minimize-btn {
+    background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1, #ff9ff3);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.rainbow-theme .minimize-btn:before {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+}
+
+.rainbow-theme .minimize-btn:hover {
+    background: linear-gradient(135deg, #ff6b6b, #ffb8b8, #feca57, #ffe8a3, #48dbfb, #a6eaff, #1dd1a1, #7dffcf, #ff9ff3);
+    box-shadow: 
+        0 5px 15px rgba(255, 107, 107, 0.3),
+        0 0 10px rgba(74, 220, 182, 0.3),
+        inset 0px 2px 3px rgba(255, 255, 255, 0.8);
+}
+
+/* 蓝色主题的最小化按钮 */
+body:not(.rainbow-theme) .minimize-btn {
+    background: linear-gradient(145deg, #5b9be0, #3670b7);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+body:not(.rainbow-theme) .minimize-btn:before {
+    background: rgba(240, 248, 255, 0.9);
+    box-shadow: 0 0 3px rgba(240, 248, 255, 0.7);
+}
+
+body:not(.rainbow-theme) .minimize-btn:hover {
+    background: linear-gradient(145deg, #6babea, #4a89dc);
+    box-shadow: 
+        0 5px 15px rgba(42, 98, 190, 0.35),
+        0 0 10px rgba(74, 137, 220, 0.4),
+        inset 0px 2px 3px rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+/* 控制面板最小化状态 - 超级精美按钮样式 */
+.control-panel.minimized {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 50%;
+    transform: translateY(0);
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 31px; /* 与标题文字垂直居中对齐 */
+    
+    /* 高级玻璃态效果 */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.control-panel.minimized:hover {
+    transform: scale(1.1) rotate(5deg);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.control-panel.minimized:active {
+    transform: scale(0.95);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* 彩虹主题的最小化面板 - 高级彩虹配色 */
+.rainbow-theme .control-panel.minimized {
+    background: conic-gradient(from 225deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1, #ff9ff3, #ff6b6b);
+    box-shadow: 
+        0 5px 15px rgba(255, 107, 107, 0.35),
+        0 3px 6px rgba(0, 0, 0, 0.1),
+        inset 0px 1px 2px rgba(255, 255, 255, 0.5),
+        inset -1px -1px 2px rgba(0, 0, 0, 0.1),
+        0 0 8px rgba(255, 107, 107, 0.4);
+}
+
+.rainbow-theme .control-panel.minimized:hover {
+    box-shadow: 
+        0 8px 20px rgba(255, 107, 107, 0.45),
+        0 4px 8px rgba(0, 0, 0, 0.15),
+        inset 0px 1px 3px rgba(255, 255, 255, 0.6),
+        inset -1px -1px 3px rgba(0, 0, 0, 0.1),
+        0 0 12px rgba(255, 159, 243, 0.6);
+}
+
+.rainbow-theme .control-panel.minimized:before {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+    filter: blur(1px);
+}
+
+.rainbow-theme .control-panel.minimized:after {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, 
+        rgba(255, 255, 255, 0.8) 0%, 
+        rgba(255, 255, 255, 0.4) 20%, 
+        rgba(255, 255, 255, 0) 60%);
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.5));
+}
+
+/* 蓝色主题的最小化面板 - 高级蓝色配色 */
+body:not(.rainbow-theme) .control-panel.minimized {
+    background: radial-gradient(circle at 30% 30%, #5d9df6, #2c6ac4);
+    box-shadow: 
+        0 5px 15px rgba(42, 98, 190, 0.35),
+        0 3px 6px rgba(0, 0, 0, 0.1),
+        inset 0px 1px 2px rgba(255, 255, 255, 0.5),
+        inset -1px -1px 2px rgba(0, 0, 0, 0.1),
+        0 0 8px rgba(74, 137, 220, 0.4);
+}
+
+body:not(.rainbow-theme) .control-panel.minimized:hover {
+    box-shadow: 
+        0 8px 20px rgba(42, 98, 190, 0.45),
+        0 4px 8px rgba(0, 0, 0, 0.15),
+        inset 0px 1px 3px rgba(255, 255, 255, 0.6),
+        inset -1px -1px 2px rgba(0, 0, 0, 0.1),
+        0 0 12px rgba(74, 137, 220, 0.6);
+}
+
+body:not(.rainbow-theme) .control-panel.minimized:before {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+    filter: blur(1px);
+}
+
+body:not(.rainbow-theme) .control-panel.minimized:after {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, 
+        rgba(255, 255, 255, 0.8) 0%, 
+        rgba(255, 255, 255, 0.3) 20%, 
+        rgba(255, 255, 255, 0) 60%);
+    filter: drop-shadow(0 0 4px rgba(104, 175, 255, 0.5));
+}
+
+.control-panel.minimized .title {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.control-panel.minimized .controls,
+.control-panel.minimized .instructions {
+    display: none;
+}
+
+/* 精美的最小化控制面板图标 */
+.control-panel.minimized:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 15px;
+    height: 15px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M3 13h18c.55 0 1-.45 1-1s-.45-1-1-1H3c-.55 0-1 .45-1 1s.45 1 1 1zm18-8H3c-.55 0-1 .45-1 1s.45 1 1 1h18c.55 0 1-.45 1-1s-.45-1-1-1zM3 19h18c.55 0 1-.45 1-1s-.45-1-1-1H3c-.55 0-1 .45-1 1s.55 1 1 1z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.95;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.control-panel:hover {
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+    transform: translateY(-3px);
+}
+
+.control-panel .title {
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 18px;
+    color: #4a89dc;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: 12px;
+    position: relative; /* 为最小化按钮提供定位参考 */
+}
+
+.control-panel .controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 22px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.control-panel button {
+    background: linear-gradient(135deg, #4a89dc, #5b9be0);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.control-panel button:hover {
+    background: linear-gradient(135deg, #3a79cc, #4a89dc);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.control-panel button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.control-panel .instructions {
+    font-size: 14.5px;
+    color: #555;
+    line-height: 1.7;
+    background-color: rgba(0, 0, 0, 0.02);
+    padding: 18px;
+    border-radius: 12px;
+}
+
+.control-panel .instructions p {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.control-panel .instructions p i {
+    color: #4a89dc;
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+}
+
+.control-panel .instructions b {
+    color: #333;
+    font-weight: 600;
+}
+
+/* 深色模式下的控制面板 */
+body.dark-mode .control-panel {
+    background-color: rgba(35, 35, 35, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .control-panel .title {
+    color: #5b9be0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .control-panel .instructions {
+    background-color: rgba(255, 255, 255, 0.03);
+    color: #bbb;
+}
+
+body.dark-mode .control-panel .instructions b {
+    color: #e0e0e0;
+}
+
+/* 响应式样式 */
+@media (max-width: 768px) {
+    .control-panel {
+        width: 280px;
+        padding: 16px;
+        top: 12px;
+        right: 12px;
+    }
+    
+    .control-panel .title {
+        font-size: 17px;
+        margin-bottom: 12px;
+    }
+    
+    .control-panel .instructions {
+        font-size: 13px;
+        padding: 12px;
+    }
+    
+    .control-panel button {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+}
+
+/* 移动端优化 */
+@media (max-width: 600px) {
+    .control-panel {
+        width: 240px;
+        font-size: 0.9em;
+    }
+}
+
+/* 打印样式优化 */
+@media print {
+    .control-panel {
+        display: none !important;
+    }
+}
+
+/* 悬停提示 */
+.tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateY(10px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    max-width: 280px;
+}
+
+.tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+body.dark-mode .tooltip {
+    background: rgba(25, 25, 25, 0.95);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
